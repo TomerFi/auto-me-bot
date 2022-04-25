@@ -1,0 +1,49 @@
+{
+  "name": "auto-me-bot",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A Probot app automating the maintenance of GitHub projects",
+  "author": {
+    "name": "Tomer Figenblat",
+    "url": "https://github.com/TomerFi"
+  },
+  "license": "SEE LICENSE IN LICENSE",
+  "homepage": "https://github.com/TomerFi/auto-me-bot",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TomerFi/auto-me-bot"
+  },
+  "bugs": {
+    "url": "https://github.com/TomerFi/auto-me-bot/issues"
+  },
+  "keywords": [
+    "probot",
+    "github",
+    "probot-app"
+  ],
+  "scripts": {
+    "start": "probot run ./src/index.js",
+    "lint": "eslint src tests --ext js",
+    "tests": "mocha --check-leaks --fail-zero --color --ui tdd ./tests/",
+    "test": "nyc --include 'src/**/*.js' --all --compact false --check-coverage --clean --reporter=text npm run tests"
+  },
+  "dependencies": {
+    "@commitlint/config-conventional": "^16.2.1",
+    "@commitlint/lint": "^16.2.1",
+    "@commitlint/load": "^16.2.3",
+    "probot": "^12.2.2"
+  },
+  "devDependencies": {
+    "chai": "^4.3.6",
+    "eslint": "^8.14.0",
+    "eslint-plugin-editorconfig": "^3.2.0",
+    "mocha": "^9.2.2",
+    "nyc": "^15.1.0",
+    "sinon": "^13.0.2",
+    "sinon-chai": "^3.7.0",
+    "smee-client": "^1.2.2"
+  },
+  "engines": {
+    "node": ">= 16.0.0"
+  }
+}

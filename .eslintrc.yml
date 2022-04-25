@@ -1,0 +1,21 @@
+---
+root: true
+parserOptions:
+  ecmaVersion: 2018
+  sourceType: script
+env:
+  node: true
+  es6: true
+  commonjs: true
+  mocha: true
+extends:
+  - "eslint:recommended"
+  - "plugin:editorconfig/all"
+plugins:
+  - "editorconfig"
+ignorePatterns:
+  - "dist"
+rules:
+  curly: "warn"
+  eqeqeq: "warn"
+  quotes: ["warn", "single"]
