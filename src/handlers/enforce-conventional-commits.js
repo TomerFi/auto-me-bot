@@ -10,11 +10,28 @@ const BOT_URL = 'https://github.com/TomerFi/auto-me-bot';
 
 module.exports = enforceConventionalCommits;
 
+/*
+# example auto-me-bot.yml configuration
+pr:
+    conventionalCommits:
+*/
+
 /**
  * Handler for verifying commit messages as conventional
  * @param {import Context from 'probot'} context
  */
 async function enforceConventionalCommits(context) {
+    // get config from current repo .github folder or from the .github repo's .github folder
+    let config = await context.config('auto-me-bot.yml');
+    // activating condition: config exists with keys [pr][conventionalCommits]
+    if (!(
+        config !== null
+        && Object.prototype.hasOwnProperty.call(config, 'pr')
+        && Object.prototype.hasOwnProperty.call(config.pr, 'conventionalCommits')
+    )) {
+        return;
+    }
+
     let startedAt = new Date().toISOString();
     // create the initial check run and mark it as in_progress
     let checkRun = await context.octokit.checks.create(context.repo({
@@ -25,9 +42,8 @@ async function enforceConventionalCommits(context) {
         status: 'in_progress'
     }));
     // get the commits associated with the PR
-    let commitObjs = await context.octokit.rest.pulls.listCommits(context.repo({
-        pull_number: context.payload.pull_request.number
-    })).then(resp => resp.data);
+    let commitObjs = await context.octokit.rest.pulls.listCommits(context.pullRequest())
+        .then(resp => resp.data);
     // load the options
     let opts = await load(DEFAULT_CONFIG);
     // get lint status for every commit

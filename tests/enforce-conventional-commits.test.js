@@ -19,6 +19,13 @@ suite('Testing the enforce-conventional-commits handler', () => {
     const commitMessageBody = 'missing line break';
     const warningCommitMessage = `${goodCommitMessage}\r\n${commitMessageBody}`;
 
+    // configuration for activating the handler
+    const handlerOnConfig = {
+        pr: {
+            conventionalCommits: {}
+        }
+    }
+
     // the expected arg for creating a new check run
     const createCheckArg = {
         head_sha: fakeSha,
@@ -216,8 +223,10 @@ suite('Testing the enforce-conventional-commits handler', () => {
     testCases.forEach(testCase => {
         test(testCase.testTitle, async () => {
             // create stubs for the context functions
+            let configStub = sinon.stub();
             let createCheckStub = sinon.stub();
             let repoFuncStub = sinon.stub();
+            let pullRequestFuncStub = sinon.stub();
             let listCommitsStub = sinon.stub();
             let updateCheckStub = sinon.stub();
             // create a fake context for invoking the application with
@@ -241,10 +250,16 @@ suite('Testing the enforce-conventional-commits handler', () => {
                         }
                     }
                 },
-                repo: repoFuncStub
+                config: configStub,
+                repo: repoFuncStub,
+                pullRequest: pullRequestFuncStub
             };
+            // given the config stub will resolve to a correct activating configuration
+            configStub.resolves(handlerOnConfig);
             // given the repo function will loop back the first argument it gets
             repoFuncStub.returnsArg(0);
+            // given the pullRequest function return the list commits arg
+            pullRequestFuncStub.returns(listCommitsArg);
             // given the create check function will resolve to the fake response
             createCheckStub.resolves(createCheckResponse);
             // given the list commits function will resolve to the expected response
@@ -257,7 +272,7 @@ suite('Testing the enforce-conventional-commits handler', () => {
             expect(repoFuncStub).to.have.calledWith(createCheckArg);
             expect(createCheckStub).to.have.been.calledOnceWith(createCheckArg);
 
-            expect(repoFuncStub).to.have.calledWith(listCommitsArg);
+            expect(pullRequestFuncStub).to.have.calledOnceWith();
             expect(listCommitsStub).to.have.been.calledOnceWith(listCommitsArg);
 
             expect(repoFuncStub).to.have.calledWith(testCase.expectedUpdateCheckArg);
