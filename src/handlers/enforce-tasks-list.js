@@ -1,7 +1,7 @@
 const marked = require('marked');
 
-const CHECK_NAME = 'Auto-Me-Bot Tasks\' List';
-const BOT_URL = 'https://auto-me-bot.tomfi.info';
+const CHECK_NAME = 'Auto-Me-Bot Tasks List';
+const BOT_CHECK_URL = 'https://auto-me-bot.tomfi.info';
 
 module.exports = enforceTasksList;
 
@@ -11,28 +11,13 @@ pr:
     tasksList:
 */
 
-/**
- * Handler for verifying PR tasks' list is completed
- * @param {import Context from 'probot'} context
- */
-async function enforceTasksList(context) {
-    // get config from current repo .github folder or from the .github repo's .github folder
-    let config = await context.config('auto-me-bot.yml');
-    // activating condition: config exists with keys [pr][tasksList]
-    if (!(
-        config !== null
-        && Object.prototype.hasOwnProperty.call(config, 'pr')
-        && Object.prototype.hasOwnProperty.call(config.pr, 'tasksList')
-    )) {
-        return;
-    }
-
-    let startedAt = new Date().toISOString();
+// Handler for verifying PR tasks' list is completed
+async function enforceTasksList(context, _config, startedAt) {
     // create the initial check run and mark it as in_progress
     let checkRun = await context.octokit.checks.create(context.repo({
         head_sha: context.payload.pull_request.head.sha,
         name: CHECK_NAME,
-        details_url: BOT_URL,
+        details_url: BOT_CHECK_URL,
         started_at: startedAt,
         status: 'in_progress'
     }));
@@ -78,7 +63,7 @@ async function enforceTasksList(context) {
     await context.octokit.checks.update(context.repo({
         check_run_id: checkRun.data.id,
         name: CHECK_NAME,
-        details_url: BOT_URL,
+        details_url: BOT_CHECK_URL,
         started_at: startedAt,
         status: 'completed',
         conclusion: finalConclusion,

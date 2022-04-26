@@ -6,7 +6,7 @@ const DEFAULT_CONFIG = {
 };
 
 const CHECK_NAME = 'Auto-Me-Bot Conventional Commits';
-const BOT_URL = 'https://auto-me-bot.tomfi.info';
+const BOT_CHECK_URL = 'https://auto-me-bot.tomfi.info';
 
 module.exports = enforceConventionalCommits;
 
@@ -16,28 +16,13 @@ pr:
     conventionalCommits:
 */
 
-/**
- * Handler for verifying commit messages as conventional
- * @param {import Context from 'probot'} context
- */
-async function enforceConventionalCommits(context) {
-    // get config from current repo .github folder or from the .github repo's .github folder
-    let config = await context.config('auto-me-bot.yml');
-    // activating condition: config exists with keys [pr][conventionalCommits]
-    if (!(
-        config !== null
-        && Object.prototype.hasOwnProperty.call(config, 'pr')
-        && Object.prototype.hasOwnProperty.call(config.pr, 'conventionalCommits')
-    )) {
-        return;
-    }
-
-    let startedAt = new Date().toISOString();
+// Handler for verifying commit messages as conventional
+async function enforceConventionalCommits(context, _config, startedAt) {
     // create the initial check run and mark it as in_progress
     let checkRun = await context.octokit.checks.create(context.repo({
         head_sha: context.payload.pull_request.head.sha,
         name: CHECK_NAME,
-        details_url: BOT_URL,
+        details_url: BOT_CHECK_URL,
         started_at: startedAt,
         status: 'in_progress'
     }));
@@ -101,7 +86,7 @@ async function enforceConventionalCommits(context) {
     await context.octokit.checks.update(context.repo({
         check_run_id: checkRun.data.id,
         name: CHECK_NAME,
-        details_url: BOT_URL,
+        details_url: BOT_CHECK_URL,
         started_at: startedAt,
         status: 'completed',
         conclusion: finalConclusion,
