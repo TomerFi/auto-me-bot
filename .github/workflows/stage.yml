@@ -12,8 +12,6 @@ jobs:
     runs-on: ubuntu-latest
     environment: staging
     name: Lint and test project
-    permissions:
-      pull-requests: read
     steps:
       - name: Checkout sources
         uses: actions/checkout@v3
