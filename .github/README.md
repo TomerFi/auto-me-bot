@@ -17,7 +17,10 @@ if you want me to take on all of your repos :muscle:.
 # .github/auto-me-bot.yml
 ---
 pr:
-  # if you want me to enforce conventional commit messages on PRs, just add the conventionalCommits object.
+  # if you want me to enforce conventional commit messages on PRs, just add conventionalCommits.
   # I'll report back with my findings.
   conventionalCommits:
+  # if you want me to enforce completion of tasks list on PRs, just add tasksList.
+  # I'll provide a detailed list of what needs to be done.
+  tasksList:
 ```
