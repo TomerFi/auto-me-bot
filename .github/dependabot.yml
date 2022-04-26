@@ -24,3 +24,15 @@ updates:
       include: "scope"
     assignees:
       - "tomerfi"
+
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    labels:
+      - "type: dependencies"
+    commit-message:
+      prefix: "docs"
+      include: "scope"
+    assignees:
+      - "tomerfi"

@@ -1,0 +1,93 @@
+---
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      title:
+        description: "Release title"
+        required: false
+      tweet:
+        description: "Tweet new release?"
+        required: false
+        default: "no"
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    environment: deployment
+    name: Build, publish, release, and announce
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ssh-key: ${{ secrets.DEPLOY_KEY }}
+
+      - name: Install node 16
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          cache: npm
+
+      - name: Configure git
+        run: |
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor }}@users.noreply.github.com"
+
+      - name: Determine next SemVer
+        id: bumper
+        uses: tomerfi/version-bumper-action@1.1.3
+
+      #########################
+      # ADD DEPLOY STUFF HERE #
+      #########################
+
+      - name: Create a release name
+        id: release_name
+        uses: actions/github-script@v6
+        with:
+          script: |
+            var retval = '${{ steps.bumper.outputs.new_version }}'
+            if ('${{ github.event.inputs.title }}') {
+              retval = retval.concat(' - ${{ github.event.inputs.title }}')
+            }
+            core.setOutput('value', retval)
+
+      - name: Create a release
+        id: gh_release
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.RELEASE_PAT }}
+          script: |
+            const repo_name = context.payload.repository.full_name
+            const response = await github.request('POST /repos/' + repo_name + '/releases', {
+              tag_name: '${{ steps.bumper.outputs.new_version }}',
+              name: '${{ steps.release_name.outputs.value }}',
+              generate_release_notes: true
+            })
+            core.setOutput('html_url', response.data.html_url)
+
+      - name: Update documentation with new version
+        run: |
+          sed -i 's/  version: .*/  version: "${{ steps.bumper.outputs.new_version }}"/g' mkdocs.yml
+
+      - name: Commit modifications
+        run: |
+          git add mkdocs.yml
+          git commit -m "docs: updated docs with ${{ steps.bumper.outputs.new_version }} [skip ci]"
+
+      - name: Tweet new release
+        if: ${{ github.event.inputs.tweet == 'yes' }}
+        uses: lazy-actions/tweet-action@1.0.1
+        with:
+          oauth_consumer_key: ${{ secrets.TWITTER_API_KEY }}
+          oauth_consumer_secret: ${{ secrets.TWITTER_API_SECRET_KEY }}
+          oauth_token: ${{ secrets.TWITTER_ACCESS_TOKEN }}
+          oauth_token_secret: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
+          message: |
+            🚀🎉 Auto-Me-Bot ${{ steps.bumper.outputs.new_version }} has been released! 🎉🚀
+            ${{ steps.gh_release.outputs.html_url }}
+            https://auto-me-bot.tomfi.info/
+
+            #auto_me_bot #probot #github

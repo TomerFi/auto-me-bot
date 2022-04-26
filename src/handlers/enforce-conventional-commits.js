@@ -6,7 +6,7 @@ const DEFAULT_CONFIG = {
 };
 
 const CHECK_NAME = 'Auto-Me-Bot Conventional Commits';
-const BOT_URL = 'https://github.com/TomerFi/auto-me-bot';
+const BOT_URL = 'https://auto-me-bot.tomfi.info';
 
 module.exports = enforceConventionalCommits;
 

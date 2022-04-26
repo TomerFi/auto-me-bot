@@ -1,0 +1,1 @@
+--8<-- ".github/README.md"

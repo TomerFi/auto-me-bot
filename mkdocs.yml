@@ -1,0 +1,84 @@
+---
+site_name: Auto-Me-Bot
+site_url: https://auto-me-bot.info.tomfi
+site_author: Tomer Figenblat
+site_description: GitHub bot that takes care of your repos for you.
+
+repo_name: TomerFi/auto-me-bot
+repo_url: https://github.com/TomerFi/auto-me-bot
+#edit_uri: "edit/main/docs"
+edit_uri: ""
+
+copyright: Copyright &copy; 2022 Tomer Figenblat
+
+nav:
+  - Home: index.md
+  - License: license.md
+
+markdown_extensions:
+  - admonition
+  - def_list
+  - pymdownx.betterem
+  - pymdownx.details
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.smartsymbols
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - tables
+  - toc:
+      permalink: ⚓︎
+
+extra:
+  version: "0.0.1"
+  social:
+    - icon: fontawesome/brands/twitter
+      link: https://twitter.com/realTomFi
+      name: realTomfi on Twitter
+    - icon: fontawesome/brands/github
+      link: https://github.com/TomerFi
+      name: TomerFi on GitHub
+    - icon: fontawesome/brands/dev
+      link: https://dev.to/tomerfi
+      name: tomerfi on Dev.to
+    - icon: fontawesome/brands/redhat
+      link: https://developers.redhat.com/author/tomerfi
+      name: tomerfi on Red Hat Developer
+    - icon: fontawesome/brands/linkedin
+      link: https://www.linkedin.com/in/tomerfi/
+      name: tomerfi on LinkedIn
+
+plugins:
+  - search
+  - git-revision-date
+
+theme:
+  name: material
+  font:
+    code: Fira Code
+    text: Open Sans
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to light mode
+  features:
+    - content.code.annotate
+    - header.autohide
+    - navigation.indexes
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.top
+    - navigation.tracking
+    - search.highlight
+    - search.share
+    - search.suggest
+    - toc.integrate

@@ -8,10 +8,10 @@ on:
       - main
 
 jobs:
-  test:
+  stage:
     runs-on: ubuntu-latest
     environment: staging
-    name: Lint and test project
+    name: Stage the project
     steps:
       - name: Checkout sources
         uses: actions/checkout@v3
@@ -21,6 +21,23 @@ jobs:
         with:
           node-version: '16'
           cache: npm
+
+      - name: Setup Python 3.10
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.10"
+
+      - name: Cache pip repository
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+
+      - name: Prepare python environment
+        run: pip install -rrequirements.txt
+
+      - name: Build site
+        run: mkdocs build
 
       - name: Install project modules
         run: npm i
