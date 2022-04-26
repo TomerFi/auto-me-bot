@@ -24,7 +24,7 @@
   "scripts": {
     "start": "probot run ./src/index.js",
     "lint": "eslint src tests --ext js",
-    "tests": "mocha --check-leaks --fail-zero --color --ui tdd ./tests/",
+    "tests": "mocha --check-leaks --fail-zero --color --parallel --ui tdd --recursive ./tests/",
     "test": "nyc --include 'src/**/*.js' --all --compact false --check-coverage --clean --reporter=text npm run tests"
   },
   "dependencies": {
