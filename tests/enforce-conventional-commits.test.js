@@ -1,5 +1,6 @@
 const sinon = require('sinon');
 const chai = require('chai');
+const beforeEach = require('mocha').beforeEach;
 
 chai.use(require('sinon-chai'));
 
@@ -19,11 +20,19 @@ suite('Testing the enforce-conventional-commits handler', () => {
     const commitMessageBody = 'missing line break';
     const warningCommitMessage = `${goodCommitMessage}\r\n${commitMessageBody}`;
 
-    // configuration for activating the handler
-    const handlerOnConfig = {
+    // auto-me-bot.yml full config file (handler should work)
+    const fullConfig = {
         pr: {
             conventionalCommits: {}
         }
+    }
+    // auto-me-bot.yml with no pr.conventionalCommits object (handler shouldn't work)
+    const noConventionalCommitsConfig = {
+        pr: {}
+    }
+    // auto-me-bot.yml with no pr object (handler shouldn't work)
+    const noPrConfig = {
+        somethingElse: {}
     }
 
     // the expected arg for creating a new check run
@@ -220,42 +229,56 @@ suite('Testing the enforce-conventional-commits handler', () => {
         }
     ];
 
+    let configStub;
+    let createCheckStub;
+    let repoFuncStub;
+    let pullRequestFuncStub;
+    let listCommitsStub;
+    let updateCheckStub;
+
+    let fakeContext = {};
+
+    beforeEach(() => {
+        // unwrap any previous wrapped sinon objects
+        sinon.restore();
+        // create stubs for the context functions
+        configStub = sinon.stub();
+        createCheckStub = sinon.stub();
+        repoFuncStub = sinon.stub();
+        pullRequestFuncStub = sinon.stub();
+        listCommitsStub = sinon.stub();
+        updateCheckStub = sinon.stub();
+        // create a fake context for invoking the application with
+        fakeContext = {
+            payload: {
+                pull_request: {
+                    head: {
+                        sha: fakeSha
+                    },
+                    number: fakePRNumber
+                }
+            },
+            octokit: {
+                checks: {
+                    create: createCheckStub,
+                    update: updateCheckStub
+                },
+                rest: {
+                    pulls: {
+                        listCommits: listCommitsStub
+                    }
+                }
+            },
+            config: configStub,
+            repo: repoFuncStub,
+            pullRequest: pullRequestFuncStub
+        };
+    });
+
     testCases.forEach(testCase => {
         test(testCase.testTitle, async () => {
-            // create stubs for the context functions
-            let configStub = sinon.stub();
-            let createCheckStub = sinon.stub();
-            let repoFuncStub = sinon.stub();
-            let pullRequestFuncStub = sinon.stub();
-            let listCommitsStub = sinon.stub();
-            let updateCheckStub = sinon.stub();
-            // create a fake context for invoking the application with
-            let fakeContext = {
-                payload: {
-                    pull_request: {
-                        head: {
-                            sha: fakeSha
-                        },
-                        number: fakePRNumber
-                    }
-                },
-                octokit: {
-                    checks: {
-                        create: createCheckStub,
-                        update: updateCheckStub
-                    },
-                    rest: {
-                        pulls: {
-                            listCommits: listCommitsStub
-                        }
-                    }
-                },
-                config: configStub,
-                repo: repoFuncStub,
-                pullRequest: pullRequestFuncStub
-            };
             // given the config stub will resolve to a correct activating configuration
-            configStub.resolves(handlerOnConfig);
+            configStub.resolves(fullConfig);
             // given the repo function will loop back the first argument it gets
             repoFuncStub.returnsArg(0);
             // given the pullRequest function return the list commits arg
@@ -278,5 +301,35 @@ suite('Testing the enforce-conventional-commits handler', () => {
             expect(repoFuncStub).to.have.calledWith(testCase.expectedUpdateCheckArg);
             expect(updateCheckStub).to.have.been.calledOnceWith(testCase.expectedUpdateCheckArg);
         })
+    });
+
+    [
+        {
+            testTitle: 'When auto-me-bot.yml is missing the pr.conventionalCommits object',
+            config: noConventionalCommitsConfig
+        },
+        {
+            testTitle: 'When auto-me-bot.yml is missing the pr object',
+            config: noPrConfig
+        },
+        {
+            testTitle: 'When there\'s no auto-me-bot.yml',
+            config: null
+        }
+    ].forEach(dynArg => {
+        test(`${dynArg.testTitle}, the handler shouldn't do anything`, async () => {
+            // given the config stub will resolve current sut configuration
+            configStub.resolves(dynArg.config);
+
+            // when invoking the handler with the fake context
+            await enforceConventionalCommits(fakeContext);
+
+            // then nothing should happen
+            expect(createCheckStub).have.not.been.called;
+            expect(repoFuncStub).have.not.been.called;
+            expect(pullRequestFuncStub).have.not.been.called;
+            expect(listCommitsStub).have.not.been.called;
+            expect(updateCheckStub).have.not.been.called;
+        });
     });
 });
