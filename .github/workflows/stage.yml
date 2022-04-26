@@ -1,0 +1,34 @@
+---
+name: Stage
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    environment: staging
+    name: Lint and test project
+    permissions:
+      pull-requests: read
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v3
+
+      - name: Install node 16
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          cache: npm
+
+      - name: Install project modules
+        run: npm i
+
+      - name: Lint source files
+        run: npm run lint
+
+      - name: Run unit tests and verify code coverage
+        run: npm test

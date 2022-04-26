@@ -1,0 +1,53 @@
+---
+name: Pull request build
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  label:
+    runs-on: ubuntu-latest
+    name: Label pull request
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Source checkout
+        uses: actions/checkout@v3
+
+      - name: Label if conflicts found
+        uses: mschilde/auto-label-merge-conflicts@v2.0
+        with:
+          CONFLICT_LABEL_NAME: "status: has conflicts"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Label if contains large files
+        uses: actionsdesk/lfs-warning@v3.1
+        with:
+          labelName: "warn: lfs detected"
+          filesizelimit: "1mb"
+
+  test:
+    runs-on: ubuntu-latest
+    name: Lint and test project
+    permissions:
+      pull-requests: read
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v3
+
+      - name: Install node 16
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          cache: npm
+
+      - name: Install project modules
+        run: npm i
+
+      - name: Lint source files
+        run: npm run lint
+
+      - name: Run unit tests and verify code coverage
+        run: npm test
