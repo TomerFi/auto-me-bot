@@ -19,3 +19,10 @@ rules:
   curly: "warn"
   eqeqeq: "warn"
   quotes: ["warn", "single"]
+  sort-imports: ["error", {
+        ignoreCase: false,
+        ignoreDeclarationSort: false,
+        ignoreMemberSort: false,
+        memberSyntaxSortOrder: ["none", "all", "multiple", "single"],
+        allowSeparatedGroups: false
+    }]

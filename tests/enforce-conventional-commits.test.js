@@ -285,6 +285,7 @@ suite('Testing the enforce-conventional-commits handler', () => {
     /* ######################### ##
     ## #### Stubs and Fakes #### ##
     ## ######################### */
+    let loadSpy;
     let lintStub;
     let createCheckStub;
     let repoFuncStub;
@@ -308,6 +309,11 @@ suite('Testing the enforce-conventional-commits handler', () => {
             // use rewire inject the lint stub to the handler
             enforceConventionalCommits.__set__('lint', lintStub);
         }
+        // wrap spy on load configuration
+        let loadConfig = enforceConventionalCommits.__get__('load');
+        loadSpy = sinon.spy(loadConfig);
+        enforceConventionalCommits.__set__('load', loadSpy);
+
         /* ###################### ##
         ## #### Fake Context #### ##
         ## ###################### */
@@ -367,6 +373,11 @@ suite('Testing the enforce-conventional-commits handler', () => {
 
             expect(repoFuncStub).to.have.calledWith(testCase.expectedUpdateCheck);
             expect(updateCheckStub).to.have.been.calledOnceWith(testCase.expectedUpdateCheck);
+
+            // expect the load config to be called with the default configuration
+            expect(loadSpy).to.have.been.calledOnceWith({
+                extends: ['@commitlint/config-conventional'],
+            });
         })
     });
 
@@ -396,5 +407,10 @@ suite('Testing the enforce-conventional-commits handler', () => {
 
         expect(repoFuncStub).to.have.calledWith(oneWarningOneError_expectedUpdateCheck);
         expect(updateCheckStub).to.have.been.calledOnceWith(oneWarningOneError_expectedUpdateCheck);
+
+        // expect the load config to be called with the default configuration
+        expect(loadSpy).to.have.been.calledOnceWith({
+            extends: ['@commitlint/config-conventional'],
+        });
     })
 });

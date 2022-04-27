@@ -3,6 +3,8 @@ const marked = require('marked');
 const CHECK_NAME = 'Auto-Me-Bot Tasks List';
 const BOT_CHECK_URL = 'https://auto-me-bot.tomfi.info';
 
+const EOL = require('os').EOL;
+
 module.exports = enforceTasksList;
 
 /*
@@ -22,9 +24,9 @@ async function enforceTasksList(context, _config, startedAt) {
         status: 'in_progress'
     }));
 
+    // get all the task list token and split them into checked and unchecked
     var checkedTasks = [];
     var uncheckedTasks = [];
-
     new marked.Lexer({gfm: true})
         .blockTokens(context.payload.pull_request.body)
         .filter(token => token.type === 'list')
@@ -39,20 +41,19 @@ async function enforceTasksList(context, _config, startedAt) {
     let finalConclusion = 'success';
     let outputReport = {
         title: 'Nothing for me to do here',
-        summary: 'I can\'t find any tasks\'s list to enforce'
+        summary: 'I can\'t seem to find any tasks list to enforce'
     };
-
     // if found tasks
     if (numUnchecked > 0) {
         // found unchecked tasks
         finalConclusion = 'failure';
         outputReport = {
             title: `Found ${numUnchecked} unchecked tasks`,
-            summary: 'I\'m sure you know what do with these.',
+            summary: 'I\'m sure you know what do with these',
             text: parseTasks(uncheckedTasks, 'The following tasks needs to be completed')
         }
     } else if (numChecked > 0) {
-        // found checks tasks with no unchecked tasks
+        // found checked tasks with no unchecked tasks
         outputReport = {
             title: 'Well Done!',
             summary: 'You made it through',
@@ -78,6 +79,6 @@ function parseTasks(tasks, header) {
     let tasksLines = [`### ${header}`];
     tasks.map(task => task.text).forEach(text => tasksLines.push(`- ${text}`));
     // return tasks as string
-    return tasksLines.join('\r\n');
+    return tasksLines.join(EOL);
 
 }
