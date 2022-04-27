@@ -3,30 +3,36 @@ const enforceTasksList = require('./handlers/enforce-tasks-list');
 
 module.exports = autoMeBot;
 
+// pr events to monitor, action fine-grain should be performed at the handler level
+const PR_EVENTS = [
+    'pull_request.opened',
+    'pull_request.edited',
+    'pull_request.synchronize'
+];
+// map pr config keys to handlers, handlers should take context, config, and iso startedAt
+const PR_HANDLERS = {
+    'conventionalCommits': enforceConventionalCommits,
+    'tasksList': enforceTasksList
+};
+// guard for pr, must pass for the handler to be invoke
+const PR_PREDICATE = (config, context) =>
+    config !== null || 'pr' in config || 'pull_request' in context.payload;
+
+// main function - exported
 function autoMeBot(probot) {
-    probot.onAny(handlerController);
+    probot.on(PR_EVENTS, handlersController(PR_PREDICATE, PR_HANDLERS));
 }
 
-async function handlerController(context) {
-    // get config from current repo .github folder or from the .github repo's .github folder
-    let config = await context.config('auto-me-bot.yml');
-    if (config === null) {
-        return;
-    }
-    let startedAt = new Date().toISOString();
-    // pull request handlers
-    if (
-        Object.prototype.hasOwnProperty.call(config, 'pr')
-        && Object.prototype.hasOwnProperty.call(context.payload, 'pull_request')
-    ) {
-        if (Object.prototype.hasOwnProperty.call(config.pr, 'conventionalCommits')) {
-            if (['opened', 'edited', 'synchronize'].includes(context.payload.action)) {
-                enforceConventionalCommits(context, config, startedAt);
-            }
-        }
-        if (Object.prototype.hasOwnProperty.call(config.pr, 'tasksList')) {
-            if (['opened', 'edited', 'synchronize'].includes(context.payload.action)) {
-                enforceTasksList(context, config, startedAt);
+// controller function, grabs the config, and if the guard passes, launches the related handlers
+function handlersController(predicate, handlersMap) {
+    return async function(context) {
+        // get config from current repo .github folder or from the .github repo's .github folder
+        let config = await context.config('auto-me-bot.yml');
+        if (predicate(config, context)) {
+            // if the predicate passes, invoke the handler from the map based on the config key
+            let startedAt = new Date().toISOString();
+            for (let key in config.pr) {
+                handlersMap[key](context, config, startedAt);
             }
         }
     }
