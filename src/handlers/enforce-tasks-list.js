@@ -32,9 +32,10 @@ async function enforceTasksList(context, _config, startedAt) {
         .filter(item => item.task)
         .forEach(item => item.checked ? checkedTasks.push(item) : uncheckedTasks.push(item));
 
-    // default output for no tasks found
     let numChecked = checkedTasks.length;
     let numUnchecked = uncheckedTasks.length;
+
+    // default output for no tasks found
     let finalConclusion = 'success';
     let outputReport = {
         title: 'Nothing for me to do here',

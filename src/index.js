@@ -22,7 +22,6 @@ const PR_PREDICATE = (config, context) =>
 function autoMeBot(probot) {
     probot.on(PR_EVENTS, handlersController(PR_PREDICATE, PR_HANDLERS));
 }
-
 // controller function, grabs the config, and if the guard passes, launches the related handlers
 function handlersController(predicate, handlersMap) {
     return async function(context) {

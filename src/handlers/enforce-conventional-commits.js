@@ -8,6 +8,8 @@ const DEFAULT_CONFIG = {
 const CHECK_NAME = 'Auto-Me-Bot Conventional Commits';
 const BOT_CHECK_URL = 'https://auto-me-bot.tomfi.info';
 
+const EOL = require('os').EOL;
+
 module.exports = enforceConventionalCommits;
 
 /*
@@ -72,14 +74,14 @@ async function enforceConventionalCommits(context, _config, startedAt) {
         outputReport = {
             title: 'Linting Failed',
             summary: reportSummary,
-            text: errorStatuses.concat(warningStatuses).map(lintSts => parseLintStatus(lintSts)).join('\r\n')
+            text: errorStatuses.concat(warningStatuses).map(lintSts => parseLintStatus(lintSts)).join(EOL)
         };
     } else if (numWarnings > 0) {
         // found only warning - no errors
         outputReport = {
             title: 'Linting Found Warnings',
             summary: `Hmmm... we got ${numWarnings} warning${numWarnings > 1 ? 's' : ''} you might want to look at`,
-            text: warningStatuses.map(lintSts => parseLintStatus(lintSts)).join('\r\n')
+            text: warningStatuses.map(lintSts => parseLintStatus(lintSts)).join(EOL)
         };
     }
     // update check run and mark it as completed
@@ -127,5 +129,5 @@ function parseLintStatus(lintStatus) {
         });
     }
     // return output as string
-    return statusLines.join('\r\n');
+    return statusLines.join(EOL);
 }

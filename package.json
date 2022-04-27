@@ -40,6 +40,7 @@
     "eslint-plugin-editorconfig": "^3.2.0",
     "mocha": "^9.2.2",
     "nyc": "^15.1.0",
+    "rewire": "^6.0.0",
     "sinon": "^13.0.2",
     "sinon-chai": "^3.7.0",
     "smee-client": "^1.2.2"

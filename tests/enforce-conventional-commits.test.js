@@ -1,47 +1,52 @@
 const sinon = require('sinon');
 const chai = require('chai');
+const rewire = require('rewire');
 const beforeEach = require('mocha').beforeEach;
 
 chai.use(require('sinon-chai'));
 
-const enforceConventionalCommits = require('../src/handlers/enforce-conventional-commits');
+const enforceConventionalCommits = rewire('../src/handlers/enforce-conventional-commits');
 
 const expect = chai.expect;
 
+const EOL = require('os').EOL;
+
+const STUB_COMMITLINT = true; // set this to false to invoke the actual commitlint tool instead of stubbing it
+
 suite('Testing the enforce-conventional-commits handler', () => {
-    // fake testing data
+    /* ######################### ##
+    ## #### Shared Fixtures #### ##
+    ## ######################### */
     const fakeSha = '#f54dda543@';
     const fakeCheckId = 13;
     const fakePRNumber = 66;
     const fakeCommitUrl = `https://fake.commit.url/${fakeSha}`;
-    // fake commit messages
-    const goodCommitMessage = 'chore: unit test this thing';
-    const errorCommitMessage = 'it doesn\'t matter what you read';
-    const commitMessageBody = 'missing line break';
-    const warningCommitMessage = `${goodCommitMessage}\r\n${commitMessageBody}`;
 
     // the expected arg for creating a new check run
-    const createCheckArg = {
+    const expectedCreateCheckRunInfo = {
         head_sha: fakeSha,
         name: sinon.match.string,
         details_url: sinon.match(u => new URL(u)),
         started_at: sinon.match(t => Date.parse(t)),
         status: 'in_progress'
     };
-    // the expected response for creating a new check run
+    // the stubbed response for creating a new check run
     const createCheckResponse = {
         data: {
             id: fakeCheckId
         }
     };
-
-    // the expected arg for listing all the commits
-    const listCommitsArg = {
+    // the expected arg for listing all the commits in the PR
+    const expectedListCommitsInfo = {
         pull_number: fakePRNumber
     };
 
-    // the expected response for listing all the commits with 1 good commit
-    const listCommitsWithGoodResponse = {
+    /* ######################################################### ##
+    ## #### Fixtures for 1 success commit message test case #### ##
+    ## ######################################################### */
+    const goodCommitMessage = 'chore: unit test this thing';
+
+    const oneGood_commitsListResponse = {
         data: [
             {
                 html_url: fakeCommitUrl,
@@ -51,8 +56,15 @@ suite('Testing the enforce-conventional-commits handler', () => {
             }
         ]
     }
-    // the expected argument for updating the existing check run with 1 good commit
-    const updateCheckGoodArg = {
+
+    const oneGood_lintReportResponse ={
+        valid: true,
+        errors: [],
+        warnings: [],
+        input: goodCommitMessage
+    };
+
+    const oneGood_expectedUpdateCheck = {
         check_run_id: fakeCheckId,
         name: sinon.match.string,
         details_url: sinon.match(u => new URL(u)),
@@ -66,8 +78,12 @@ suite('Testing the enforce-conventional-commits handler', () => {
         }
     }
 
-    // the expected response for listing all the commits with 1 good commit
-    const listCommitsWithErrorResponse = {
+    /* ####################################################### ##
+    ## #### Fixtures for 1 error commit message test case #### ##
+    ## ####################################################### */
+    const errorCommitMessage = 'it doesn\'t matter what you stash';
+
+    const oneError_commitsListResponse = {
         data: [
             {
                 html_url: fakeCommitUrl,
@@ -77,8 +93,28 @@ suite('Testing the enforce-conventional-commits handler', () => {
             }
         ]
     }
-    // the expected argument for updating the existing check run with 1 error commit
-    const updateCheckErrorArg = {
+
+    const oneError_lintReportResponse ={
+        valid: false,
+        errors: [
+            {
+                level: 2,
+                valid: false,
+                name: 'subject-empty',
+                message: 'subject may not be empty'
+            },
+            {
+                level: 2,
+                valid: false,
+                name: 'type-empty',
+                message: 'type may not be empty'
+            }
+        ],
+        warnings: [],
+        input: errorCommitMessage
+    };
+
+    const oneError_expectedUpdateCheck = {
         check_run_id: fakeCheckId,
         name: sinon.match.string,
         details_url: sinon.match(u => new URL(u)),
@@ -99,12 +135,17 @@ suite('Testing the enforce-conventional-commits handler', () => {
                 '| - | - | - |',
                 '| subject-empty | 2 | subject may not be empty |',
                 '| type-empty | 2 | type may not be empty |'
-            ].join('\r\n')
+            ].join(EOL)
         }
     }
 
-    // the expected response for listing all the commits with 1 warning commit
-    const listCommitsWithWarningResponse = {
+    /* ######################################################### ##
+    ## #### Fixtures for 1 warning commit message test case #### ##
+    ## ######################################################### */
+    const warningCommitMessageBody = 'missing line break';
+    const warningCommitMessage = `${goodCommitMessage}${EOL}${warningCommitMessageBody}`;
+
+    const oneWarning_commitsListResponse = {
         data: [
             {
                 html_url: fakeCommitUrl,
@@ -114,8 +155,22 @@ suite('Testing the enforce-conventional-commits handler', () => {
             }
         ]
     }
-    // the expected argument for updating the existing check run with 1 warning commit
-    const updateCheckWarningArg = {
+
+    const oneWarning_lintReportResponse ={
+        valid: true,
+        errors: [],
+        warnings: [
+            {
+                level: 1,
+                valid: false,
+                name: 'body-leading-blank',
+                message: 'body must have leading blank line'
+            }
+        ],
+        input: warningCommitMessage
+    };
+
+    const oneWarning_expectedUpdateCheck = {
         check_run_id: fakeCheckId,
         name: sinon.match.string,
         details_url: sinon.match(u => new URL(u)),
@@ -126,21 +181,24 @@ suite('Testing the enforce-conventional-commits handler', () => {
         output: {
             title: 'Linting Found Warnings',
             summary: 'Hmmm... we got 1 warning you might want to look at',
-            text: `### ${fakeCommitUrl}\r\n` +
-                '```\r\n' +
-                `${goodCommitMessage}\n` +
-                '\n' +
-                `${commitMessageBody}\r\n` +
-                '```\r\n' +
-                '#### Warnings\r\n' +
-                '| name | level | message |\r\n' +
-                '| - | - | - |\r\n' +
+            text: [
+                `### ${fakeCommitUrl}`,
+                '```',
+                STUB_COMMITLINT ? goodCommitMessage : goodCommitMessage + EOL, // TODO: y is this?
+                warningCommitMessageBody,
+                '```',
+                '#### Warnings',
+                '| name | level | message |',
+                '| - | - | - |',
                 '| body-leading-blank | 1 | body must have leading blank line |'
+            ].join(EOL)
         }
     }
 
-    // the expected response for listing all the commits with 1 warning and 1 error commits
-    const listCommitsWithWarningAndErrorResponse = {
+    /* #################################################################### ##
+    ## #### Fixtures for 1 warning + 1 error commit messages test case #### ##
+    ## #################################################################### */
+    const oneWarningOneError_commitsListResponse = {
         data: [
             {
                 html_url: fakeCommitUrl,
@@ -153,11 +211,17 @@ suite('Testing the enforce-conventional-commits handler', () => {
                 commit: {
                     message: errorCommitMessage
                 }
+            },
+            {
+                html_url: fakeCommitUrl,
+                commit: {
+                    message: goodCommitMessage
+                }
             }
         ]
     }
-    // the expected argument for updating the existing check run with 1 warning commit
-    const updateCheckWarningAndErrorArg = {
+
+    const oneWarningOneError_expectedUpdateCheck = {
         check_run_id: fakeCheckId,
         name: sinon.match.string,
         details_url: sinon.match(u => new URL(u)),
@@ -168,52 +232,60 @@ suite('Testing the enforce-conventional-commits handler', () => {
         output: {
             title: 'Linting Failed',
             summary: 'Oops, looks like we got 1 errors, and 1 warnings',
-            text: `### ${fakeCommitUrl}\r\n` +
-                '```\r\n' +
-                `${errorCommitMessage}\r\n` +
-                '```\r\n' +
-                '#### Errors\r\n' +
-                '| name | level | message |\r\n' +
-                '| - | - | - |\r\n' +
-                '| subject-empty | 2 | subject may not be empty |\r\n' +
-                '| type-empty | 2 | type may not be empty |\r\n' +
-                `### ${fakeCommitUrl}\r\n` +
-                '```\r\n' +
-                `${goodCommitMessage}\n` +
-                '\n' +
-                `${commitMessageBody}\r\n` +
-                '```\r\n' +
-                '#### Warnings\r\n' +
-                '| name | level | message |\r\n' +
-                '| - | - | - |\r\n' +
+            text: [
+                `### ${fakeCommitUrl}`,
+                '```',
+                `${errorCommitMessage}`,
+                '```',
+                '#### Errors',
+                '| name | level | message |',
+                '| - | - | - |',
+                '| subject-empty | 2 | subject may not be empty |',
+                '| type-empty | 2 | type may not be empty |',
+                `### ${fakeCommitUrl}`,
+                '```',
+                STUB_COMMITLINT ? goodCommitMessage : goodCommitMessage + EOL, // TODO: y is this?
+                warningCommitMessageBody,
+                '```',
+                '#### Warnings',
+                '| name | level | message |',
+                '| - | - | - |',
                 '| body-leading-blank | 1 | body must have leading blank line |'
+            ].join(EOL)
         }
     }
 
-    // create dynamic test cases
+    /* ############################ ##
+    ## #### Dynamic Test Cases #### ##
+    ## ############################ */
     let testCases = [
         {
-            testTitle: 'Test with one warning commit, reports warning',
-            listCommitsResponse: listCommitsWithWarningResponse,
-            expectedUpdateCheckArg: updateCheckWarningArg
+            testTitle: 'Test with one warning commit message, expect one warning report',
+            commitMessage: warningCommitMessage,
+            stubCommitsList: oneWarning_commitsListResponse,
+            stubLintResponse: oneWarning_lintReportResponse,
+            expectedUpdateCheck: oneWarning_expectedUpdateCheck
         },
         {
-            testTitle: 'Test with one error commit, reports error',
-            listCommitsResponse: listCommitsWithErrorResponse,
-            expectedUpdateCheckArg: updateCheckErrorArg
+            testTitle: 'Test with one error commit message, expect one error report',
+            commitMessage: errorCommitMessage,
+            stubCommitsList: oneError_commitsListResponse,
+            stubLintResponse: oneError_lintReportResponse,
+            expectedUpdateCheck: oneError_expectedUpdateCheck
         },
         {
-            testTitle: 'Test with one good commit, reports success',
-            listCommitsResponse: listCommitsWithGoodResponse,
-            expectedUpdateCheckArg: updateCheckGoodArg
+            testTitle: 'Test with one good commit message, expect a successful result',
+            commitMessage: goodCommitMessage,
+            stubCommitsList: oneGood_commitsListResponse,
+            stubLintResponse: oneGood_lintReportResponse,
+            expectedUpdateCheck: oneGood_expectedUpdateCheck
         },
-        {
-            testTitle: 'Test with one warning commit and one error, reports both',
-            listCommitsResponse: listCommitsWithWarningAndErrorResponse,
-            expectedUpdateCheckArg: updateCheckWarningAndErrorArg
-        }
     ];
 
+    /* ######################### ##
+    ## #### Stubs and Fakes #### ##
+    ## ######################### */
+    let lintStub;
     let createCheckStub;
     let repoFuncStub;
     let pullRequestFuncStub;
@@ -226,11 +298,19 @@ suite('Testing the enforce-conventional-commits handler', () => {
         // unwrap any previous wrapped sinon objects
         sinon.restore();
         // create stubs for the context functions
+        lintStub = sinon.stub();
         createCheckStub = sinon.stub();
         repoFuncStub = sinon.stub();
         pullRequestFuncStub = sinon.stub();
         listCommitsStub = sinon.stub();
         updateCheckStub = sinon.stub();
+        if (STUB_COMMITLINT) {
+            // use rewire inject the lint stub to the handler
+            enforceConventionalCommits.__set__('lint', lintStub);
+        }
+        /* ###################### ##
+        ## #### Fake Context #### ##
+        ## ###################### */
         // create a fake context for invoking the application with
         fakeContext = {
             payload: {
@@ -255,31 +335,66 @@ suite('Testing the enforce-conventional-commits handler', () => {
             repo: repoFuncStub,
             pullRequest: pullRequestFuncStub
         };
+        /* ######################### ##
+        ## #### Shared Stubbing #### ##
+        ## ######################### */
+        // given the repo function will loop back the first argument it gets
+        repoFuncStub.returnsArg(0);
+        // given the pullRequest function return the list commits arg
+        pullRequestFuncStub.returns(expectedListCommitsInfo);
+        // given the create check function will resolve to the fake response
+        createCheckStub.resolves(createCheckResponse);
     });
 
     testCases.forEach(testCase => {
         test(testCase.testTitle, async () => {
-            // given the repo function will loop back the first argument it gets
-            repoFuncStub.returnsArg(0);
-            // given the pullRequest function return the list commits arg
-            pullRequestFuncStub.returns(listCommitsArg);
-            // given the create check function will resolve to the fake response
-            createCheckStub.resolves(createCheckResponse);
-            // given the list commits function will resolve to the expected response
-            listCommitsStub.resolves(testCase.listCommitsResponse);
+            // given the linting tool will resolve to the stubbed response
+            lintStub // this has no effect when testing with STUB_COMMITLINT=false
+                .withArgs(testCase.commitMessage, sinon.match.any, sinon.match.any)
+                .resolves(testCase.stubLintResponse);
+            // given the list commits service will resolve to the stubbed response
+            listCommitsStub.resolves(testCase.stubCommitsList);
 
             // when invoking the handler with the fake context, a fake config, and a iso timestamp
             await enforceConventionalCommits(fakeContext, sinon.fake(), new Date().toISOString());
 
             // then expect the following functions invocation flow
-            expect(repoFuncStub).to.have.calledWith(createCheckArg);
-            expect(createCheckStub).to.have.been.calledOnceWith(createCheckArg);
+            expect(repoFuncStub).to.have.calledWith(expectedCreateCheckRunInfo);
+            expect(createCheckStub).to.have.been.calledOnceWith(expectedCreateCheckRunInfo);
 
             expect(pullRequestFuncStub).to.have.calledOnceWith();
-            expect(listCommitsStub).to.have.been.calledOnceWith(listCommitsArg);
+            expect(listCommitsStub).to.have.been.calledOnceWith(expectedListCommitsInfo);
 
-            expect(repoFuncStub).to.have.calledWith(testCase.expectedUpdateCheckArg);
-            expect(updateCheckStub).to.have.been.calledOnceWith(testCase.expectedUpdateCheckArg);
+            expect(repoFuncStub).to.have.calledWith(testCase.expectedUpdateCheck);
+            expect(updateCheckStub).to.have.been.calledOnceWith(testCase.expectedUpdateCheck);
         })
     });
+
+    test('Test with one warning, one error, and one good commit message, expect a report for warning and error', async () => {
+        // given the linting tool will resolve to the stubbed responses
+        lintStub // this has no effect when testing with STUB_COMMITLINT=false
+            .withArgs(warningCommitMessage, sinon.match.any, sinon.match.any)
+            .resolves(oneWarning_lintReportResponse);
+        lintStub // this has no effect when testing with STUB_COMMITLINT=false
+            .withArgs(errorCommitMessage, sinon.match.any, sinon.match.any)
+            .resolves(oneError_lintReportResponse);
+        lintStub // this has no effect when testing with STUB_COMMITLINT=false
+            .withArgs(goodCommitMessage, sinon.match.any, sinon.match.any)
+            .resolves(oneGood_lintReportResponse);
+        // given the list commits service will resolve to the stubbed response
+        listCommitsStub.resolves(oneWarningOneError_commitsListResponse);
+
+        // when invoking the handler with the fake context, a fake config, and a iso timestamp
+        await enforceConventionalCommits(fakeContext, sinon.fake(), new Date().toISOString());
+
+        // then expect the following functions invocation flow
+        expect(repoFuncStub).to.have.calledWith(expectedCreateCheckRunInfo);
+        expect(createCheckStub).to.have.been.calledOnceWith(expectedCreateCheckRunInfo);
+
+        expect(pullRequestFuncStub).to.have.calledOnceWith();
+        expect(listCommitsStub).to.have.been.calledOnceWith(expectedListCommitsInfo);
+
+        expect(repoFuncStub).to.have.calledWith(oneWarningOneError_expectedUpdateCheck);
+        expect(updateCheckStub).to.have.been.calledOnceWith(oneWarningOneError_expectedUpdateCheck);
+    })
 });
