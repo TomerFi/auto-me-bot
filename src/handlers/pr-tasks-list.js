@@ -4,7 +4,7 @@ const BOT_CHECK_URL = 'https://auto-me-bot.tomfi.info';
 const CHECK_NAME = 'Auto-Me-Bot Tasks List';
 const EOL = require('os').EOL;
 
-module.exports = enforceTasksList;
+module.exports = handlePrTasksList;
 
 /*
 # example auto-me-bot.yml configuration
@@ -13,7 +13,7 @@ pr:
 */
 
 // Handler for verifying PR tasks' list is completed
-async function enforceTasksList(context, _config, startedAt) {
+async function handlePrTasksList(context, _config, startedAt) {
     // create the initial check run and mark it as in_progress
     let checkRun = await context.octokit.checks.create(context.repo({
         head_sha: context.payload.pull_request.head.sha,
@@ -40,7 +40,7 @@ async function enforceTasksList(context, _config, startedAt) {
     let finalConclusion = 'success';
     let outputReport = {
         title: 'Nothing for me to do here',
-        summary: 'I can\'t seem to find any tasks list to enforce'
+        summary: 'I can\'t seem to find any tasks lists'
     };
     // if found tasks
     if (numUnchecked > 0) {

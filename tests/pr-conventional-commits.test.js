@@ -5,13 +5,13 @@ const rewire = require('rewire');
 
 chai.use(require('sinon-chai'));
 
-const enforceConventionalCommits = rewire('../src/handlers/enforce-conventional-commits');
+const prConventionalCommitsHandler = rewire('../src/handlers/pr-conventional-commits');
 const expect = chai.expect;
 
 const EOL = require('os').EOL;
 const STUB_COMMITLINT = true; // set this to false to invoke the actual commitlint tool instead of stubbing it
 
-suite('Testing the enforce-conventional-commits handler', () => {
+suite('Testing the pr-conventional-commits handler', () => {
     /* ######################### ##
     ## #### Shared Fixtures #### ##
     ## ######################### */
@@ -305,12 +305,12 @@ suite('Testing the enforce-conventional-commits handler', () => {
         updateCheckStub = sinon.stub();
         if (STUB_COMMITLINT) {
             // use rewire inject the lint stub to the handler
-            enforceConventionalCommits.__set__('lint', lintStub);
+            prConventionalCommitsHandler.__set__('lint', lintStub);
         }
         // wrap spy on load configuration
-        let loadConfig = enforceConventionalCommits.__get__('load');
+        let loadConfig = prConventionalCommitsHandler.__get__('load');
         loadSpy = sinon.spy(loadConfig);
-        enforceConventionalCommits.__set__('load', loadSpy);
+        prConventionalCommitsHandler.__set__('load', loadSpy);
 
         /* ###################### ##
         ## #### Fake Context #### ##
@@ -360,7 +360,7 @@ suite('Testing the enforce-conventional-commits handler', () => {
             listCommitsStub.resolves(testCase.stubCommitsList);
 
             // when invoking the handler with the fake context, a fake config, and a iso timestamp
-            await enforceConventionalCommits(fakeContext, sinon.fake(), new Date().toISOString());
+            await prConventionalCommitsHandler(fakeContext, sinon.fake(), new Date().toISOString());
 
             // then expect the following functions invocation flow
             expect(repoFuncStub).to.have.calledWith(expectedCreateCheckRunInfo);
@@ -394,7 +394,7 @@ suite('Testing the enforce-conventional-commits handler', () => {
         listCommitsStub.resolves(oneWarningOneError_commitsListResponse);
 
         // when invoking the handler with the fake context, a fake config, and a iso timestamp
-        await enforceConventionalCommits(fakeContext, sinon.fake(), new Date().toISOString());
+        await prConventionalCommitsHandler(fakeContext, sinon.fake(), new Date().toISOString());
 
         // then expect the following functions invocation flow
         expect(repoFuncStub).to.have.calledWith(expectedCreateCheckRunInfo);

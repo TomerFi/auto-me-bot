@@ -5,12 +5,12 @@ const rewire = require('rewire');
 
 chai.use(require('sinon-chai'));
 
-const enforceTasksList = rewire('../src/handlers/enforce-tasks-list');
+const prTasksListHandler = rewire('../src/handlers/pr-tasks-list');
 const expect = chai.expect;
 
 const EOL = require('os').EOL;
 
-suite('Testing the enforce-tasks-list handler', () => {
+suite('Testing the pr-tasks-list handler', () => {
     /* ######################### ##
     ## #### Shared Fixtures #### ##
     ## ######################### */
@@ -88,7 +88,7 @@ suite('Testing the enforce-tasks-list handler', () => {
 
     const noTasksOutput = {
         title: 'Nothing for me to do here',
-        summary: 'I can\'t seem to find any tasks list to enforce'
+        summary: 'I can\'t seem to find any tasks lists'
     };
 
     /* ############################ ##
@@ -173,7 +173,7 @@ suite('Testing the enforce-tasks-list handler', () => {
             createCheckStub.resolves(createCheckResponse);
 
             // when invoking the handler with the fake context, a fake config, and a iso timestamp
-            await enforceTasksList(fakeContext, sinon.fake(), new Date().toISOString());
+            await prTasksListHandler(fakeContext, sinon.fake(), new Date().toISOString());
 
             // then expect the following functions invocation flow
             expect(repoFuncStub).to.have.calledWith(expectedCreateCheckRunInfo);

@@ -1,5 +1,5 @@
-const enforceConventionalCommits = require('./handlers/enforce-conventional-commits');
-const enforceTasksList = require('./handlers/enforce-tasks-list');
+const prConventionalCommitsHandler = require('./handlers/pr-conventional-commits');
+const prTasksListHandler = require('./handlers/pr-tasks-list');
 
 module.exports = autoMeBot;
 
@@ -12,8 +12,8 @@ const PR_EVENTS = [
     'pull_request.synchronize'
 ];
 const PR_HANDLERS = { // pr handlers should take context, config, and iso startedAt
-    conventionalCommits: () => enforceConventionalCommits,
-    tasksList: () => enforceTasksList
+    conventionalCommits: () => prConventionalCommitsHandler,
+    tasksList: () => prTasksListHandler
 };
 const PR_PREDICATE = (config, context) => 'pr' in config || 'pull_request' in context.payload;
 

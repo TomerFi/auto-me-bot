@@ -8,7 +8,7 @@ const DEFAULT_CONFIG = {
 };
 const EOL = require('os').EOL;
 
-module.exports = enforceConventionalCommits;
+module.exports = handlePrConventionalCommits;
 
 /*
 # example auto-me-bot.yml configuration
@@ -17,7 +17,7 @@ pr:
 */
 
 // Handler for verifying commit messages as conventional
-async function enforceConventionalCommits(context, _config, startedAt) {
+async function handlePrConventionalCommits(context, _config, startedAt) {
     // create the initial check run and mark it as in_progress
     let checkRun = await context.octokit.checks.create(context.repo({
         head_sha: context.payload.pull_request.head.sha,

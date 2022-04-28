@@ -46,8 +46,8 @@ suite('Testing the auto-me-bot export', () => {
             };
             // inject handlers stubs
             autoMeBot.__set__({
-                enforceConventionalCommits: conventionalCommitsHandlerFake,
-                enforceTasksList: tasksListHandlerFake
+                prConventionalCommitsHandler: conventionalCommitsHandlerFake,
+                prTasksListHandler: tasksListHandlerFake
             });
             // grab the handlersController configured for pr related operations
             prHandlersControllerSut = autoMeBot.__get__('handlersController')(
