@@ -1,4 +1,5 @@
 const prConventionalCommitsHandler = require('./handlers/pr-conventional-commits');
+const prSignedCommitsHandler = require('./handlers/pr-signed-commits')
 const prTasksListHandler = require('./handlers/pr-tasks-list');
 
 module.exports = autoMeBot;
@@ -13,6 +14,7 @@ const PR_EVENTS = [
 ];
 const PR_HANDLERS = { // pr handlers should take context, config, and iso startedAt
     conventionalCommits: () => prConventionalCommitsHandler,
+    signedCommits: () => prSignedCommitsHandler,
     tasksList: () => prTasksListHandler
 };
 const PR_PREDICATE = (config, context) => 'pr' in config || 'pull_request' in context.payload;

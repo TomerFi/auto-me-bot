@@ -16,7 +16,7 @@ pr:
     conventionalCommits:
 */
 
-// Handler for verifying commit messages as conventional
+// handler for verifying commit messages as conventional
 async function handlePrConventionalCommits(context, _config, startedAt) {
     // create the initial check run and mark it as in_progress
     let checkRun = await context.octokit.checks.create(context.repo({

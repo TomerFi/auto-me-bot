@@ -12,7 +12,7 @@ pr:
     tasksList:
 */
 
-// Handler for verifying PR tasks' list is completed
+// handler for verifying PR tasks' list is completed
 async function handlePrTasksList(context, _config, startedAt) {
     // create the initial check run and mark it as in_progress
     let checkRun = await context.octokit.checks.create(context.repo({
@@ -79,5 +79,4 @@ function parseTasks(tasks, header) {
     tasks.map(task => task.text).forEach(text => tasksLines.push(`- ${text}`));
     // return tasks as string
     return tasksLines.join(EOL);
-
 }
