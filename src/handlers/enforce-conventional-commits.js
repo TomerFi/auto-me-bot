@@ -29,13 +29,13 @@ async function enforceConventionalCommits(context, _config, startedAt) {
     // get the commits associated with the PR
     let commitObjs = await context.octokit.rest.pulls.listCommits(context.pullRequest())
         .then(resp => resp.data);
-    // load the options
+    // load the configuration options
     let opts = await load(DEFAULT_CONFIG);
     // get lint status for every commit
     let lintStatuses = await commitObjs.map(async commitObj => {
         return {
             commits_url: commitObj.html_url,
-            report: await lint(commitObj.commit.message, opts.rules, opts.parserPreset ? {parserOpts: opts.parserPreset.parserOpts} : {})
+            report: await lint(commitObj.commit.message, opts.rules, opts.parserPreset.parserOpts)
         };
     });
     // list warning and error statuses
