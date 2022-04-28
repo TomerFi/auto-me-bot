@@ -5,7 +5,7 @@ const rewire = require('rewire');
 
 chai.use(require('sinon-chai'));
 
-const prConventionalCommitsHandler = rewire('../src/handlers/pr-conventional-commits');
+const prConventionalCommitsHandler = rewire('../../src/handlers/pr-conventional-commits');
 const expect = chai.expect;
 
 const EOL = require('os').EOL;

@@ -5,7 +5,7 @@ const rewire = require('rewire');
 
 chai.use(require('sinon-chai'));
 
-const prTasksListHandler = rewire('../src/handlers/pr-tasks-list');
+const prTasksListHandler = rewire('../../src/handlers/pr-tasks-list');
 const expect = chai.expect;
 
 const EOL = require('os').EOL;
