@@ -1,12 +1,11 @@
-const sinon = require('sinon');
-const chai = require('chai');
-const rewire = require('rewire');
 const beforeEach = require('mocha').beforeEach;
+const chai = require('chai');
+const sinon = require('sinon');
+const rewire = require('rewire');
 
 chai.use(require('sinon-chai'));
 
 const enforceTasksList = rewire('../src/handlers/enforce-tasks-list');
-
 const expect = chai.expect;
 
 const EOL = require('os').EOL;

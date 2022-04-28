@@ -1,16 +1,14 @@
-const sinon = require('sinon');
-const chai = require('chai');
-const rewire = require('rewire');
 const beforeEach = require('mocha').beforeEach;
+const chai = require('chai');
+const sinon = require('sinon');
+const rewire = require('rewire');
 
 chai.use(require('sinon-chai'));
 
 const enforceConventionalCommits = rewire('../src/handlers/enforce-conventional-commits');
-
 const expect = chai.expect;
 
 const EOL = require('os').EOL;
-
 const STUB_COMMITLINT = true; // set this to false to invoke the actual commitlint tool instead of stubbing it
 
 suite('Testing the enforce-conventional-commits handler', () => {
