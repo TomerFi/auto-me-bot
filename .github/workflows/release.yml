@@ -39,9 +39,22 @@ jobs:
         id: bumper
         uses: tomerfi/version-bumper-action@1.1.3
 
+      - name: Update package with new version
+        run: |
+          npm version ${{ steps.bumper.outputs.new_version }} --no-git-tag-version
+
+      - name: Install project modules
+        run: npm i
+
       #########################
       # ADD DEPLOY STUFF HERE #
       #########################
+
+      - name: Commit package modifications
+        run: |
+          git add package.json
+          git add package-lock.json
+          git commit -m "docs: updated package with ${{ steps.bumper.outputs.new_version }} [skip ci]"
 
       - name: Create a release name
         id: release_name
