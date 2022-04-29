@@ -20,6 +20,9 @@ pr:
   # if you want me to enforce conventional commit messages on PRs, just add conventionalCommits.
   # I'll report back with my findings.
   conventionalCommits:
+  # if you want me to make sure all commits pushed to PRs are signed with the 'Signed-off-by' trailer.
+  # I'll let you know what commits are not signed.
+  signCommits:
   # if you want me to enforce completion of tasks list on PRs, just add tasksList.
   # I'll provide a detailed list of what needs to be done.
   tasksList:
