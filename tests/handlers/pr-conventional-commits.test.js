@@ -9,7 +9,6 @@ const prConventionalCommitsHandler = rewire('../../src/handlers/pr-conventional-
 const expect = chai.expect;
 
 const EOL = require('os').EOL;
-const STUB_COMMITLINT = true; // set this to false to invoke the actual commitlint tool instead of stubbing it
 
 suite('Testing the pr-conventional-commits handler', () => {
     /* ######################### ##
@@ -182,7 +181,7 @@ suite('Testing the pr-conventional-commits handler', () => {
             text: [
                 `### ${fakeCommitUrl}`,
                 '```',
-                STUB_COMMITLINT ? goodCommitMessage : goodCommitMessage + EOL, // TODO: y is this?
+                goodCommitMessage + EOL,
                 warningCommitMessageBody,
                 '```',
                 '#### Warnings',
@@ -242,7 +241,7 @@ suite('Testing the pr-conventional-commits handler', () => {
                 '| type-empty | 2 | type may not be empty |',
                 `### ${fakeCommitUrl}`,
                 '```',
-                STUB_COMMITLINT ? goodCommitMessage : goodCommitMessage + EOL, // TODO: y is this?
+                goodCommitMessage + EOL,
                 warningCommitMessageBody,
                 '```',
                 '#### Warnings',
@@ -284,7 +283,6 @@ suite('Testing the pr-conventional-commits handler', () => {
     ## #### Stubs and Fakes #### ##
     ## ######################### */
     let loadSpy;
-    let lintStub;
     let createCheckStub;
     let repoFuncStub;
     let pullRequestFuncStub;
@@ -297,16 +295,11 @@ suite('Testing the pr-conventional-commits handler', () => {
         // unwrap any previous wrapped sinon objects
         sinon.restore();
         // create stubs for the context functions
-        lintStub = sinon.stub();
         createCheckStub = sinon.stub();
         repoFuncStub = sinon.stub();
         pullRequestFuncStub = sinon.stub();
         listCommitsStub = sinon.stub();
         updateCheckStub = sinon.stub();
-        if (STUB_COMMITLINT) {
-            // use rewire inject the lint stub to the handler
-            prConventionalCommitsHandler.__set__('lint', lintStub);
-        }
         // wrap spy on load configuration
         let loadConfig = prConventionalCommitsHandler.__get__('load');
         loadSpy = sinon.spy(loadConfig);
@@ -352,10 +345,6 @@ suite('Testing the pr-conventional-commits handler', () => {
 
     testCases.forEach(testCase => {
         test(testCase.testTitle, async () => {
-            // given the linting tool will resolve to the stubbed response
-            lintStub // this has no effect when testing with STUB_COMMITLINT=false
-                .withArgs(testCase.commitMessage, sinon.match.any, sinon.match.any)
-                .resolves(testCase.stubLintResponse);
             // given the list commits service will resolve to the stubbed response
             listCommitsStub.resolves(testCase.stubCommitsList);
 
@@ -380,16 +369,6 @@ suite('Testing the pr-conventional-commits handler', () => {
     });
 
     test('Test with one warning, one error, and one good commit message, expect a report for warning and error', async () => {
-        // given the linting tool will resolve to the stubbed responses
-        lintStub // this has no effect when testing with STUB_COMMITLINT=false
-            .withArgs(warningCommitMessage, sinon.match.any, sinon.match.any)
-            .resolves(oneWarning_lintReportResponse);
-        lintStub // this has no effect when testing with STUB_COMMITLINT=false
-            .withArgs(errorCommitMessage, sinon.match.any, sinon.match.any)
-            .resolves(oneError_lintReportResponse);
-        lintStub // this has no effect when testing with STUB_COMMITLINT=false
-            .withArgs(goodCommitMessage, sinon.match.any, sinon.match.any)
-            .resolves(oneGood_lintReportResponse);
         // given the list commits service will resolve to the stubbed response
         listCommitsStub.resolves(oneWarningOneError_commitsListResponse);
 
