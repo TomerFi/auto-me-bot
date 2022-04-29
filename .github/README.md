@@ -17,13 +17,13 @@ if you want me to take on all of your repos :muscle:.
 # .github/auto-me-bot.yml
 ---
 pr:
-  # if you want me to enforce conventional commit messages on PRs, just add conventionalCommits.
+  # if you want me to enforce conventional commit messages on PRs, add 'conventionalCommits'.
   # I'll report back with my findings.
   conventionalCommits:
-  # if you want me to make sure all commits pushed to PRs are signed with the 'Signed-off-by' trailer.
-  # I'll let you know what commits are not signed.
+  # if you want me to make sure all commits in PRs are signed with the 'Signed-off-by' trailer, add 'signCommits'.
+  # I'll let you know what commits are not signed, I'll also verify the email on the signed ones.
   signCommits:
-  # if you want me to enforce completion of tasks list on PRs, just add tasksList.
+  # if you want me to enforce completion of tasks list on PRs, just add 'tasksList'.
   # I'll provide a detailed list of what needs to be done.
   tasksList:
 ```
