@@ -54,13 +54,6 @@ suite('Testing the pr-conventional-commits handler', () => {
         ]
     }
 
-    const oneGood_lintReportResponse ={
-        valid: true,
-        errors: [],
-        warnings: [],
-        input: goodCommitMessage
-    };
-
     const oneGood_expectedUpdateCheck = {
         check_run_id: fakeCheckId,
         name: sinon.match.string,
@@ -90,26 +83,6 @@ suite('Testing the pr-conventional-commits handler', () => {
             }
         ]
     }
-
-    const oneError_lintReportResponse ={
-        valid: false,
-        errors: [
-            {
-                level: 2,
-                valid: false,
-                name: 'subject-empty',
-                message: 'subject may not be empty'
-            },
-            {
-                level: 2,
-                valid: false,
-                name: 'type-empty',
-                message: 'type may not be empty'
-            }
-        ],
-        warnings: [],
-        input: errorCommitMessage
-    };
 
     const oneError_expectedUpdateCheck = {
         check_run_id: fakeCheckId,
@@ -152,20 +125,6 @@ suite('Testing the pr-conventional-commits handler', () => {
             }
         ]
     }
-
-    const oneWarning_lintReportResponse ={
-        valid: true,
-        errors: [],
-        warnings: [
-            {
-                level: 1,
-                valid: false,
-                name: 'body-leading-blank',
-                message: 'body must have leading blank line'
-            }
-        ],
-        input: warningCommitMessage
-    };
 
     const oneWarning_expectedUpdateCheck = {
         check_run_id: fakeCheckId,
@@ -258,23 +217,17 @@ suite('Testing the pr-conventional-commits handler', () => {
     let testCases = [
         {
             testTitle: 'Test with one warning commit message, expect one warning report',
-            commitMessage: warningCommitMessage,
             stubCommitsList: oneWarning_commitsListResponse,
-            stubLintResponse: oneWarning_lintReportResponse,
             expectedUpdateCheck: oneWarning_expectedUpdateCheck
         },
         {
             testTitle: 'Test with one error commit message, expect one error report',
-            commitMessage: errorCommitMessage,
             stubCommitsList: oneError_commitsListResponse,
-            stubLintResponse: oneError_lintReportResponse,
             expectedUpdateCheck: oneError_expectedUpdateCheck
         },
         {
             testTitle: 'Test with one good commit message, expect a successful result',
-            commitMessage: goodCommitMessage,
             stubCommitsList: oneGood_commitsListResponse,
-            stubLintResponse: oneGood_lintReportResponse,
             expectedUpdateCheck: oneGood_expectedUpdateCheck
         },
     ];
