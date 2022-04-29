@@ -37,7 +37,7 @@ async function handleSignedCommits(context, _config, startedAt) {
     // default output when all commits are signed
     let finalConclusion = 'success';
     let outputReport = {
-        title: 'Great Work!',
+        title: 'Well Done!',
         summary: 'All commits are signed'
     }
 

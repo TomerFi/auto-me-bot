@@ -1,7 +1,7 @@
 const beforeEach = require('mocha').beforeEach;
 const chai = require('chai');
-const sinon = require('sinon');
 const rewire = require('rewire');
+const sinon = require('sinon');
 
 chai.use(require('sinon-chai'));
 
