@@ -10,7 +10,7 @@ I'm here to take some of the load off your shoulders, just tell me what you want
 Place a file :memo: called **auto-me-bot.yml** in your **.github** folder :file_folder: in the repos you want help out with.</br>
 
 You can also place the file in the **.github** folder in your **.github** repository,</br>
-if you want me to take on all of your repos :muscle:.
+if you want me to take on multiple repos with one configuraion file :muscle:.
 
 ```yaml
 # .github/auto-me-bot.yml
