@@ -63,25 +63,27 @@ async function handlePrConventionalCommits(context, _config, startedAt) {
     if (numError > 0) {
         // found errors
         finalConclusion = 'failure';
-        let reportSummary;
+        let title;
         if (numWarnings > 0) {
             // found errors and warnings
-            reportSummary = `Oops, looks like we got ${numError} errors, and ${numWarnings} warnings`;
+            let totalFound = numError + numWarnings;
+            title = `Found ${totalFound} non-conventional commit message${totalFound > 1 ? 's' : ''}`;
+
         } else {
             // found only errors - no warnings
-            reportSummary = `Oops, looks like we got ${numError} non-conventional commit message${numError > 1 ? 's' : ''}`;
+            title = `Found ${numError} non-conventional commit message${numError > 1 ? 's' : ''}`;
         }
         // create output for error/error+warning
         outputReport = {
-            title: 'Linting Failed',
-            summary: reportSummary,
+            title: title,
+            summary: 'We need to amend these commits messages',
             text: errorStatuses.concat(warningStatuses).map(lintSts => parseLintStatus(lintSts)).join(EOL)
         };
     } else if (numWarnings > 0) {
         // found only warning - no errors
         outputReport = {
-            title: 'Linting Found Warnings',
-            summary: `Hmmm... we got ${numWarnings} warning${numWarnings > 1 ? 's' : ''} you might want to look at`,
+            title: `Found ${numWarnings} non-conventional commit message${numWarnings > 1 ? 's' : ''}`,
+            summary: 'Take a look at these',
             text: warningStatuses.map(lintSts => parseLintStatus(lintSts)).join(EOL)
         };
     }

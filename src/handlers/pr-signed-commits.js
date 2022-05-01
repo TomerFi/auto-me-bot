@@ -49,7 +49,7 @@ async function handleSignedCommits(context, _config, startedAt) {
         finalConclusion = 'failure';
         outputReport = {
             title: `Found ${numUnsignedCommits} unsigned commits`,
-            summary: 'We need to the these commits signed',
+            summary: 'We need to get the these commits signed',
             text: unsignedCommits.map(commit => `- ${commit.html_url}`).join(EOL)
         }
     }

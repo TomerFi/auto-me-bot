@@ -87,8 +87,8 @@ suite('Testing the pr-tasks-list handler', () => {
     const noTasksConclusion = 'success';
 
     const noTasksOutput = {
-        title: 'Nothing for me to do here',
-        summary: 'I can\'t seem to find any tasks lists'
+        title: 'No tasks lists found',
+        summary: 'Nothing for me to do here'
     };
 
     /* ############################ ##

@@ -92,8 +92,8 @@ suite('Testing the pr-conventional-commits handler', () => {
         conclusion: 'failure',
         completed_at: sinon.match(t => Date.parse(t)),
         output: {
-            title: 'Linting Failed',
-            summary: 'Oops, looks like we got 1 non-conventional commit message',
+            title: 'Found 1 non-conventional commit message',
+            summary: 'We need to amend these commits messages',
             text: [
                 `### ${fakeCommitUrl}`,
                 '```',
@@ -134,8 +134,8 @@ suite('Testing the pr-conventional-commits handler', () => {
         conclusion: 'success',
         completed_at: sinon.match(t => Date.parse(t)),
         output: {
-            title: 'Linting Found Warnings',
-            summary: 'Hmmm... we got 1 warning you might want to look at',
+            title: 'Found 1 non-conventional commit message',
+            summary: 'Take a look at these',
             text: [
                 `### ${fakeCommitUrl}`,
                 '```',
@@ -185,8 +185,8 @@ suite('Testing the pr-conventional-commits handler', () => {
         conclusion: 'failure',
         completed_at: sinon.match(t => Date.parse(t)),
         output: {
-            title: 'Linting Failed',
-            summary: 'Oops, looks like we got 1 errors, and 1 warnings',
+            title: 'Found 2 non-conventional commit messages',
+            summary: 'We need to amend these commits messages',
             text: [
                 `### ${fakeCommitUrl}`,
                 '```',

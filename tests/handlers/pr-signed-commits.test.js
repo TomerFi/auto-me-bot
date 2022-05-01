@@ -129,7 +129,7 @@ suite('Testing the pr-signed-commits handler', () => {
     failure_expectedUpdateCheck.conclusion = 'failure';
     failure_expectedUpdateCheck.output = {
         title: 'Found 1 unsigned commits',
-        summary: 'We need to the these commits signed',
+        summary: 'We need to get the these commits signed',
         text: `- ${fakeCommitUrl}`
     };
 

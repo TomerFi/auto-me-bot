@@ -36,7 +36,7 @@ function handlersController(predicate, handlers) {
         // get config from current repo .github folder or from the .github repo's .github folder
         let config = await context.config('auto-me-bot.yml');
         if (config && predicate(config, context)) {
-            // if the predicate passes, invoke the handler from the map based on the config key
+            // if the predicate passes, invoke all handlers from the map based on the config key
             let invocations = []
             let startedAt = new Date().toISOString();
             for (let key in config.pr) {
