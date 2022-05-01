@@ -35,6 +35,13 @@ jobs:
           git config user.name "${{ github.actor }}"
           git config user.email "${{ github.actor }}@users.noreply.github.com"
 
+      - name: Configure aws
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
       - name: Determine next SemVer
         id: bumper
         uses: tomerfi/version-bumper-action@1.1.3
@@ -46,9 +53,48 @@ jobs:
       - name: Install project modules
         run: npm ci --production
 
-      #########################
-      # ADD DEPLOY STUFF HERE #
-      #########################
+      - name: Create lambda archive
+        run: zip -r auto-me-bot.zip src/ node_modules/
+
+      # yamllint disable rule:line-length
+      # editorconfig-checker-disable
+      - name: Get function state
+        id: function_state
+        run: |
+          state=$(aws lambda get-function --function-name ${{ secrets.LAMBDA_FUNCTION }} --query 'Configuration.State' --output text)
+          echo '::set-output name=state::'"$state"
+
+      - name: Verify function is in active state
+        if: steps.function_state.outputs.state != 'Active'
+        uses: actions/github-script@v6
+        with:
+          script: core.setFailed('the function is being updated, please try again later')
+
+      - name: Deploy archive to lambda
+        run: >
+          aws lambda update-function-code
+          --function-name ${{ secrets.LAMBDA_FUNCTION }}
+          --zip-file fileb://./auto-me-bot.zip
+
+      - name: Wait for function to be updated
+        run: aws lambda wait function-updated --function-name ${{ secrets.LAMBDA_FUNCTION }}
+
+      - name: Publish lambda function
+        id: publish_lambda
+        run: |
+          set -o pipefail
+          function_version=$( aws lambda publish-version --function-name ${{ secrets.LAMBDA_FUNCTION }} | jq -r ".Version" )
+          echo '::set-output name=function_version::'"$function_version"
+
+      # yamllint enable rule:line-length
+      # editorconfig-checker-enable
+
+      - name: Update alias Live with new function version
+        run: >
+          aws lambda update-alias
+          --function-name ${{ secrets.LAMBDA_FUNCTION }}
+          --name Live
+          --function-version ${{ steps.publish_lambda.outputs.function_version }}
 
       - name: Commit package modifications
         run: |
