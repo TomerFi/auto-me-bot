@@ -23,3 +23,5 @@ pr:
   # if you want me to enforce completion of tasks list on PRs.
   tasksList:
 ```
+
+Checkout the [documentation](https://auto-me-bot.tomfi.info/) to see what else I can do :call_me_hand:.
