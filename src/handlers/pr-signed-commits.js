@@ -1,8 +1,10 @@
+'use strict';
+
 const emailVerifier = require('@digitalroute/email-verify');
+const { EOL } = require('os');
 
 const BOT_CHECK_URL = 'https://auto-me-bot.tomfi.info';
 const CHECK_NAME = 'Auto-Me-Bot Signed Commits';
-const EOL = require('os').EOL;
 
 const SIGN_OFF_TRAILER_REGEX = /^Signed-off-by: (.*) <(.*)@(.*)>$/;
 

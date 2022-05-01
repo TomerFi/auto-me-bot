@@ -46,7 +46,7 @@ jobs:
           cache: npm
 
       - name: Install project modules
-        run: npm i
+        run: npm ci
 
       - name: Lint source files
         run: npm run lint

@@ -1,12 +1,15 @@
+'use strict';
+
 const lint = require('@commitlint/lint').default;
 const load = require('@commitlint/load').default;
+const { EOL } = require('os');
+
 
 const BOT_CHECK_URL = 'https://auto-me-bot.tomfi.info';
 const CHECK_NAME = 'Auto-Me-Bot Conventional Commits';
 const DEFAULT_CONFIG = {
     extends: ['@commitlint/config-conventional'],
 };
-const EOL = require('os').EOL;
 
 module.exports = handlePrConventionalCommits;
 

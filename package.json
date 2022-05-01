@@ -22,7 +22,6 @@
     "probot-app"
   ],
   "scripts": {
-    "ttt": "node ./src/index.js",
     "start": "probot run ./src/auto-me-bot.js",
     "lint": "eslint src tests --ext js",
     "tests": "mocha --check-leaks --fail-zero --color --parallel --ui tdd --recursive ./tests/",
@@ -49,6 +48,6 @@
     "smee-client": "^1.2.2"
   },
   "engines": {
-    "node": ">= 16.0.0"
+    "node": ">= 14.0.0"
   }
 }

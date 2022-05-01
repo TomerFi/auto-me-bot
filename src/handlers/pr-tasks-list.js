@@ -1,8 +1,10 @@
+'use strict';
+
 const marked = require('marked');
+const { EOL } = require('os');
 
 const BOT_CHECK_URL = 'https://auto-me-bot.tomfi.info';
 const CHECK_NAME = 'Auto-Me-Bot Tasks List';
-const EOL = require('os').EOL;
 
 module.exports = handlePrTasksList;
 

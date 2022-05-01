@@ -1,14 +1,13 @@
-const beforeEach = require('mocha').beforeEach;
 const chai = require('chai');
 const rewire = require('rewire');
 const sinon = require('sinon');
+const { beforeEach } = require('mocha');
+const { EOL } = require('os');
 
 chai.use(require('sinon-chai'));
 
 const prConventionalCommitsHandler = rewire('../../src/handlers/pr-conventional-commits');
 const expect = chai.expect;
-
-const EOL = require('os').EOL;
 
 suite('Testing the pr-conventional-commits handler', () => {
     /* ######################### ##

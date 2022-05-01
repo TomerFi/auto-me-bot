@@ -44,7 +44,7 @@ jobs:
           npm version ${{ steps.bumper.outputs.new_version }} --no-git-tag-version
 
       - name: Install project modules
-        run: npm i
+        run: npm ci --production
 
       #########################
       # ADD DEPLOY STUFF HERE #

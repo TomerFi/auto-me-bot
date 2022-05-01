@@ -1,5 +1,7 @@
+'use strict';
+
 const prConventionalCommitsHandler = require('./handlers/pr-conventional-commits');
-const prSignedCommitsHandler = require('./handlers/pr-signed-commits')
+const prSignedCommitsHandler = require('./handlers/pr-signed-commits');
 const prTasksListHandler = require('./handlers/pr-tasks-list');
 
 module.exports = autoMeBot;

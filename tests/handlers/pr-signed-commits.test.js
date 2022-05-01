@@ -1,17 +1,15 @@
-const beforeEach = require('mocha').beforeEach;
 const chai = require('chai');
-const deepClone = require('lodash').cloneDeep;
 const emailVerifier = require('@digitalroute/email-verify');
 const rewire = require('rewire');
 const sinon = require('sinon');
-
+const { beforeEach } = require('mocha');
+const { cloneDeep } = require('lodash');
+const { EOL } = require('os');
 
 chai.use(require('sinon-chai'));
 
 const prSignedCommitsHandler = rewire('../../src/handlers/pr-signed-commits');
 const expect = chai.expect;
-
-const EOL = require('os').EOL;
 
 suite('Testing the pr-signed-commits handler', () => {
     /* ######################### ##
@@ -77,25 +75,25 @@ suite('Testing the pr-signed-commits handler', () => {
     /* ###################### ##
     ## #### Fake Commits #### ##
     ## ###################### */
-    var commitSignedByAuthor = deepClone(base_commitObject);
+    var commitSignedByAuthor = cloneDeep(base_commitObject);
     commitSignedByAuthor.commit.message =
         `this is a commit signed by the author${EOL}${EOL}Signed-off-by: ${fakeAuthorName} <${fakeAuthorEmail}>`;
 
-    var commitSignedByCommitter = deepClone(base_commitObject);
+    var commitSignedByCommitter = cloneDeep(base_commitObject);
     commitSignedByCommitter.commit.message =
         `this is a commit signed by the committer${EOL}${EOL}Signed-off-by: ${fakeCommitterName} <${fakeCommitterEmail}>`;
 
-    var commitSignedByUnknown = deepClone(base_commitObject);
+    var commitSignedByUnknown = cloneDeep(base_commitObject);
     commitSignedByUnknown.commit.message =
         `this is a commit signed by the unknown${EOL}${EOL}Signed-off-by: ${fakeUnknownName} <${fakeUnknownEmail}>`;
 
-    var commitUnsigned = deepClone(base_commitObject);
+    var commitUnsigned = cloneDeep(base_commitObject);
     commitUnsigned.commit.message = 'this commit is not signed';
 
     /* ###################################################### ##
     ## #### Fixtures and test cases for successful tests #### ##
     ## ####################################################### */
-    const success_expectedUpdateCheck = deepClone(base_expectedUpdateCheck);
+    const success_expectedUpdateCheck = cloneDeep(base_expectedUpdateCheck);
     success_expectedUpdateCheck.conclusion = 'success';
     success_expectedUpdateCheck.output = {
         title: 'Well Done!',
@@ -127,7 +125,7 @@ suite('Testing the pr-signed-commits handler', () => {
     /* ################################################### ##
     ## #### Fixtures and test cases for failure tests #### ##
     ## #################################################### */
-    const failure_expectedUpdateCheck = deepClone(base_expectedUpdateCheck);
+    const failure_expectedUpdateCheck = cloneDeep(base_expectedUpdateCheck);
     failure_expectedUpdateCheck.conclusion = 'failure';
     failure_expectedUpdateCheck.output = {
         title: 'Found 1 unsigned commits',

@@ -6,7 +6,6 @@ parserOptions:
 env:
   node: true
   es6: true
-  commonjs: true
   mocha: true
 extends:
   - "eslint:recommended"
