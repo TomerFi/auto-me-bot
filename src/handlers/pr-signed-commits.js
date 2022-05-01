@@ -13,7 +13,7 @@ module.exports = handleSignedCommits;
 /*
 # example auto-me-bot.yml configuration
 pr:
-    signCommits:
+    signedCommits:
 */
 
 // handler for verifying all commits are sign with the Signed-off-by trailer and a legit email
