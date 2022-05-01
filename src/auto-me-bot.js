@@ -37,10 +37,12 @@ function handlersController(predicate, handlers) {
         let config = await context.config('auto-me-bot.yml');
         if (config && predicate(config, context)) {
             // if the predicate passes, invoke the handler from the map based on the config key
+            let invocations = []
             let startedAt = new Date().toISOString();
             for (let key in config.pr) {
-                handlers[key]()(context, config, startedAt);
+                invocations.push(handlers[key]()(context, config, startedAt));
             }
+            await Promise.allSettled(invocations);
         }
     }
 }
