@@ -3,9 +3,9 @@
 
 <p align="left">
   <table align="left">
-    <td align="left"><a href=https://github.com/apps/auto-me-bot target="blank">Install App</a></td>
-    <td align="left"><a href="https://auto-me-bot.tomfi.info/" target="blank">Read Docs</a></td>
-    <td align="left"><a href="https://github.com/TomerFi/auto-me-bot/blob/main/.github/auto-me-bot.yml" target="blank">Example Config</a></td>
+    <td align="left"><a href=https://github.com/apps/auto-me-bot target="_blank">Install App</a></td>
+    <td align="left"><a href="https://auto-me-bot.tomfi.info/" target="_blank">Read Docs</a></td>
+    <td align="left"><a href="https://github.com/TomerFi/auto-me-bot/blob/main/.github/auto-me-bot.yml" target="_blank">Example Config</a></td>
   </table>
 </p></br></br></br>
 
