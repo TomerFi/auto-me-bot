@@ -203,6 +203,9 @@ suite('Testing the pr-signed-commits handler', () => {
                         sha: fakeSha
                     },
                     number: fakePRNumber
+                },
+                sender: {
+                    type: 'User'
                 }
             },
             octokit: {
@@ -331,4 +334,30 @@ suite('Testing the pr-signed-commits handler', () => {
             expect(updateCheckStub).to.have.been.calledOnceWith(failure_expectedUpdateCheck);
         })
     });
+
+    test('Test with one commit signed by a Bot, not author or committer, expect a successful check run', async () => {
+        verifyEmailStub
+            .withArgs(fakeUnknownEmail, sinon.match.func)
+            .yields(null, { code: emailVerifier.verifyCodes.finishedVerification });
+
+        // given the list commits service will resolve to one commit signed by an unknown user
+        listCommitsStub.resolves({data: [commitSignedByUnknown]});
+
+        // given the payload has identified the unknown user as a bot
+        let fakeBotContext = cloneDeep(fakeContext);
+        fakeBotContext.payload.sender.type = 'Bot';
+
+        // when invoking the handler with the fake context, a fake config, and a iso timestamp
+        await prSignedCommitsHandler(fakeBotContext, sinon.fake(), new Date().toISOString());
+
+        // then expect the following functions invocation flow
+        expect(repoFuncStub).to.have.calledWith(expectedCreateCheckRunInfo);
+        expect(createCheckStub).to.have.been.calledOnceWith(expectedCreateCheckRunInfo);
+
+        expect(pullRequestFuncStub).to.have.calledOnceWith();
+        expect(listCommitsStub).to.have.been.calledOnceWith(expectedListCommitsInfo);
+
+        expect(repoFuncStub).to.have.calledWith(success_expectedUpdateCheck);
+        expect(updateCheckStub).to.have.been.calledOnceWith(success_expectedUpdateCheck);
+    })
 });

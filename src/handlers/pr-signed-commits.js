@@ -33,8 +33,9 @@ async function handleSignedCommits(context, _config, startedAt) {
 
     // list all unsigned commits
     var unsignedCommits = [];
+    let isBot = context.payload.sender.type === 'Bot'
     await Promise.all(allCommits.map(commit =>
-        verifyCommitTrailer(commit.commit).catch(() => unsignedCommits.push(commit))))
+        verifyCommitTrailer(commit.commit, isBot).catch(() => unsignedCommits.push(commit))))
 
     // default output when all commits are signed
     let finalConclusion = 'success';
@@ -68,7 +69,7 @@ async function handleSignedCommits(context, _config, startedAt) {
 }
 
 // verify a commit message have a 'Signed-off-by' trailer correlating with the commits' author/committer
-async function verifyCommitTrailer(commit) {
+async function verifyCommitTrailer(commit, isBot) {
     // list all 'Signed-off-by' trailers matching the author or committer
     var trailerMatches = []
     commit.message.split(EOL).forEach(line => {
@@ -76,7 +77,8 @@ async function verifyCommitTrailer(commit) {
         if (match !== null) {
             let signed = { name: match[1], email: `${match[2]}@${match[3]}` };
             if (
-                (signed.name === commit.author.name && signed.email === commit.author.email) // signed by author
+                isBot // bots get a pass as they are the signers but not the author or the committer
+                || (signed.name === commit.author.name && signed.email === commit.author.email) // signed by author
                 || (signed.name === commit.committer.name && signed.email === commit.committer.email) // signed by committer
             ) {
                 trailerMatches.push(signed);
