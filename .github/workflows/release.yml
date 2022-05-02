@@ -96,11 +96,17 @@ jobs:
           --name Live
           --function-version ${{ steps.publish_lambda.outputs.function_version }}
 
-      - name: Commit package modifications
+      - name: Commit and push package modifications
         run: |
           git add package.json
           git add package-lock.json
           git commit -m "docs: updated package with ${{ steps.bumper.outputs.new_version }} [skip ci]"
+          git push
+
+      - name: Create and push new tag
+        run: |
+          git tag ${{ steps.bumper.outputs.new_version }} -m "Function v${{ steps.publish_lambda.outputs.function_version }}"
+          git push origin ${{ steps.bumper.outputs.new_version }}
 
       - name: Create a release name
         id: release_name
@@ -131,10 +137,11 @@ jobs:
         run: |
           sed -i 's/  version: .*/  version: "${{ steps.bumper.outputs.new_version }}"/g' mkdocs.yml
 
-      - name: Commit modifications
+      - name: Commit and push docs modifications
         run: |
           git add mkdocs.yml
           git commit -m "docs: updated docs with ${{ steps.bumper.outputs.new_version }} [skip ci]"
+          git push
 
       - name: Tweet new release
         if: ${{ github.event.inputs.tweet == 'yes' }}
