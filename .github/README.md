@@ -1,5 +1,6 @@
 <!-- markdownlint-disable MD033 -->
-<h1><b>Auto-Me-Bot</b></h1>
+# <b>Auto-Me-Bot</b>
+
 <p align="left">
   <table align="left">
     <td align="left"><a href=https://github.com/apps/auto-me-bot target="blank">Install App</a></td>
@@ -35,6 +36,20 @@ Check out the [documentation][0] to see what else I can do :call_me_hand:.
 
 [![all-handlers-fail]][0]
 
+## Future Plans
+
+- Size based labeling to pull requests.
+- Various handlers for _push_ and and _issue_ events.
+- Repository management capabilities, such as labels creation and settings syncing.
+
+## Alternatives
+
+Other awesome applications the offer similar handlers as [auto-me-bot][1]:
+
+- [Semantic Pull Request][semantic-pull-request]
+- [DCO][dco]
+- [Task List Completed][task-list-completed]
+
 <!-- REAL LINKS -->
 [0]: https://auto-me-bot.tomfi.info/
 [1]: https://github.com/apps/auto-me-bot
@@ -43,3 +58,7 @@ Check out the [documentation][0] to see what else I can do :call_me_hand:.
 <!-- IMAGE LINKS -->
 [all-handlers-fail]: https://raw.githubusercontent.com/TomerFi/auto-me-bot/main/docs/img/all-handlers-fail.png
 [all-handlers-success]: https://raw.githubusercontent.com/TomerFi/auto-me-bot/main/docs/img/all-handlers-success.png
+<!-- ALTERNATIVES LINKS -->
+[dco]: https://github.com/apps/dco
+[semantic-pull-request]: https://github.com/apps/semantic-pull-requests
+[task-list-completed]: https://github.com/marketplace/task-list-completed
