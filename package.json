@@ -1,8 +1,8 @@
 {
   "name": "auto-me-bot",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "private": true,
-  "description": "A Probot app automating the maintenance of GitHub projects",
+  "description": "A Probot app that takes care of your GitHub repos for you",
   "author": {
     "name": "Tomer Figenblat",
     "url": "https://github.com/TomerFi"
