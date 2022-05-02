@@ -56,7 +56,7 @@ async function handlePrTasksList(context, _config, startedAt) {
     } else if (numChecked > 0) {
         // found checked tasks with no unchecked tasks
         outputReport = {
-            title: 'Well Done!',
+            title: 'All Done!',
             summary: 'You made it through',
             text: parseTasks(checkedTasks, 'Here\'s a list of your accomplishments')
         }

@@ -44,7 +44,7 @@ suite('Testing the pr-tasks-list handler', () => {
     const checkedConclusion = 'success';
 
     const checkedOutput = {
-        title: 'Well Done!',
+        title: 'All Done!',
         summary: 'You made it through',
         text: [
             '### Here\'s a list of your accomplishments',
