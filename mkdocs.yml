@@ -45,7 +45,7 @@ markdown_extensions:
       permalink: ⚓︎
 
 extra:
-  version: "0.0.1"
+  version: "1.0.0"
   social:
     - icon: fontawesome/brands/twitter
       link: https://twitter.com/realTomFi
