@@ -1,8 +1,0 @@
----
-default_events:
-  - pull_request
-default_permissions:
-  checks: write
-  metadata: read
-  pull_requests: read
-public: false

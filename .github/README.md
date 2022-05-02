@@ -1,11 +1,18 @@
-# Auto-Me-Bot
+<!-- markdownlint-disable MD033 -->
+<h1><b>Auto-Me-Bot</b></h1>
+<p align="left">
+  <table align="left">
+    <td align="left"><a href=https://github.com/apps/auto-me-bot target="blank" height="10">Install App</a></td>
+    <td align="left"><a href="https://auto-me-bot.tomfi.info/" target="blank" height="10">Read Docs</a></td>
+  </table>
+</p></br></br></br>
 
 Managing a repository can be cumbersome :construction_worker: and tiresome :tired_face:.</br>
 Let alone managing multiple repositories used by multiple contributors and bots :anguished:.</br>
 
-My name is **auto-me-bot**!</br>
-I was created with [Probot][1] :robot: and I live my life
-as a _serverless function_ residing in [AWS Lambda][2] :floppy_disk:.</br>
+My name is [**auto-me-bot**][1]!</br>
+I was created with [Probot][2] :robot: and I live my life
+as a _serverless function_ residing in [AWS Lambda][3] :floppy_disk:.</br>
 
 I'm here to take some of the load off your shoulders, just tell me what you want me to do...</br>
 Place a file :memo: called **auto-me-bot.yml** in your **.github** folder :file_folder: in the repos you want me to help out with.</br>
@@ -29,8 +36,9 @@ Check out the [documentation][0] to see what else I can do :call_me_hand:.
 
 <!-- REAL LINKS -->
 [0]: https://auto-me-bot.tomfi.info/
-[1]: https://probot.github.io/
-[2]: https://aws.amazon.com/lambda/
+[1]: https://github.com/apps/auto-me-bot
+[2]: https://probot.github.io/
+[3]: https://aws.amazon.com/lambda/
 <!-- IMAGE LINKS -->
 [all-handlers-fail]: https://raw.githubusercontent.com/TomerFi/auto-me-bot/main/docs/img/all-handlers-fail.png
 [all-handlers-success]: https://raw.githubusercontent.com/TomerFi/auto-me-bot/main/docs/img/all-handlers-success.png
