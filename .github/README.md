@@ -24,4 +24,14 @@ pr:
   tasksList:
 ```
 
-Checkout the [documentation](https://auto-me-bot.tomfi.info/) to see what else I can do :call_me_hand:.
+Check out the [documentation][0] to see what else I can do :call_me_hand:.
+
+[![all-handlers-success]][0]
+
+[![all-handlers-fail]][0]
+
+<!-- REAL LINKS -->
+[0]: https://auto-me-bot.tomfi.info/
+<!-- IMAGE LINKS -->
+[all-handlers-fail]: https://raw.githubusercontent.com/TomerFi/auto-me-bot/main/docs/img/all-handlers-fail.png
+[all-handlers-success]: https://raw.githubusercontent.com/TomerFi/auto-me-bot/main/docs/img/all-handlers-success.png
