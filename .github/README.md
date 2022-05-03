@@ -52,11 +52,17 @@ Other awesome applications the offer similar handlers as [auto-me-bot][1]:
 - [DCO][dco]
 - [Task List Completed][task-list-completed]
 
+## Works well with
+
+If you keep your commits conventional,</br>
+you can use the [version-bumper-action][version-bumper-action] for _GitHub_, to automate your releases.
+
 <!-- REAL LINKS -->
 [0]: https://auto-me-bot.tomfi.info/
 [1]: https://github.com/apps/auto-me-bot
 [2]: https://probot.github.io/
 [3]: https://aws.amazon.com/lambda/
+[version-bumper-action]: https://github.com/TomerFi/version-bumper-action
 <!-- IMAGE LINKS -->
 [all-handlers-fail]: https://raw.githubusercontent.com/TomerFi/auto-me-bot/main/docs/img/all-handlers-fail.png
 [all-handlers-success]: https://raw.githubusercontent.com/TomerFi/auto-me-bot/main/docs/img/all-handlers-success.png
