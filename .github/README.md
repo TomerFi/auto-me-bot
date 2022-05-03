@@ -40,8 +40,11 @@ Check out the [documentation][0] to see what else I can do :call_me_hand:.
 
 ## Future Plans
 
-- Size based labeling to pull requests.
-- Various handlers for _push_ and and _issue_ events.
+- Size based labeling for pull requests.
+- Lifecycle based labeling for pull requests.
+- Automate asignees and reviewers for pull requests.
+- Auto approving pull requests with consideration to GitHub code owners.
+- Various handlers for event types other then _pull_request_, such as _push_ and and _issue_ event types.
 - Repository management capabilities, such as labels creation and settings syncing.
 
 ## Alternatives
