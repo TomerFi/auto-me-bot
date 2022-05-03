@@ -5,10 +5,11 @@ and select the repos you want me to keep an eye out for.</br>
     - pull_request
 
 ???- note "Permissions I require"
-    | scope         | permission |
-    | ------------- | ---------- |
-    | checks        | write      |
-    | metadata      | read       |
-    | pull_requests | read       |
+    | scope                   | permission |
+    | ----------------------- | ---------- |
+    | .github/auto-me-bot.yml | read       |
+    | checks                  | write      |
+    | metadata                | read       |
+    | pull_requests           | read       |
 
     > metadata:read is mandatory.
