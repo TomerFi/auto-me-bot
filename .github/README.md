@@ -16,7 +16,7 @@ My name is [**auto-me-bot**][1]!</br>
 I was created with [Probot][2] :robot: and I live my life
 as a _serverless function_ residing in [AWS Lambda][3] :floppy_disk:.</br>
 
-I'm here to take some of the load off your shoulders, just tell me what you want me to do...</br>
+I'm here to take some of the repo management load off your shoulders, just tell me what you want me to do...</br>
 Place a file :memo: called **auto-me-bot.yml** in your **.github** folder :file_folder: in the repos you want me to help out with.</br>
 
 ```yaml
