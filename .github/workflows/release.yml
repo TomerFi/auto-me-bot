@@ -56,8 +56,6 @@ jobs:
       - name: Create lambda archive
         run: zip -r auto-me-bot.zip src/ node_modules/
 
-      # yamllint disable rule:line-length
-      # editorconfig-checker-disable
       - name: Get function state
         id: function_state
         run: |
@@ -85,9 +83,6 @@ jobs:
           set -o pipefail
           function_version=$( aws lambda publish-version --function-name ${{ secrets.LAMBDA_FUNCTION }} | jq -r ".Version" )
           echo '::set-output name=function_version::'"$function_version"
-
-      # yamllint enable rule:line-length
-      # editorconfig-checker-enable
 
       - name: Update alias Live with new function version
         run: >

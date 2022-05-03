@@ -304,10 +304,10 @@ suite('Testing the pr-conventional-commits handler', () => {
             await prConventionalCommitsHandler(fakeContext, sinon.fake(), new Date().toISOString());
 
             // then expect the following functions invocation flow
-            expect(repoFuncStub).to.have.calledWith(expectedCreateCheckRunInfo);
+            expect(repoFuncStub).to.have.been.calledWith(expectedCreateCheckRunInfo);
             expect(createCheckStub).to.have.been.calledOnceWith(expectedCreateCheckRunInfo);
 
-            expect(pullRequestFuncStub).to.have.calledOnceWith();
+            expect(pullRequestFuncStub).to.have.been.calledOnceWith();
             expect(listCommitsStub).to.have.been.calledOnceWith(expectedListCommitsInfo);
 
             expect(repoFuncStub).to.have.calledWith(testCase.expectedUpdateCheck);
@@ -331,7 +331,7 @@ suite('Testing the pr-conventional-commits handler', () => {
         expect(repoFuncStub).to.have.calledWith(expectedCreateCheckRunInfo);
         expect(createCheckStub).to.have.been.calledOnceWith(expectedCreateCheckRunInfo);
 
-        expect(pullRequestFuncStub).to.have.calledOnceWith();
+        expect(pullRequestFuncStub).to.have.been.calledOnceWith();
         expect(listCommitsStub).to.have.been.calledOnceWith(expectedListCommitsInfo);
 
         expect(repoFuncStub).to.have.calledWith(oneWarningOneError_expectedUpdateCheck);

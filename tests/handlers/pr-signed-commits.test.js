@@ -259,7 +259,7 @@ suite('Testing the pr-signed-commits handler', () => {
             expect(repoFuncStub).to.have.calledWith(expectedCreateCheckRunInfo);
             expect(createCheckStub).to.have.been.calledOnceWith(expectedCreateCheckRunInfo);
 
-            expect(pullRequestFuncStub).to.have.calledOnceWith();
+            expect(pullRequestFuncStub).to.have.been.calledOnceWith();
             expect(listCommitsStub).to.have.been.calledOnceWith(expectedListCommitsInfo);
 
             expect(repoFuncStub).to.have.calledWith(success_expectedUpdateCheck);
@@ -279,7 +279,7 @@ suite('Testing the pr-signed-commits handler', () => {
             expect(repoFuncStub).to.have.calledWith(expectedCreateCheckRunInfo);
             expect(createCheckStub).to.have.been.calledOnceWith(expectedCreateCheckRunInfo);
 
-            expect(pullRequestFuncStub).to.have.calledOnceWith();
+            expect(pullRequestFuncStub).to.have.been.calledOnceWith();
             expect(listCommitsStub).to.have.been.calledOnceWith(expectedListCommitsInfo);
 
             expect(repoFuncStub).to.have.calledWith(failure_expectedUpdateCheck);
@@ -304,7 +304,7 @@ suite('Testing the pr-signed-commits handler', () => {
         expect(repoFuncStub).to.have.calledWith(expectedCreateCheckRunInfo);
         expect(createCheckStub).to.have.been.calledOnceWith(expectedCreateCheckRunInfo);
 
-        expect(pullRequestFuncStub).to.have.calledOnceWith();
+        expect(pullRequestFuncStub).to.have.been.calledOnceWith();
         expect(listCommitsStub).to.have.been.calledOnceWith(expectedListCommitsInfo);
 
         expect(repoFuncStub).to.have.calledWith(failure_expectedUpdateCheck);
@@ -327,7 +327,7 @@ suite('Testing the pr-signed-commits handler', () => {
             expect(repoFuncStub).to.have.calledWith(expectedCreateCheckRunInfo);
             expect(createCheckStub).to.have.been.calledOnceWith(expectedCreateCheckRunInfo);
 
-            expect(pullRequestFuncStub).to.have.calledOnceWith();
+            expect(pullRequestFuncStub).to.have.been.calledOnceWith();
             expect(listCommitsStub).to.have.been.calledOnceWith(expectedListCommitsInfo);
 
             expect(repoFuncStub).to.have.calledWith(failure_expectedUpdateCheck);
@@ -354,7 +354,7 @@ suite('Testing the pr-signed-commits handler', () => {
         expect(repoFuncStub).to.have.calledWith(expectedCreateCheckRunInfo);
         expect(createCheckStub).to.have.been.calledOnceWith(expectedCreateCheckRunInfo);
 
-        expect(pullRequestFuncStub).to.have.calledOnceWith();
+        expect(pullRequestFuncStub).to.have.been.calledOnceWith();
         expect(listCommitsStub).to.have.been.calledOnceWith(expectedListCommitsInfo);
 
         expect(repoFuncStub).to.have.calledWith(success_expectedUpdateCheck);
