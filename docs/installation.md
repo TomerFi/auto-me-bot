@@ -1,4 +1,4 @@
-Install me from [GitHub marketplace](https://github.com/apps/auto-me-bot)
+Install me from [here](https://github.com/apps/auto-me-bot)
 and select the repos you want me to keep an eye out for.</br>
 
 ???- note "Events I work with"

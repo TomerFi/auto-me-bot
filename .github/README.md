@@ -12,9 +12,9 @@
 Managing a repository can be cumbersome :construction_worker: and tiresome :tired_face:.</br>
 Let alone managing multiple repositories used by multiple contributors and bots :anguished:.</br>
 
-My name is [**auto-me-bot**][1]!</br>
-I was created with [Probot][2] :robot: and I live my life
-as a _serverless function_ residing in [AWS Lambda][3] :floppy_disk:.</br>
+My name is [**auto-me-bot**][auto-me-bot-app]!</br>
+I was created with [Probot][probot-pages] :robot: and I live my life
+as a _serverless function_ residing in [AWS Lambda][aws-lambda] :floppy_disk:.</br>
 
 I'm here to take some of the repo management load off your shoulders, just tell me what you want me to do...</br>
 Place a file :memo: called **auto-me-bot.yml** in your **.github** folder :file_folder: in the repos you want me to help out with.</br>
@@ -30,13 +30,13 @@ pr:
 
 > Place the file in your **.github** repository if you want me to take on multiple repos with one file :muscle:.
 
-Check out the [documentation][0] to see what else I can do :call_me_hand:.
+Check out the [documentation][auto-me-bot-doc] to see what else I can do :call_me_hand:.
 
 ## Work Pics
 
-[![all-handlers-success]][0]
+[![all-handlers-success]][auto-me-bot-doc]
 
-[![all-handlers-fail]][0]
+[![all-handlers-fail]][auto-me-bot-doc]
 
 ## Future Plans
 
@@ -49,7 +49,7 @@ Check out the [documentation][0] to see what else I can do :call_me_hand:.
 
 ## Alternatives
 
-Other awesome applications the offer similar handlers as [auto-me-bot][1]:
+Other awesome applications the offer similar handlers as [auto-me-bot][auto-me-bot-app]:
 
 - [Semantic Pull Request][semantic-pull-request]
 - [DCO][dco]
@@ -61,10 +61,10 @@ If you keep your commits conventional,</br>
 you can use the [version-bumper-action][version-bumper-action] for _GitHub_, to automate your releases.
 
 <!-- REAL LINKS -->
-[0]: https://auto-me-bot.tomfi.info/
-[1]: https://github.com/apps/auto-me-bot
-[2]: https://probot.github.io/
-[3]: https://aws.amazon.com/lambda/
+[auto-me-bot-app]: https://github.com/apps/auto-me-bot
+[auto-me-bot-doc]: https://auto-me-bot.tomfi.info/
+[aws-lambda]: https://aws.amazon.com/lambda/
+[probot-pages]: https://probot.github.io/
 [version-bumper-action]: https://github.com/TomerFi/version-bumper-action
 <!-- IMAGE LINKS -->
 [all-handlers-fail]: https://raw.githubusercontent.com/TomerFi/auto-me-bot/main/docs/img/all-handlers-fail.png

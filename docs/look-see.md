@@ -1,10 +1,10 @@
 <figure markdown>
-  ![](https://raw.githubusercontent.com/TomerFi/auto-me-bot/main/docs/img/all-handlers-fail.png){ width="800" }
+  ![](https://raw.githubusercontent.com/TomerFi/auto-me-bot/main/docs/img/all-handlers-success.png){ width="800" }
   <figcaption>all handlers successful</figcaption>
 </figure>
 
 <figure markdown>
-  ![](https://raw.githubusercontent.com/TomerFi/auto-me-bot/main/docs/img/all-handlers-success.png){ width="800" }
+  ![](https://raw.githubusercontent.com/TomerFi/auto-me-bot/main/docs/img/all-handlers-fail.png){ width="800" }
   <figcaption>all handlers failed</figcaption>
 </figure>
 
