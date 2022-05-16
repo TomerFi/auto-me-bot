@@ -31,7 +31,7 @@
   "dependencies": {
     "@commitlint/config-conventional": "^16.2.4",
     "@commitlint/lint": "^16.2.4",
-    "@commitlint/load": "^16.2.4",
+    "@commitlint/load": "^17.0.0",
     "@digitalroute/email-verify": "^0.2.2",
     "marked": "^4.0.15",
     "probot": "^12.2.2"
