@@ -33,7 +33,7 @@
     "@commitlint/lint": "^17.0.3",
     "@commitlint/load": "^17.0.3",
     "@digitalroute/email-verify": "^0.2.2",
-    "marked": "^4.0.17",
+    "marked": "^4.0.18",
     "probot": "^12.2.5"
   },
   "devDependencies": {
