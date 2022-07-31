@@ -1,0 +1,5 @@
+User-Agent: *
+Allow: /
+Disallow: img/
+
+Sitemap: https://auto-me-bot.tomfi.info/sitemap.xml
