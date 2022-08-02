@@ -185,7 +185,7 @@ suite('Testing the pr-conventional-commits handler', () => {
         conclusion: 'failure',
         completed_at: sinon.match(t => Date.parse(t)),
         output: {
-            title: 'Found 2 non-conventional commit messages',
+            title: 'Found 1 non-conventional commit message',
             summary: 'We need to amend these commits messages',
             text: [
                 `### ${fakeCommitUrl}`,
@@ -206,6 +206,48 @@ suite('Testing the pr-conventional-commits handler', () => {
                 '| name | level | message |',
                 '| - | - | - |',
                 '| body-leading-blank | 1 | body must have leading blank line |'
+            ].join(EOL)
+        }
+    }
+
+    /* #################################################################### ##
+    ## #### Fixtures for 1 error custom rule test case #### ##
+    ## #################################################################### */
+
+    const errorCommitMessageBody = 'Lorem ipsum dolor sit amet';
+    const longCommitBodyMsg = `${goodCommitMessage}${EOL}${EOL}${errorCommitMessageBody}`;
+    const oneErrorCustom_commitsListResponse = {
+        data: [
+            {
+                html_url: fakeCommitUrl,
+                commit: {
+                    message: longCommitBodyMsg
+                }
+            },
+        ]
+    }
+
+    const oneErrorCustom_expectedUpdateCheck = {
+        check_run_id: fakeCheckId,
+        name: sinon.match.string,
+        details_url: sinon.match(u => new URL(u)),
+        started_at: sinon.match(t => Date.parse(t)),
+        status: 'completed',
+        conclusion: 'failure',
+        completed_at: sinon.match(t => Date.parse(t)),
+        output: {
+            title: 'Found 1 non-conventional commit message',
+            summary: 'We need to amend these commits messages',
+            text: [
+                `### ${fakeCommitUrl}`,
+                '```',
+                goodCommitMessage + EOL,
+                errorCommitMessageBody,
+                '```',
+                '#### Errors',
+                '| name | level | message |',
+                '| - | - | - |',
+                '| body-max-line-length | 2 | body\'s lines must not be longer than 10 characters |'
             ].join(EOL)
         }
     }
@@ -340,6 +382,34 @@ suite('Testing the pr-conventional-commits handler', () => {
         // expect the load config to be called with the default configuration
         expect(loadSpy).to.have.been.calledOnceWith({
             extends: ['@commitlint/config-conventional'],
+        });
+    })
+    
+    test('Test with one error and custom commit configuration, expect a report error on custom violation', async () => {
+        // given the list commits service will resolve to the stubbed response
+        listCommitsStub.resolves(oneErrorCustom_commitsListResponse);
+        // given the following pr custom configuration
+        let customConfig = {pr: {
+            conventionalCommits:{'body-max-line-length': [2, 'always', 10]},
+            signedCommits: {}, tasksList: {}
+        }};
+        // when invoking the handler with the fake context, a fake config, and a iso timestamp
+        await prConventionalCommitsHandler(fakeContext, customConfig, new Date().toISOString());
+
+        // then expect the following functions invocation flow
+        expect(repoFuncStub).to.have.calledWith(expectedCreateCheckRunInfo);
+        expect(createCheckStub).to.have.been.calledOnceWith(expectedCreateCheckRunInfo);
+
+        expect(pullRequestFuncStub).to.have.been.calledOnceWith();
+        expect(listCommitsStub).to.have.been.calledOnceWith(expectedListCommitsInfo);
+
+        expect(repoFuncStub).to.have.calledWith(oneErrorCustom_expectedUpdateCheck);
+        expect(updateCheckStub).to.have.been.calledOnceWith(oneErrorCustom_expectedUpdateCheck);
+
+        // expect the load config to be called with the custom configuration
+        expect(loadSpy).to.have.been.calledOnceWith({
+            extends: ['@commitlint/config-conventional'],
+            rules:{'body-max-line-length': [2, 'always', 10]}
         });
     })
 });

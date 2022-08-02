@@ -5,10 +5,12 @@ If I can't find my configuration file in the repo I'm working with, I'll look fo
 ---
 pr:
   conventionalCommits: # (1)
-  signedCommits: # (2)
-  tasksList: # (3)
+    # (2)
+  signedCommits: # (3)
+  tasksList: # (4)
 ```
 
 1. this means I'll enforce conventional commit messages in PRs.
-2. this means I'll make sure all commits in PRs are signed with the 'Signed-off-by' trailer.
-3. this means I'll verify the completion of the tasks list in PRs.
+2. this means I'll get costum config for conventionalCommits [see options](https://commitlint.js.org/#/reference-rules)
+3. this means I'll make sure all commits in PRs are signed with the 'Signed-off-by' trailer.
+4. this means I'll verify the completion of the tasks list in PRs.
