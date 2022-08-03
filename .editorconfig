@@ -17,3 +17,6 @@ max_line_length = 120
 
 [**.js]
 indent_size = 4
+
+[**.{json,.all-contributorsrc}]
+indent_size = 2

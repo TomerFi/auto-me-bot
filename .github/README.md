@@ -42,7 +42,7 @@ Check out the [documentation][auto-me-bot-doc] to see what else I can do :call_m
 
 - Size based labeling for pull requests.
 - Lifecycle based labeling for pull requests.
-- Automate asignees and reviewers for pull requests.
+- Automate assignees and reviewers for pull requests.
 - Auto approving pull requests with consideration to GitHub code owners.
 - Various handlers for event types other then _pull_request_, such as _push_ and and _issue_ event types.
 - Repository management capabilities, such as labels creation and settings syncing.
@@ -59,6 +59,12 @@ Other awesome applications the offer similar handlers as [auto-me-bot][auto-me-b
 
 If you keep your commits conventional,</br>
 you can use the [version-bumper-action][version-bumper-action] for _GitHub_, to automate your releases.
+
+## Contributors
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
 
 <!-- REAL LINKS -->
 [auto-me-bot-app]: https://github.com/apps/auto-me-bot
