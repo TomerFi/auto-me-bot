@@ -185,7 +185,7 @@ suite('Testing the pr-conventional-commits handler', () => {
         conclusion: 'failure',
         completed_at: sinon.match(t => Date.parse(t)),
         output: {
-            title: 'Found 1 non-conventional commit message',
+            title: 'Found 2 non-conventional commit messages',
             summary: 'We need to amend these commits messages',
             text: [
                 `### ${fakeCommitUrl}`,
@@ -384,13 +384,13 @@ suite('Testing the pr-conventional-commits handler', () => {
             extends: ['@commitlint/config-conventional'],
         });
     })
-    
+
     test('Test with one error and custom commit configuration, expect a report error on custom violation', async () => {
         // given the list commits service will resolve to the stubbed response
         listCommitsStub.resolves(oneErrorCustom_commitsListResponse);
         // given the following pr custom configuration
         let customConfig = {pr: {
-            conventionalCommits:{'body-max-line-length': [2, 'always', 10]},
+            conventionalCommits:{rules :{'body-max-line-length': [2, 'always', 10]}},
             signedCommits: {}, tasksList: {}
         }};
         // when invoking the handler with the fake context, a fake config, and a iso timestamp
