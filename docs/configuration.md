@@ -11,6 +11,6 @@ pr:
 ```
 
 1. this means I'll enforce conventional commit messages in PRs.
-2. this means I'll get costum config for conventionalCommits [see options](https://commitlint.js.org/#/reference-rules)
+2. this means I'll get custom config for conventionalCommits [see options](https://commitlint.js.org/#/reference-rules)
 3. this means I'll make sure all commits in PRs are signed with the 'Signed-off-by' trailer.
 4. this means I'll verify the completion of the tasks list in PRs.
