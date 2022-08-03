@@ -20,7 +20,7 @@ pr:
 */
 
 // handler for verifying commit messages as conventional
-async function handlePrConventionalCommits(context, _config, startedAt) {
+async function handlePrConventionalCommits(context, config, startedAt) {
     // create the initial check run and mark it as in_progress
     let checkRun = await context.octokit.checks.create(context.repo({
         head_sha: context.payload.pull_request.head.sha,
@@ -33,7 +33,14 @@ async function handlePrConventionalCommits(context, _config, startedAt) {
     let commitObjs = await context.octokit.rest.pulls.listCommits(context.pullRequest())
         .then(resp => resp.data);
     // load the configuration options
-    let opts = await load(DEFAULT_CONFIG);
+    let opts;
+    if(config.pr){
+        let customConfig = DEFAULT_CONFIG;
+        customConfig.rules = config.pr.conventionalCommits.rules;
+        opts = await load(customConfig);
+    }else{
+        opts = await load(DEFAULT_CONFIG);
+    }
     // get lint status for every commit
     let lintStatuses = await commitObjs.map(async commitObj => {
         return {
