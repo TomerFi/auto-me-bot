@@ -5,7 +5,7 @@ If I can't find my configuration file in the repo I'm working with, I'll look fo
 ---
 pr:
   conventionalCommits: # (1)
-    # (2)
+    rules: # (2)
   signedCommits: # (3)
   tasksList: # (4)
 ```
