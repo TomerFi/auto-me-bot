@@ -389,10 +389,9 @@ suite('Testing the pr-conventional-commits handler', () => {
         // given the list commits service will resolve to the stubbed response
         listCommitsStub.resolves(oneErrorCustom_commitsListResponse);
         // given the following pr custom configuration
-        let customConfig = {pr: {
-            conventionalCommits:{rules :{'body-max-line-length': [2, 'always', 10]}},
-            signedCommits: {}, tasksList: {}
-        }};
+        let customConfig = {
+            rules :{'body-max-line-length': [2, 'always', 10]}
+        };
         // when invoking the handler with the fake context, a fake config, and a iso timestamp
         await prConventionalCommitsHandler(fakeContext, customConfig, new Date().toISOString());
 

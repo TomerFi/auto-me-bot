@@ -34,9 +34,9 @@ async function handlePrConventionalCommits(context, config, startedAt) {
         .then(resp => resp.data);
     // load the configuration options
     let opts;
-    if(config.pr){
+    if(config.rules){
         let customConfig = DEFAULT_CONFIG;
-        customConfig.rules = config.pr.conventionalCommits.rules;
+        customConfig.rules = config.rules;
         opts = await load(customConfig);
     }else{
         opts = await load(DEFAULT_CONFIG);
