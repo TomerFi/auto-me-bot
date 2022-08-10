@@ -68,11 +68,11 @@ suite('Testing the auto-me-bot export', () => {
             // then expect all pr related handlers to be invoked
             return Promise.all([
                 expect(conventionalCommitsHandlerStub).to.have.been.calledOnceWith(
-                    fakeContext, fullConfig, sinon.match(t => Date.parse(t))),
+                    fakeContext, fullConfig.pr.conventionalCommits, sinon.match(t => Date.parse(t))),
                 expect(signedCommitsHandlerStub).to.have.been.calledOnceWith(
-                    fakeContext, fullConfig, sinon.match(t => Date.parse(t))),
+                    fakeContext, fullConfig.pr.signedCommits, sinon.match(t => Date.parse(t))),
                 expect(tasksListHandlerStub).to.have.been.calledOnceWith(
-                    fakeContext, fullConfig, sinon.match(t => Date.parse(t))),
+                    fakeContext, fullConfig.pr.tasksList, sinon.match(t => Date.parse(t))),
             ]);
         });
 
@@ -85,7 +85,7 @@ suite('Testing the auto-me-bot export', () => {
             // then expect only the related handler to be invoked
             return Promise.all([
                 expect(conventionalCommitsHandlerStub).to.have.been.calledOnceWith(
-                    fakeContext, fullConfig, sinon.match(t => Date.parse(t))),
+                    fakeContext, fullConfig.pr.conventionalCommits, sinon.match(t => Date.parse(t))),
                 expect(signedCommitsHandlerStub).to.have.not.been.called,
                 expect(tasksListHandlerStub).to.have.not.been.called,
             ]);
@@ -101,7 +101,7 @@ suite('Testing the auto-me-bot export', () => {
             return Promise.all([
                 expect(conventionalCommitsHandlerStub).to.have.not.been.called,
                 expect(signedCommitsHandlerStub).to.have.been.calledOnceWith(
-                    fakeContext, config, sinon.match(t => Date.parse(t))),
+                    fakeContext, config.pr.signedCommits, sinon.match(t => Date.parse(t))),
                 expect(tasksListHandlerStub).to.have.not.been.called,
             ]);
         });
@@ -117,7 +117,7 @@ suite('Testing the auto-me-bot export', () => {
                 expect(conventionalCommitsHandlerStub).to.have.not.been.called,
                 expect(signedCommitsHandlerStub).to.have.not.been.called,
                 expect(tasksListHandlerStub).to.have.been.calledOnceWith(
-                    fakeContext, config, sinon.match(t => Date.parse(t))),
+                    fakeContext, config.pr.tasksList, sinon.match(t => Date.parse(t))),
             ]);
         });
 
