@@ -23,8 +23,12 @@ suite('Testing the pr-signed-commits handler', () => {
     const fakeAuthorEmail = 'elias.author@fake.mail';
     const fakeCommitterName = 'Ezekiel Committer';
     const fakeCommitterEmail = 'ezekiel.committer@fake.mail';
+    // fake unknown fixture data
     const fakeUnknownName = 'Some Other';
     const fakeUnknownEmail = 'some.other@email.address';
+    // fake bot fixture data
+    const fakeBotName = 'dependabot[bot]';
+    const fakeBotEmail = '49699333+dependabot[bot]@users.noreply.github.com';
 
     // the expected arg for creating a new check run
     const expectedCreateCheckRunInfo = {
@@ -90,6 +94,13 @@ suite('Testing the pr-signed-commits handler', () => {
     var commitUnsigned = cloneDeep(base_commitObject);
     commitUnsigned.commit.message = 'this commit is not signed';
 
+    var commitUnsignedBot = cloneDeep(base_commitObject);
+    commitUnsignedBot.commit.author.name = fakeBotName;
+    commitUnsignedBot.commit.author.email = fakeBotEmail;
+    commitUnsignedBot.commit.committer.name = fakeBotName;
+    commitUnsignedBot.commit.committer.email = fakeBotEmail;
+    commitUnsignedBot.commit.message = 'this commit is not signed';
+
     /* ###################################################### ##
     ## #### Fixtures and test cases for successful tests #### ##
     ## ####################################################### */
@@ -103,6 +114,7 @@ suite('Testing the pr-signed-commits handler', () => {
     const oneSignedByAuthor_commitsListResponse = {data: [commitSignedByAuthor]};
     const oneSignedByCommitter_commitsListResponse = {data: [commitSignedByCommitter]};
     const twoSignedCommitsByAuthor_commitsListResponse = {data: [commitSignedByAuthor, commitSignedByAuthor]};
+    const twoCommitsBotNotSignedAuthorSigned_commitsListResponse = {data: [commitUnsignedBot, commitSignedByAuthor]};
 
     const successTestCases = [
         {
@@ -337,15 +349,39 @@ suite('Testing the pr-signed-commits handler', () => {
 
     test('Test with one commit signed by a Bot, not author or committer, expect a successful check run', async () => {
         verifyEmailStub
-            .withArgs(fakeUnknownEmail, sinon.match.func)
+            .withArgs(fakeBotEmail, sinon.match.func)
             .yields(null, { code: emailVerifier.verifyCodes.finishedVerification });
 
         // given the list commits service will resolve to one commit signed by an unknown user
-        listCommitsStub.resolves({data: [commitSignedByUnknown]});
+        listCommitsStub.resolves({data: [commitUnsignedBot]});
 
         // given the payload has identified the unknown user as a bot
         let fakeBotContext = cloneDeep(fakeContext);
-        fakeBotContext.payload.sender.type = 'Bot';
+
+        // when invoking the handler with the fake context, a fake config, and a iso timestamp
+        await prSignedCommitsHandler(fakeBotContext, sinon.fake(), new Date().toISOString());
+
+        // then expect the following functions invocation flow
+        expect(repoFuncStub).to.have.calledWith(expectedCreateCheckRunInfo);
+        expect(createCheckStub).to.have.been.calledOnceWith(expectedCreateCheckRunInfo);
+
+        expect(pullRequestFuncStub).to.have.been.calledOnceWith();
+        expect(listCommitsStub).to.have.been.calledOnceWith(expectedListCommitsInfo);
+
+        expect(repoFuncStub).to.have.calledWith(success_expectedUpdateCheck);
+        expect(updateCheckStub).to.have.been.calledOnceWith(success_expectedUpdateCheck);
+    })
+
+    test('Test with two commits, one is unsigned by bot, and one signed by author', async () => {
+        verifyEmailStub
+            .withArgs(fakeBotEmail, sinon.match.func)
+            .yields(null, { code: emailVerifier.verifyCodes.finishedVerification });
+
+        // given the list commits service will resolve to one commit signed by an unknown user
+        listCommitsStub.resolves(twoCommitsBotNotSignedAuthorSigned_commitsListResponse);
+
+        // given the payload has identified the unknown user as a bot
+        let fakeBotContext = cloneDeep(fakeContext);
 
         // when invoking the handler with the fake context, a fake config, and a iso timestamp
         await prSignedCommitsHandler(fakeBotContext, sinon.fake(), new Date().toISOString());
