@@ -14,7 +14,7 @@ pr:
 ```
 
 1. this means I'll enforce conventional commit messages in PRs.
-2. \<optional> this means I'll get custom config for conventionalCommits [see options](https://commitlint.js.org/#/reference-rules)
+2. you can optionally configure some rules for me.<br/> [see commitlint options](https://commitlint.js.org/#/reference-rules)
 3. this means I'll make sure all commits in PRs are signed with the 'Signed-off-by' trailer.
-4. \<optional> give list of users or emails to ignore
+4. you can optionally list users and/or emails for me to ignore.
 5. this means I'll verify the completion of the tasks list in PRs.
