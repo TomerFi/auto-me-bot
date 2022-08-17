@@ -17,7 +17,7 @@ pr:
 */
 
 // handler for verifying all commits are sign with the Signed-off-by trailer and a legit email
-async function handleSignedCommits(context, _config, startedAt) {
+async function handleSignedCommits(context, config, startedAt) {
     // create the initial check run and mark it as in_progress
     let checkRun = await context.octokit.checks.create(context.repo({
         head_sha: context.payload.pull_request.head.sha,
@@ -34,7 +34,7 @@ async function handleSignedCommits(context, _config, startedAt) {
     // list all unsigned commits
     var unsignedCommits = [];
     await Promise.all(allCommits.map(commit =>
-        verifyCommitTrailer(commit.commit).catch(() => unsignedCommits.push(commit))))
+        verifyCommitTrailer(commit.commit, config).catch(() => unsignedCommits.push(commit))))
 
     // default output when all commits are signed
     let finalConclusion = 'success';
@@ -67,13 +67,41 @@ async function handleSignedCommits(context, _config, startedAt) {
     }));
 }
 
+/*
+ * if an email contains [bot] we assume it's a bot and skip his commits,
+ * because bots are not very disciplined and sometimes do not signing up their commits.
+ * there is also an option to ignore specific emails and user names in configurations
+ * so for those we shall skip commits signing too.
+*/
+const shouldSkipCommit = (commit, config) => {
+    if (commit.author.email.includes('[bot]')
+    || commit.committer.email.includes('[bot]')){
+        return true;
+    }
+    if (!config.ignore){
+        return false;
+    }
+    if(config.ignore.emails){
+        if (config.ignore.emails.includes(commit.author.email)
+        || config.ignore.emails.includes(commit.committer.email)){
+            return true;
+        }
+    }
+    if(config.ignore.users){
+        if (config.ignore.users.includes(commit.author.name)
+        || config.ignore.users.includes(commit.committer.name)){
+            return true;
+        }
+    }
+    return false;
+}
+
 // verify a commit message have a 'Signed-off-by' trailer correlating with the commits' author/committer
-async function verifyCommitTrailer(commit) {
+async function verifyCommitTrailer(commit, config) {
     // list all 'Signed-off-by' trailers matching the author or committer
     var trailerMatches = []
-    // if it a bot there is no need to verify that commits are signing-off properly
-    if(commit.author.email.includes('[bot]')
-        || commit.committer.email.includes('[bot]')){
+    // skip commits for bots and ignored
+    if(shouldSkipCommit(commit, config)){
         return;
     }
     commit.message.split(EOL).forEach(line => {

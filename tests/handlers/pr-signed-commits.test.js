@@ -183,6 +183,19 @@ suite('Testing the pr-signed-commits handler', () => {
         },
     ];
 
+    const emailIgnoreConf = { ignore :{ emails:  [fakeAuthorEmail] }};
+    const userIgnoreConf = { ignore :{ users:  [fakeAuthorName] }};
+    const ignoreUserAndMailTest = [
+        {
+            name: 'email',
+            conf: emailIgnoreConf
+        },
+        {
+            name: 'user name',
+            conf: userIgnoreConf
+        }
+    ]
+
     /* ######################### ##
     ## #### Stubs and Fakes #### ##
     ## ######################### */
@@ -396,4 +409,28 @@ suite('Testing the pr-signed-commits handler', () => {
         expect(repoFuncStub).to.have.calledWith(success_expectedUpdateCheck);
         expect(updateCheckStub).to.have.been.calledOnceWith(success_expectedUpdateCheck);
     })
+
+    ignoreUserAndMailTest.forEach( testCase => {
+        test(`Test ${testCase.name} is ignored`, async () => {
+            verifyEmailStub
+                .withArgs(fakeBotEmail, sinon.match.func)
+                .yields(null, { code: emailVerifier.verifyCodes.finishedVerification });
+
+            // given the list commits service will resolve to one commit signed by an unknown user
+            listCommitsStub.resolves(oneSignedByAuthor_commitsListResponse);
+
+            // when invoking the handler with the fake context, a fake config, and a iso timestamp
+            await prSignedCommitsHandler(fakeContext, testCase.conf, new Date().toISOString());
+
+            // then expect the following functions invocation flow
+            expect(repoFuncStub).to.have.calledWith(expectedCreateCheckRunInfo);
+            expect(createCheckStub).to.have.been.calledOnceWith(expectedCreateCheckRunInfo);
+
+            expect(pullRequestFuncStub).to.have.been.calledOnceWith();
+            expect(listCommitsStub).to.have.been.calledOnceWith(expectedListCommitsInfo);
+
+            expect(repoFuncStub).to.have.calledWith(success_expectedUpdateCheck);
+            expect(updateCheckStub).to.have.been.calledOnceWith(success_expectedUpdateCheck);
+        })
+    });
 });
