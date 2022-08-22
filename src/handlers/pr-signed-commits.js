@@ -73,24 +73,23 @@ async function handleSignedCommits(context, config, startedAt) {
  * there is also an option to ignore specific emails and user names in configurations
  * so for those we shall skip commits signing too.
 */
-const shouldSkipCommit = (commit, config) => {
+function shouldSkipCommit(commit, config) {
     if (commit.author.email.includes('[bot]')
     || commit.committer.email.includes('[bot]')){
         return true;
     }
-    if (!config.ignore){
-        return false;
-    }
-    if(config.ignore.emails){
-        if (config.ignore.emails.includes(commit.author.email)
-        || config.ignore.emails.includes(commit.committer.email)){
-            return true;
+    if (config && config.ignore) {
+        if(config.ignore.emails){
+            if (config.ignore.emails.includes(commit.author.email)
+            || config.ignore.emails.includes(commit.committer.email)){
+                return true;
+            }
         }
-    }
-    if(config.ignore.users){
-        if (config.ignore.users.includes(commit.author.name)
-        || config.ignore.users.includes(commit.committer.name)){
-            return true;
+        if(config.ignore.users){
+            if (config.ignore.users.includes(commit.author.name)
+            || config.ignore.users.includes(commit.committer.name)){
+                return true;
+            }
         }
     }
     return false;
