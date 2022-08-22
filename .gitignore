@@ -1,6 +1,7 @@
 .nyc_output
 .venv
 coverage
+debug
 node_modules
 .env
 site/

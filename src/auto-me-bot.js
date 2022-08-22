@@ -44,6 +44,7 @@ function handlersController(predicate, handlers) {
             let invocations = []
             let startedAt = new Date().toISOString();
             for (let key in config.pr) {
+                console.info('INVOKING HANDLER ' + key);
                 invocations.push(handlers[key]()(context, config.pr[key], startedAt));
             }
             await Promise.allSettled(invocations);
