@@ -1,5 +1,7 @@
 'use strict';
 
+const yaml = require('js-yaml');
+
 const prConventionalCommitsHandler = require('./handlers/pr-conventional-commits');
 const prSignedCommitsHandler = require('./handlers/pr-signed-commits');
 const prTasksListHandler = require('./handlers/pr-tasks-list');
@@ -35,6 +37,8 @@ function handlersController(predicate, handlers) {
     return async context => {
         // get config from current repo .github folder or from the .github repo's .github folder
         let config = await context.config('auto-me-bot.yml');
+        console.info('CONTEXT\n' + JSON.stringify(context, null, 2));
+        console.info('CONFIG\n' + yaml.dump(config));
         if (config && predicate(config, context)) {
             // if the predicate passes, invoke all handlers from the map based on the config key
             let invocations = []
