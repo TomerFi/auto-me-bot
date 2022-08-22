@@ -23,6 +23,16 @@ const PR_HANDLERS = { // pr handlers should take context, config, and iso starte
 };
 const PR_PREDICATE = (config, context) => 'pr' in config || 'pull_request' in context.payload;
 
+/* ########################### ##
+## #### Utility functions #### ##
+## ########################### */
+function infoLogger(message) {
+    if (process.env.REPORT_MODE === 'on') {
+        return;
+    }
+    console.log(message)
+}
+
 /* ################################################### ##
 ## #### Main exported function registering events #### ##
 ## ################################################### */
@@ -37,14 +47,14 @@ function handlersController(predicate, handlers) {
     return async context => {
         // get config from current repo .github folder or from the .github repo's .github folder
         let config = await context.config('auto-me-bot.yml');
-        console.info('CONTEXT\n' + JSON.stringify(context, null, 2));
-        console.info('CONFIG\n' + yaml.dump(config));
+        infoLogger('CONTEXT\n' + JSON.stringify(context, null, 2));
+        infoLogger('CONFIG\n' + yaml.dump(config));
         if (config && predicate(config, context)) {
             // if the predicate passes, invoke all handlers from the map based on the config key
             let invocations = []
             let startedAt = new Date().toISOString();
             for (let key in config.pr) {
-                console.info('INVOKING HANDLER ' + key); // NOTE: config.pr[key] is nullable
+                infoLogger('INVOKING HANDLER ' + key); // NOTE: config.pr[key] is nullable
                 invocations.push(handlers[key]()(context, config.pr[key], startedAt));
             }
             await Promise.allSettled(invocations);
