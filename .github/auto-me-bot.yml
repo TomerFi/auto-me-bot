@@ -4,5 +4,10 @@ pr:
   conventionalCommits:
     rules:
       'body-max-line-length': [2, 'always', 150]
+  lifecycleLabels:
+    notReviewed: "status: needs review"
+    approved: "status: approved"
+    changesRequested: "status: changes requested"
+    merged: "status: merged"
   signedCommits:
   tasksList:
