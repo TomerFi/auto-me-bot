@@ -21,7 +21,7 @@ const PR_HANDLERS = { // pr handlers should take context, config, and iso starte
     signedCommits: () => prSignedCommitsHandler,
     tasksList: () => prTasksListHandler
 };
-const PR_PREDICATE = (config, context) => 'pr' in config || 'pull_request' in context.payload;
+const PR_PREDICATE = (config, context) => 'pr' in config && 'pull_request' in context.payload;
 
 /* ########################### ##
 ## #### Utility functions #### ##
