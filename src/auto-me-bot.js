@@ -11,17 +11,32 @@ module.exports = autoMeBot;
 /* ######################################## ##
 ## #### Pull request related constants #### ##
 ## ######################################## */
-const PR_EVENTS = [
+const TRIGGERING_EVENTS = [
     'pull_request.opened',
     'pull_request.edited',
     'pull_request.synchronize'
 ];
-const PR_HANDLERS = { // pr handlers should take context, config, and iso startedAt
-    conventionalCommits: () => prConventionalCommitsHandler,
-    signedCommits: () => prSignedCommitsHandler,
-    tasksList: () => prTasksListHandler
+
+// handlers should take context, config, and iso startedAt
+const CONFIGURATION_MAP = {
+    pr: {
+        conventionalCommits: {
+            event: 'pull_request',
+            actions: ['opened', 'edited', 'synchronize'],
+            run: () => prConventionalCommitsHandler,
+        },
+        signedCommits: {
+            event: 'pull_request',
+            actions: ['opened', 'edited', 'synchronize'],
+            run: () => prSignedCommitsHandler,
+        },
+        tasksList: {
+            event: 'pull_request',
+            actions: ['opened', 'edited', 'synchronize'],
+            run: () => prTasksListHandler,
+        },
+    }
 };
-const PR_PREDICATE = (config, context) => 'pr' in config && 'pull_request' in context.payload;
 
 /* ########################### ##
 ## #### Utility functions #### ##
@@ -37,26 +52,37 @@ function infoLogger(message) {
 ## #### Main exported function registering events #### ##
 ## ################################################### */
 function autoMeBot(probot) {
-    probot.on(PR_EVENTS, handlersController(PR_PREDICATE, PR_HANDLERS));
+    probot.on(TRIGGERING_EVENTS, handlersController(CONFIGURATION_MAP));
 }
 
 /* ################################################################ ##
 ## #### Distributes handler invocations based on configuration #### ##
 ## ################################################################ */
-function handlersController(predicate, handlers) {
+function handlersController(configSpec) {
     return async context => {
         // get config from current repo .github folder or from the .github repo's .github folder
         let config = await context.config('auto-me-bot.yml');
         infoLogger('CONTEXT\n' + JSON.stringify(context, null, 2));
         infoLogger('CONFIG\n' + yaml.dump(config));
-        if (config && predicate(config, context)) {
-            // if the predicate passes, invoke all handlers from the map based on the config key
-            let invocations = []
-            let startedAt = new Date().toISOString();
-            for (let key in config.pr) {
-                infoLogger('INVOKING HANDLER ' + key); // NOTE: config.pr[key] is nullable
-                invocations.push(handlers[key]()(context, config.pr[key], startedAt));
+        let invocations = []
+        let startedAt = new Date().toISOString();
+        for (let configType in config) {
+            let currentConfig = config[configType];
+            let currentConfigSpec = configSpec[configType];
+            for (let handlerType in currentConfig) {
+                if (handlerType in currentConfigSpec) {
+                    let currentHandlerConfig = currentConfig[handlerType]; // nullable
+                    let currentHandlerSpec = currentConfigSpec[handlerType];
+                    if (currentHandlerSpec.event in context.payload) {
+                        if (currentHandlerSpec.actions.includes(context.payload[currentHandlerSpec.event].action)) {
+                            invocations.push(currentHandlerSpec.run()(context, currentHandlerConfig, startedAt));
+                        }
+                    }
+
+                }
             }
+        }
+        if (invocations) {
             await Promise.allSettled(invocations);
         }
     }
