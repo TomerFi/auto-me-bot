@@ -18,7 +18,7 @@ suite('Testing the auto-me-bot export', () => {
         autoMeBot(probotFake);
         // then expect the 'on' fake method to be called with the pull request events list
         expect(probotOnFunctionFake).to.be.calledOnceWith(
-            autoMeBot.__get__('PR_EVENTS'),
+            autoMeBot.__get__('TRIGGERING_EVENTS'),
             sinon.match.func
         );
     });
@@ -42,7 +42,9 @@ suite('Testing the auto-me-bot export', () => {
             // create a fake context for invoking the application with
             fakeContext = {
                 payload: {
-                    pull_request: {}
+                    pull_request: {
+                        action: 'opened'
+                    }
                 },
                 config: configFuncStub
             };
@@ -54,8 +56,7 @@ suite('Testing the auto-me-bot export', () => {
             });
             // grab the handlersController configured for pr related operations
             prHandlersControllerSut = autoMeBot.__get__('handlersController')(
-                autoMeBot.__get__('PR_PREDICATE'),
-                autoMeBot.__get__('PR_HANDLERS')
+                autoMeBot.__get__('CONFIGURATION_MAP')
             );
         })
 
