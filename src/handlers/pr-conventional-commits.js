@@ -1,9 +1,6 @@
-'use strict';
-
 const lint = require('@commitlint/lint').default;
 const load = require('@commitlint/load').default;
 const { EOL } = require('os');
-
 
 const BOT_CHECK_URL = 'https://auto-me-bot.tomfi.info';
 const CHECK_NAME = 'Auto-Me-Bot Conventional Commits';
@@ -13,10 +10,11 @@ const DEFAULT_CONFIG = {
 
 module.exports = handlePrConventionalCommits;
 
-/*
-# example auto-me-bot.yml configuration
+/* example configuration (for reference):
 pr:
     conventionalCommits:
+        rules:
+            'body-max-line-length': [2, 'always', 150]
 */
 
 // handler for verifying commit messages as conventional
@@ -33,21 +31,9 @@ async function handlePrConventionalCommits(context, config, startedAt) {
     let commitObjs = await context.octokit.rest.pulls.listCommits(context.pullRequest())
         .then(resp => resp.data);
     // load the configuration options
-    let opts;
-    if(config && config.rules){
-        let customConfig = DEFAULT_CONFIG;
-        customConfig.rules = config.rules;
-        opts = await load(customConfig);
-    }else{
-        opts = await load(DEFAULT_CONFIG);
-    }
+    let opts = await loadOptions(config);
     // get lint status for every commit
-    let lintStatuses = await commitObjs.map(async commitObj => {
-        return {
-            commits_url: commitObj.html_url,
-            report: await lint(commitObj.commit.message, opts.rules, opts.parserPreset.parserOpts)
-        };
-    });
+    let lintStatuses = await commitObjs.map(commitObj => lintCommit(commitObj, opts));
     // list warning and error statuses
     let errorStatuses = [];
     let warningStatuses = [];
@@ -64,7 +50,7 @@ async function handlePrConventionalCommits(context, config, startedAt) {
         title: 'Good Job!',
         summary: 'Nothing to do here, no one told me you\'re a commit-message-master'
     };
-    // check of error and warning
+    // check for error and warning
     let numError = errorStatuses.length;
     let numWarnings = warningStatuses.length;
     if (numError > 0) {
@@ -140,4 +126,23 @@ function parseLintStatus(lintStatus) {
     }
     // return output as string
     return statusLines.join(EOL);
+}
+
+// load default and custom commitlint options
+async function loadOptions (config) {
+    if(config && config.rules) {
+        let customConfig = DEFAULT_CONFIG;
+        customConfig.rules = config.rules;
+        return load(customConfig);
+    } else {
+        return load(DEFAULT_CONFIG);
+    }
+}
+
+// lint commit and return url and report
+async function lintCommit(commitObj, opts) {
+    return {
+        commits_url: commitObj.html_url,
+        report: await lint(commitObj.commit.message, opts.rules, opts.parserPreset.parserOpts)
+    };
 }

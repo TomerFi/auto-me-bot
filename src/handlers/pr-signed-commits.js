@@ -1,5 +1,3 @@
-'use strict';
-
 const emailVerifier = require('@digitalroute/email-verify');
 const { EOL } = require('os');
 
@@ -10,10 +8,12 @@ const SIGN_OFF_TRAILER_REGEX = /^Signed-off-by: (.*) <(.*)@(.*)>$/;
 
 module.exports = handleSignedCommits;
 
-/*
-# example auto-me-bot.yml configuration
+/* example configuration (for reference):
 pr:
     signedCommits:
+        ignore:
+            users: ['notrealuser']
+            emails: ['not.real@email.address']
 */
 
 // handler for verifying all commits are sign with the Signed-off-by trailer and a legit email
@@ -26,23 +26,20 @@ async function handleSignedCommits(context, config, startedAt) {
         started_at: startedAt,
         status: 'in_progress'
     }));
-
     // grab all commits related the pr
     let allCommits = await context.octokit.rest.pulls.listCommits(context.pullRequest())
         .then(resp => resp.data);
-
     // list all unsigned commits
-    var unsignedCommits = [];
+    let unsignedCommits = [];
     await Promise.all(allCommits.map(commit =>
         verifyCommitTrailer(commit.commit, config).catch(() => unsignedCommits.push(commit))))
-
     // default output when all commits are signed
     let finalConclusion = 'success';
     let outputReport = {
         title: 'Well Done!',
         summary: 'All commits are signed'
     }
-
+    // check if found unsigned commits
     let numUnsignedCommits = unsignedCommits.length;
     if (numUnsignedCommits > 0) {
         // if found unsigned commit/s update output
@@ -53,7 +50,6 @@ async function handleSignedCommits(context, config, startedAt) {
             text: unsignedCommits.map(commit => `- ${commit.html_url}`).join(EOL)
         }
     }
-
     // update check run and mark it as completed
     await context.octokit.checks.update(context.repo({
         check_run_id: checkRun.data.id,
@@ -98,7 +94,7 @@ function shouldSkipCommit(commit, config) {
 // verify a commit message have a 'Signed-off-by' trailer correlating with the commits' author/committer
 async function verifyCommitTrailer(commit, config) {
     // list all 'Signed-off-by' trailers matching the author or committer
-    var trailerMatches = []
+    let trailerMatches = []
     // skip commits for bots and ignored
     if(shouldSkipCommit(commit, config)){
         return;
