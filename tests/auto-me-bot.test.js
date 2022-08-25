@@ -9,6 +9,9 @@ const autoMeBot = rewire('../src/auto-me-bot');
 const expect = chai.expect;
 
 suite('Testing the auto-me-bot export', () => {
+    // turn off logs
+    console.log = function() { /**/ };
+
     test('When invoking the application, expect a registration of the events', () => {
         let probotFake = sinon.fake(); // create a fake probot for starting the app
         let probotOnFunctionFake = sinon.fake(); // create a fake "on" function for the probot
@@ -18,7 +21,7 @@ suite('Testing the auto-me-bot export', () => {
         autoMeBot(probotFake);
         // then expect the 'on' fake method to be called with the pull request events list
         expect(probotOnFunctionFake).to.be.calledOnceWith(
-            autoMeBot.__get__('TRIGGERING_EVENTS'),
+            autoMeBot.__get__('ON_EVENTS'),
             sinon.match.func
         );
     });
@@ -56,7 +59,7 @@ suite('Testing the auto-me-bot export', () => {
             });
             // grab the handlersController configured for pr related operations
             prHandlersControllerSut = autoMeBot.__get__('handlersController')(
-                autoMeBot.__get__('CONFIGURATION_MAP')
+                autoMeBot.__get__('CONFIG_SPEC')
             );
         })
 
@@ -122,19 +125,63 @@ suite('Testing the auto-me-bot export', () => {
             ]);
         });
 
-        [ { pr: {}}, {}, null].forEach(config => {
-            test(`When no operations is checked and config is ${JSON.stringify(config)}, do not execute any handlers`, async () => {
+        [ { pr: {}}, {}, null, { pr: { unknownHandler: {}}}].forEach(config => {
+            test(`When no operations are checked and config is ${JSON.stringify(config)}, do not execute any handlers`, async () => {
                 // given the current pr configuration
                 configFuncStub.withArgs('auto-me-bot.yml').resolves(config);
                 // when invoking the controller
                 await prHandlersControllerSut(fakeContext);
-                // then expect only the related handler to be invoked
+                // then expect no handlers to be invoked
                 return Promise.all([
                     expect(conventionalCommitsHandlerStub).to.have.not.been.called,
                     expect(signedCommitsHandlerStub).to.have.not.been.called,
                     expect(tasksListHandlerStub).to.have.not.been.called,
                 ]);
             });
+        });
+
+        test('When event payload contains an unsupported event type, do not execute any handlers', async () => {
+            // given the current pr configuration
+            let config = {pr: { conventionalCommits:{}, signedCommits: {}, tasksList: {} }};
+            configFuncStub.withArgs('auto-me-bot.yml').resolves(config);
+            // when invoking the controller with a patched context
+            let patchedContext = {
+                payload: {
+                    unknown_event_type: {
+                        action: 'opened'
+                    }
+                },
+                config: configFuncStub
+            };
+            await prHandlersControllerSut(patchedContext);
+            // then expect no handlers to be invoked
+            return Promise.all([
+                expect(conventionalCommitsHandlerStub).to.have.not.been.called,
+                expect(signedCommitsHandlerStub).to.have.not.been.called,
+                expect(tasksListHandlerStub).to.have.not.been.called,
+            ]);
+        });
+
+        test('When event payload event action type is not supported, do not execute any handlers', async () => {
+            // given the current pr configuration
+            let config = {pr: { conventionalCommits:{}, signedCommits: {}, tasksList: {} }};
+            configFuncStub.withArgs('auto-me-bot.yml').resolves(config);
+            // when invoking the controller with a patched context
+            let patchedContext = {
+                payload: {
+                    pull_request: {
+                        action: 'closed_shades'
+                    }
+                },
+                config: configFuncStub
+            };
+            await prHandlersControllerSut(patchedContext);
+            // then expect no handlers to be invoked
+            return Promise.all([
+                expect(conventionalCommitsHandlerStub).to.have.not.been.called,
+                expect(signedCommitsHandlerStub).to.have.not.been.called,
+                expect(tasksListHandlerStub).to.have.not.been.called,
+            ]);
         });
     });
 });
