@@ -1,5 +1,3 @@
-'use strict';
-
 const { Probot } = require('probot');
 const autoMeBot = require('./auto-me-bot');
 

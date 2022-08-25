@@ -10,4 +10,7 @@ pr:
     changesRequested: "status: changes requested"
     merged: "status: merged"
   signedCommits:
+    ignore:
+      users: ['notrealuser']
+      emails: ['not.real@email.address']
   tasksList:
