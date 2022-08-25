@@ -1,5 +1,3 @@
-'use strict';
-
 const marked = require('marked');
 const { EOL } = require('os');
 
@@ -8,8 +6,7 @@ const CHECK_NAME = 'Auto-Me-Bot Tasks List';
 
 module.exports = handlePrTasksList;
 
-/*
-# example auto-me-bot.yml configuration
+/* example configuration (for reference):
 pr:
     tasksList:
 */
@@ -24,10 +21,9 @@ async function handlePrTasksList(context, _config, startedAt) {
         started_at: startedAt,
         status: 'in_progress'
     }));
-
     // get all the task list token and split them into checked and unchecked
-    var checkedTasks = [];
-    var uncheckedTasks = [];
+    let checkedTasks = [];
+    let uncheckedTasks = [];
     new marked.Lexer({gfm: true})
         .blockTokens(context.payload.pull_request.body)
         .filter(token => token.type === 'list')
@@ -61,7 +57,6 @@ async function handlePrTasksList(context, _config, startedAt) {
             text: parseTasks(checkedTasks, 'Here\'s a list of your accomplishments')
         }
     }
-
     // update check run and mark it as completed
     await context.octokit.checks.update(context.repo({
         check_run_id: checkRun.data.id,
