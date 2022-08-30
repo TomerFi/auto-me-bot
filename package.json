@@ -34,7 +34,7 @@
     "@commitlint/load": "^17.1.2",
     "@digitalroute/email-verify": "^0.2.2",
     "js-yaml": "^4.1.0",
-    "marked": "^4.0.19",
+    "marked": "^4.1.0",
     "probot": "^12.2.5"
   },
   "devDependencies": {
