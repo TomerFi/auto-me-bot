@@ -5,10 +5,13 @@ pr:
     rules:
       'body-max-line-length': [2, 'always', 150]
   lifecycleLabels:
-    notReviewed: "status: needs review"
-    approved: "status: approved"
-    changesRequested: "status: changes requested"
-    merged: "status: merged"
+    labels:
+      reviewRequired: "status: needs review"
+      changesRequested: "status: changes requested"
+      moreReviewsRequired: "status: needs more reviews"
+      reviewStarted: "status: review started"
+      approved: "status: approved"
+      merged: "status: merged"
   signedCommits:
     ignore:
       users: ['notrealuser']
