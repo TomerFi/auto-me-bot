@@ -3,6 +3,7 @@
 coverage
 debug
 node_modules
+payloads
 .env
 site/
 lambda.zip
