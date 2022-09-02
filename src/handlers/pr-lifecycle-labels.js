@@ -1,4 +1,4 @@
-const { difference, isEmpty, union } = require('lodash');
+const { dropWhile, isEmpty, isEqual, union } = require('lodash');
 
 /* example configuration (for reference):
 ignoreDrafts: true
@@ -67,7 +67,11 @@ module.exports = async function(context, config, startedAt) {
 
 
 function verifyConfiguration(config) {
-    return !isEmpty(config) && !isEmpty(config.labels) && KNOWN_LABELS.some(lk => KNOWN_LABELS.includes(lk));
+    if (isEmpty(config) || isEmpty(config.labels)) {
+        return false;
+    }
+    let optionalLabelKeys = Object.keys(config?.labels);
+    return KNOWN_LABELS.some(lk => optionalLabelKeys.includes(lk));
 }
 
 function getConfiguredLabels(labels) {
@@ -83,28 +87,33 @@ async function getLifecycleLabel(context) {
     }
 
     let reviews = await context.octokit.pulls.listReviews(context.pullRequest())
-        .then(resp => resp.data);
+        .then(resp => resp.code === 200 ? resp.data : []);
 
     if (reviews.length === 0) {
         return LABEL_KEYS.REVIEW_REQUIRED;
     }
 
+    let changeRequests = 0;
     let approvals = 0;
     reviews.forEach(review => {
         if (review.state === 'CHANGES_REQUESTED') {
-            return LABEL_KEYS.CHANGES_REQUESTED;
+            changeRequests++;
         }
         if (review.state === 'APPROVED') {
             approvals++;
         }
     });
 
+    if (changeRequests > 0) {
+        return LABEL_KEYS.CHANGES_REQUESTED;
+    }
+
     if (approvals === 0) {
         return LABEL_KEYS.REVIEW_STARTED;
     }
 
     let baseProtections = await context.octokit.repos.getBranchProtection(
-        context.repo({branch: context.payload.pull_request.base.sha})).then(resp => resp.data);
+        context.repo({branch: context.payload.pull_request.base.sha})).then(resp => resp.code === 200 ? resp.data : undefined);
 
     let requiredApprovals = baseProtections?.required_pull_request_reviews?.required_approving_review_count;
     if (approvals < requiredApprovals) {
@@ -118,29 +127,33 @@ async function workThemLabels(context, config, report) {
         let configuredLabels = getConfiguredLabels(config.labels);
         let lifecycleLabel = await getLifecycleLabel(context);
 
-        if (!configuredLabels.includes(lifecycleLabel)) {
-            report.output.summary = 'Lifecycle label not configured.';
+        if (!(lifecycleLabel in configuredLabels)) {
+            report.output.title = 'Label not configured'
+            report.output.summary = `Lifecycle label '${lifecycleLabel}' not configured`;
             return;
         }
 
         let addLabel = configuredLabels[lifecycleLabel];
-        let removeLabels = KNOWN_LABELS.filter(l => l !== lifecycleLabel).map(l => configuredLabels[l]);
+        let removeLabels = KNOWN_LABELS
+            .filter(l => l !== lifecycleLabel)
+            .filter(l => l in configuredLabels)
+            .map(l => configuredLabels[l]);
 
         let prLabels = context.payload.pull_request.labels.map(l => l.name);
-        if (!prLabels.includes(addLabel)) {
-            let labelExist = await context.octokit.issues.getLabel(context.pullRequest({name: addLabel}))
-                .then(resp => resp.code === 200);
-            if (!labelExist) {
-                report.conclusion = 'failure';
-                report.output.title = `Label for ${lifecycleLabel} not found`;
-                report.output.summary = `Are you sure the ${addLabel} exists?`;
-                return;
+        let targetLabels = union(dropWhile(prLabels, l => removeLabels.includes(l)), [addLabel]);
+
+        if (!isEqual(prLabels.sort(), targetLabels.sort())) {
+            if (!prLabels.includes(addLabel)) {
+                let labelExist = await context.octokit.issues.getLabel(context.pullRequest({name: addLabel}))
+                    .then(resp => resp.code === 200);
+                if (!labelExist) {
+                    report.conclusion = 'failure';
+                    report.output.title = `Label for '${lifecycleLabel}' not found`;
+                    report.output.summary = `Are you sure the '${addLabel}' label exists?`;
+                    return;
+                }
             }
-        }
 
-        let targetLabels = union(prLabels.filter(l => !(removeLabels.includes(l))), addLabel);
-
-        if (!isEmpty(difference(prLabels, targetLabels))) {
             await context.octokit.issues.addLabels(context.pullRequest({names: targetLabels}))
                 .then(resp => {
                     if (resp.code !== 200) {
@@ -153,7 +166,7 @@ async function workThemLabels(context, config, report) {
     } else {
         // the configuration is not valid
         report.conclusion = 'neutral';
-        report.output.title = 'Nothing for me to do.';
+        report.output.title = 'Nothing for me to do';
         report.output.summary = 'Are you sure your configuration is valid?';
     }
 }
