@@ -1,6 +1,7 @@
 const { difference, isEmpty, union } = require('lodash');
 
 /* example configuration (for reference):
+ignoreDrafts: true
 labels:
     reviewRequired: "status: needs review"
     changesRequested: "status: changes requested"
@@ -38,13 +39,19 @@ module.exports = async function(context, config, startedAt) {
     // default output for successful labeling
     let report = {
         conclusion: 'success',
-        report: {
+        output: {
             title: 'All Done!',
             summary: 'Pull request labeled'
         }
     };
 
-    await workThemLabels(context, config, report);
+    if (config?.ignoreDrafts && context.payload.pull_request.draft) {
+        report.conclusion = 'skipped'
+        report.output.title = 'Ignoring drafts'
+        report.output.summary = 'I\'m configured to ignore drafts';
+    } else {
+        await workThemLabels(context, config, report);
+    }
 
     // update check run and mark it as completed
     await context.octokit.checks.update(context.repo({
@@ -137,16 +144,16 @@ async function workThemLabels(context, config, report) {
             await context.octokit.issues.addLabels(context.pullRequest({names: targetLabels}))
                 .then(resp => {
                     if (resp.code !== 200) {
-                        report.finalConclusion = 'failure';
-                        report.outputReport.title = 'Failed to add the label';
-                        report.outputReport.summary = 'This might be an internal time out, please try again';
+                        report.conclusion = 'failure';
+                        report.output.title = 'Failed to add the label';
+                        report.output.summary = 'This might be an internal time out, please try again';
                     }
                 });
         }
     } else {
         // the configuration is not valid
-        report.finalConclusion = 'neutral';
-        report.outputReport.title = 'Nothing for me to do.';
-        report.outputReport.summary = 'Are you sure your configuration is valid?';
+        report.conclusion = 'neutral';
+        report.output.title = 'Nothing for me to do.';
+        report.output.summary = 'Are you sure your configuration is valid?';
     }
 }
