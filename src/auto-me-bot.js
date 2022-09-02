@@ -5,14 +5,6 @@ const prConventionalCommitsHandler = require('./handlers/pr-conventional-commits
 const prSignedCommitsHandler = require('./handlers/pr-signed-commits');
 const prTasksListHandler = require('./handlers/pr-tasks-list');
 
-// all triggering events should be listed here
-const ON_EVENTS = [
-    'pull_request.opened',
-    'pull_request.edited',
-    'pull_request.synchronize'
-];
-
-// handler functions should take context, config, and an iso startedAt
 /* example configuration (for reference):
 pr:
     conventionalCommits:
@@ -22,7 +14,16 @@ pr:
     tasksList:
         ...
 */
-const CONFIG_SPEC = {
+
+// all triggering events should be listed here
+const ON_EVENTS = Object.freeze([
+    'pull_request.opened',
+    'pull_request.edited',
+    'pull_request.synchronize'
+]);
+
+// handler functions should take context, config, and an iso startedAt (config is nullable)
+const CONFIG_SPEC = Object.freeze({
     pr: {
         conventionalCommits: {
             event: 'pull_request',
@@ -40,6 +41,11 @@ const CONFIG_SPEC = {
             run: () => prTasksListHandler,
         },
     }
+});
+
+// main entrance point for probot
+module.exports = function (probot) {
+    probot.on(ON_EVENTS, handlersController(CONFIG_SPEC));
 };
 
 // distributes handler invocations based on user config and config spec
@@ -78,7 +84,3 @@ function handlersController(configSpec) {
         }
     }
 }
-
-module.exports = function (probot) {
-    probot.on(ON_EVENTS, handlersController(CONFIG_SPEC));
-};

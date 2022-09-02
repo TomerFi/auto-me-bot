@@ -1,5 +1,15 @@
 const { difference, isEmpty, union } = require('lodash');
 
+/* example configuration (for reference):
+labels:
+    reviewRequired: "status: needs review"
+    changesRequested: "status: changes requested"
+    moreReviewsRequired: "status: needs more reviews"
+    reviewStarted: "status: review started"
+    approved: "status: approved"
+    merged: "status: merged"
+*/
+
 const BOT_CHECK_URL = 'https://auto-me-bot.tomfi.info';
 const CHECK_NAME = 'Auto-Me-Bot Lifecycle Labels';
 
@@ -12,21 +22,7 @@ const LABEL_KEYS = Object.freeze({
     MERGED: 'merged',
 });
 
-
 const KNOWN_LABELS = Object.freeze(Object.values(LABEL_KEYS));
-
-/* example configuration (for reference):
-pr:
-    lifecycleLabels:
-        labels:
-            reviewRequired: "status: needs review"
-            changesRequested: "status: changes requested"
-            moreReviewsRequired: "status: needs more reviews"
-            reviewStarted: "status: review started"
-            approved: "status: approved"
-            merged: "status: merged"
-*/
-
 
 // handler for labeling pull requests based on lifecycle
 module.exports = async function(context, config, startedAt) {
@@ -41,8 +37,8 @@ module.exports = async function(context, config, startedAt) {
 
     // default output for successful labeling
     let report = {
-        finalConclusion: 'success',
-        outputReport: {
+        conclusion: 'success',
+        report: {
             title: 'All Done!',
             summary: 'Pull request labeled'
         }
@@ -116,7 +112,7 @@ async function workThemLabels(context, config, report) {
         let lifecycleLabel = await getLifecycleLabel(context);
 
         if (!configuredLabels.includes(lifecycleLabel)) {
-            report.outputReport.summary = 'Lifecycle label not configured.';
+            report.output.summary = 'Lifecycle label not configured.';
             return;
         }
 
@@ -128,9 +124,9 @@ async function workThemLabels(context, config, report) {
             let labelExist = await context.octokit.issues.getLabel(context.pullRequest({name: addLabel}))
                 .then(resp => resp.code === 200);
             if (!labelExist) {
-                report.finalConclusion = 'failure';
-                report.outputReport.title = `Label for ${lifecycleLabel} not found`;
-                report.outputReport.summary = `Are you sure the ${addLabel} exists?`;
+                report.conclusion = 'failure';
+                report.output.title = `Label for ${lifecycleLabel} not found`;
+                report.output.summary = `Are you sure the ${addLabel} exists?`;
                 return;
             }
         }

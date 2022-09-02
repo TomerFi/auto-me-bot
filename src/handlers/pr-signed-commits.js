@@ -1,23 +1,19 @@
 const emailVerifier = require('@digitalroute/email-verify');
 const { EOL } = require('os');
 
+/* example configuration (for reference):
+ignore:
+    users: ['notrealuser']
+    emails: ['not.real@email.address']
+*/
+
 const BOT_CHECK_URL = 'https://auto-me-bot.tomfi.info';
 const CHECK_NAME = 'Auto-Me-Bot Signed Commits';
 
 const SIGN_OFF_TRAILER_REGEX = /^Signed-off-by: (.*) <(.*)@(.*)>$/;
 
-module.exports = handleSignedCommits;
-
-/* example configuration (for reference):
-pr:
-    signedCommits:
-        ignore:
-            users: ['notrealuser']
-            emails: ['not.real@email.address']
-*/
-
 // handler for verifying all commits are sign with the Signed-off-by trailer and a legit email
-async function handleSignedCommits(context, config, startedAt) {
+module.exports = async function(context, config, startedAt) {
     // create the initial check run and mark it as in_progress
     let checkRun = await context.octokit.checks.create(context.repo({
         head_sha: context.payload.pull_request.head.sha,
@@ -34,21 +30,21 @@ async function handleSignedCommits(context, config, startedAt) {
     await Promise.all(allCommits.map(commit =>
         verifyCommitTrailer(commit.commit, config).catch(() => unsignedCommits.push(commit))))
     // default output when all commits are signed
-    let finalConclusion = 'success';
-    let outputReport = {
-        title: 'Well Done!',
-        summary: 'All commits are signed'
-    }
+    let report = {
+        conclusion: 'success',
+        output: {
+            title: 'Well Done!',
+            summary: 'All commits are signed'
+        }
+    };
     // check if found unsigned commits
     let numUnsignedCommits = unsignedCommits.length;
     if (numUnsignedCommits > 0) {
         // if found unsigned commit/s update output
-        finalConclusion = 'failure';
-        outputReport = {
-            title: `Found ${numUnsignedCommits} unsigned commits`,
-            summary: 'We need to get the these commits signed',
-            text: unsignedCommits.map(commit => `- ${commit.html_url}`).join(EOL)
-        }
+        report.conclusion = 'failure';
+        report.output.title = `Found ${numUnsignedCommits} unsigned commits`;
+        report.output.summary = 'We need to get the these commits signed';
+        report.output.text = unsignedCommits.map(commit => `- ${commit.html_url}`).join(EOL);
     }
     // update check run and mark it as completed
     await context.octokit.checks.update(context.repo({
@@ -57,9 +53,8 @@ async function handleSignedCommits(context, config, startedAt) {
         details_url: BOT_CHECK_URL,
         started_at: startedAt,
         status: 'completed',
-        conclusion: finalConclusion,
         completed_at: new Date().toISOString(),
-        output: outputReport
+        ...report
     }));
 }
 
