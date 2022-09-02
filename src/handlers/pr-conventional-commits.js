@@ -2,23 +2,19 @@ const lint = require('@commitlint/lint').default;
 const load = require('@commitlint/load').default;
 const { EOL } = require('os');
 
+/* example configuration (for reference):
+rules:
+    'body-max-line-length': [2, 'always', 150]
+*/
+
 const BOT_CHECK_URL = 'https://auto-me-bot.tomfi.info';
 const CHECK_NAME = 'Auto-Me-Bot Conventional Commits';
 const DEFAULT_CONFIG = {
     extends: ['@commitlint/config-conventional'],
 };
 
-module.exports = handlePrConventionalCommits;
-
-/* example configuration (for reference):
-pr:
-    conventionalCommits:
-        rules:
-            'body-max-line-length': [2, 'always', 150]
-*/
-
 // handler for verifying commit messages as conventional
-async function handlePrConventionalCommits(context, config, startedAt) {
+module.exports =  async function(context, config, startedAt) {
     // create the initial check run and mark it as in_progress
     let checkRun = await context.octokit.checks.create(context.repo({
         head_sha: context.payload.pull_request.head.sha,
@@ -45,17 +41,19 @@ async function handlePrConventionalCommits(context, config, startedAt) {
         }
     }));
     // default output for successful lint
-    let finalConclusion = 'success';
-    let outputReport = {
-        title: 'Good Job!',
-        summary: 'Nothing to do here, no one told me you\'re a commit-message-master'
+    let report = {
+        conclusion: 'success',
+        output: {
+            title: 'Good Job!',
+            summary: 'Nothing to do here, no one told me you\'re a commit-message-master'
+        }
     };
     // check for error and warning
     let numError = errorStatuses.length;
     let numWarnings = warningStatuses.length;
     if (numError > 0) {
         // found errors
-        finalConclusion = 'failure';
+        report.conclusion = 'failure';
         let title;
         if (numWarnings > 0) {
             // found errors and warnings
@@ -67,18 +65,14 @@ async function handlePrConventionalCommits(context, config, startedAt) {
             title = `Found ${numError} non-conventional commit message${numError > 1 ? 's' : ''}`;
         }
         // create output for error/error+warning
-        outputReport = {
-            title: title,
-            summary: 'We need to amend these commits messages',
-            text: errorStatuses.concat(warningStatuses).map(lintSts => parseLintStatus(lintSts)).join(EOL)
-        };
+        report.output.title = title;
+        report.output.summary = 'We need to amend these commits messages';
+        report.output.text = errorStatuses.concat(warningStatuses).map(lintSts => parseLintStatus(lintSts)).join(EOL);
     } else if (numWarnings > 0) {
         // found only warning - no errors
-        outputReport = {
-            title: `Found ${numWarnings} non-conventional commit message${numWarnings > 1 ? 's' : ''}`,
-            summary: 'Take a look at these',
-            text: warningStatuses.map(lintSts => parseLintStatus(lintSts)).join(EOL)
-        };
+        report.output.title = `Found ${numWarnings} non-conventional commit message${numWarnings > 1 ? 's' : ''}`;
+        report.output.summary = 'Take a look at these';
+        report.output.text = warningStatuses.map(lintSts => parseLintStatus(lintSts)).join(EOL);
     }
     // update check run and mark it as completed
     await context.octokit.checks.update(context.repo({
@@ -87,9 +81,8 @@ async function handlePrConventionalCommits(context, config, startedAt) {
         details_url: BOT_CHECK_URL,
         started_at: startedAt,
         status: 'completed',
-        conclusion: finalConclusion,
         completed_at: new Date().toISOString(),
-        output: outputReport
+        ...report
     }));
 }
 

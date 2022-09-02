@@ -4,15 +4,8 @@ const { EOL } = require('os');
 const BOT_CHECK_URL = 'https://auto-me-bot.tomfi.info';
 const CHECK_NAME = 'Auto-Me-Bot Tasks List';
 
-module.exports = handlePrTasksList;
-
-/* example configuration (for reference):
-pr:
-    tasksList:
-*/
-
 // handler for verifying PR tasks' list is completed
-async function handlePrTasksList(context, _config, startedAt) {
+module.exports = async function(context, _config, startedAt) {
     // create the initial check run and mark it as in_progress
     let checkRun = await context.octokit.checks.create(context.repo({
         head_sha: context.payload.pull_request.head.sha,
@@ -35,27 +28,25 @@ async function handlePrTasksList(context, _config, startedAt) {
     let numUnchecked = uncheckedTasks.length;
 
     // default output for no tasks found
-    let finalConclusion = 'success';
-    let outputReport = {
-        title: 'No tasks lists found',
-        summary: 'Nothing for me to do here'
+    let report = {
+        conclusion: 'success',
+        output: {
+            title: 'No tasks lists found',
+            summary: 'Nothing for me to do here'
+        }
     };
     // if found tasks
     if (numUnchecked > 0) {
         // found unchecked tasks
-        finalConclusion = 'failure';
-        outputReport = {
-            title: `Found ${numUnchecked} unchecked tasks`,
-            summary: 'I\'m sure you know what do with these',
-            text: parseTasks(uncheckedTasks, 'The following tasks needs to be completed')
-        }
+        report.conclusion = 'failure';
+        report.output.title = `Found ${numUnchecked} unchecked tasks`;
+        report.output.summary = 'I\'m sure you know what do with these';
+        report.output.text = parseTasks(uncheckedTasks, 'The following tasks needs to be completed');
     } else if (numChecked > 0) {
         // found checked tasks with no unchecked tasks
-        outputReport = {
-            title: 'All Done!',
-            summary: 'You made it through',
-            text: parseTasks(checkedTasks, 'Here\'s a list of your accomplishments')
-        }
+        report.output.title = 'All Done!';
+        report.output.summary = 'You made it through';
+        report.output.text = parseTasks(checkedTasks, 'Here\'s a list of your accomplishments');
     }
     // update check run and mark it as completed
     await context.octokit.checks.update(context.repo({
@@ -64,9 +55,8 @@ async function handlePrTasksList(context, _config, startedAt) {
         details_url: BOT_CHECK_URL,
         started_at: startedAt,
         status: 'completed',
-        conclusion: finalConclusion,
         completed_at: new Date().toISOString(),
-        output: outputReport
+        ...report
     }));
 }
 
