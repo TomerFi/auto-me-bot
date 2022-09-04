@@ -12,8 +12,18 @@ const CHECK_NAME = 'Auto-Me-Bot Signed Commits';
 
 const SIGN_OFF_TRAILER_REGEX = /^Signed-off-by: (.*) <(.*)@(.*)>$/;
 
+// matcher for picking up events
+module.exports.match = function(context) {
+    let event = 'pull_request';
+    let actions = ['opened', 'edited', 'synchronize'];
+
+    if (event in context.payload) {
+        return actions.includes(context.payload[event].action);
+    }
+}
+
 // handler for verifying all commits are sign with the Signed-off-by trailer and a legit email
-module.exports = async function(context, config, startedAt) {
+module.exports.run = async function(context, config, startedAt) {
     // create the initial check run and mark it as in_progress
     let checkRun = await context.octokit.checks.create(context.repo({
         head_sha: context.payload.pull_request.head.sha,

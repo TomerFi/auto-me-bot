@@ -4,8 +4,18 @@ const { EOL } = require('os');
 const BOT_CHECK_URL = 'https://auto-me-bot.tomfi.info';
 const CHECK_NAME = 'Auto-Me-Bot Tasks List';
 
+// matcher for picking up events
+module.exports.match = function(context) {
+    let event = 'pull_request';
+    let actions = ['opened', 'edited', 'synchronize'];
+
+    if (event in context.payload) {
+        return actions.includes(context.payload[event].action);
+    }
+}
+
 // handler for verifying PR tasks' list is completed
-module.exports = async function(context, _config, startedAt) {
+module.exports.run = async function(context, _config, startedAt) {
     // create the initial check run and mark it as in_progress
     let checkRun = await context.octokit.checks.create(context.repo({
         head_sha: context.payload.pull_request.head.sha,

@@ -278,7 +278,7 @@ suite('Testing the pr-signed-commits handler', () => {
             listCommitsStub.resolves(testCase.stubCommitsList);
 
             // when invoking the handler with the fake context, a fake config, and a iso timestamp
-            await prSignedCommitsHandler(fakeContext, sinon.fake(), new Date().toISOString());
+            await prSignedCommitsHandler.run(fakeContext, sinon.fake(), new Date().toISOString());
 
             // then expect the following functions invocation flow
             expect(repoFuncStub).to.have.calledWith(expectedCreateCheckRunInfo);
@@ -298,7 +298,7 @@ suite('Testing the pr-signed-commits handler', () => {
             listCommitsStub.resolves(testCase.stubCommitsList);
 
             // when invoking the handler with the fake context, a fake config, and a iso timestamp
-            await prSignedCommitsHandler(fakeContext, sinon.fake(), new Date().toISOString());
+            await prSignedCommitsHandler.run(fakeContext, sinon.fake(), new Date().toISOString());
 
             // then expect the following functions invocation flow
             expect(repoFuncStub).to.have.calledWith(expectedCreateCheckRunInfo);
@@ -323,7 +323,7 @@ suite('Testing the pr-signed-commits handler', () => {
         listCommitsStub.resolves(oneUnsignedAndOneSignedByAuthor_commitsListResponse);
 
         // when invoking the handler with the fake context, a fake config, and a iso timestamp
-        await prSignedCommitsHandler(fakeContext, sinon.fake(), new Date().toISOString());
+        await prSignedCommitsHandler.run(fakeContext, sinon.fake(), new Date().toISOString());
 
         // then expect the following functions invocation flow
         expect(repoFuncStub).to.have.calledWith(expectedCreateCheckRunInfo);
@@ -346,7 +346,7 @@ suite('Testing the pr-signed-commits handler', () => {
             listCommitsStub.resolves(oneSignedByAuthor_commitsListResponse);
 
             // when invoking the handler with the fake context, a fake config, and a iso timestamp
-            await prSignedCommitsHandler(fakeContext, sinon.fake(), new Date().toISOString());
+            await prSignedCommitsHandler.run(fakeContext, sinon.fake(), new Date().toISOString());
 
             // then expect the following functions invocation flow
             expect(repoFuncStub).to.have.calledWith(expectedCreateCheckRunInfo);
@@ -372,7 +372,7 @@ suite('Testing the pr-signed-commits handler', () => {
         let fakeBotContext = cloneDeep(fakeContext);
 
         // when invoking the handler with the fake context, a fake config, and a iso timestamp
-        await prSignedCommitsHandler(fakeBotContext, sinon.fake(), new Date().toISOString());
+        await prSignedCommitsHandler.run(fakeBotContext, sinon.fake(), new Date().toISOString());
 
         // then expect the following functions invocation flow
         expect(repoFuncStub).to.have.calledWith(expectedCreateCheckRunInfo);
@@ -397,7 +397,7 @@ suite('Testing the pr-signed-commits handler', () => {
         let fakeBotContext = cloneDeep(fakeContext);
 
         // when invoking the handler with the fake context, a fake config, and a iso timestamp
-        await prSignedCommitsHandler(fakeBotContext, sinon.fake(), new Date().toISOString());
+        await prSignedCommitsHandler.run(fakeBotContext, sinon.fake(), new Date().toISOString());
 
         // then expect the following functions invocation flow
         expect(repoFuncStub).to.have.calledWith(expectedCreateCheckRunInfo);
@@ -420,7 +420,7 @@ suite('Testing the pr-signed-commits handler', () => {
             listCommitsStub.resolves(oneSignedByAuthor_commitsListResponse);
 
             // when invoking the handler with the fake context, a fake config, and a iso timestamp
-            await prSignedCommitsHandler(fakeContext, testCase.conf, new Date().toISOString());
+            await prSignedCommitsHandler.run(fakeContext, testCase.conf, new Date().toISOString());
 
             // then expect the following functions invocation flow
             expect(repoFuncStub).to.have.calledWith(expectedCreateCheckRunInfo);
