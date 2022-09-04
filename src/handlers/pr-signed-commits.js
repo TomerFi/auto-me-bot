@@ -16,10 +16,7 @@ const SIGN_OFF_TRAILER_REGEX = /^Signed-off-by: (.*) <(.*)@(.*)>$/;
 module.exports.match = function(context) {
     let event = 'pull_request';
     let actions = ['opened', 'edited', 'synchronize'];
-
-    if (event in context.payload) {
-        return actions.includes(context.payload[event].action);
-    }
+    return event in context.payload ? actions.includes(context.payload[event].action) : false;
 }
 
 // handler for verifying all commits are sign with the Signed-off-by trailer and a legit email
@@ -33,7 +30,7 @@ module.exports.run = async function(context, config, startedAt) {
         status: 'in_progress'
     }));
     // grab all commits related the pr
-    let allCommits = await context.octokit.rest.pulls.listCommits(context.pullRequest())
+    let allCommits = await context.octokit.rest.pulls.listCommits(context.pullRequest()) // TODO: do we need "rest" here?
         .then(resp => resp.data);
     // list all unsigned commits
     let unsignedCommits = [];

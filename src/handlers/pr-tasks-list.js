@@ -12,6 +12,8 @@ module.exports.match = function(context) {
     if (event in context.payload) {
         return actions.includes(context.payload[event].action);
     }
+
+    return false;
 }
 
 // handler for verifying PR tasks' list is completed

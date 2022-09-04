@@ -9,18 +9,13 @@ rules:
 
 const BOT_CHECK_URL = 'https://auto-me-bot.tomfi.info';
 const CHECK_NAME = 'Auto-Me-Bot Conventional Commits';
-const DEFAULT_CONFIG = {
-    extends: ['@commitlint/config-conventional'],
-};
+const DEFAULT_CONFIG = {extends: ['@commitlint/config-conventional']};
 
 // matcher for picking up events
 module.exports.match = function(context) {
     let event = 'pull_request';
     let actions = ['opened', 'edited', 'synchronize'];
-
-    if (event in context.payload) {
-        return actions.includes(context.payload[event].action);
-    }
+    return event in context.payload ? actions.includes(context.payload[event].action) : false;
 }
 
 // handler for verifying commit messages as conventional
@@ -34,7 +29,7 @@ module.exports.run =  async function(context, config, startedAt) {
         status: 'in_progress'
     }));
     // get the commits associated with the PR
-    let commitObjs = await context.octokit.rest.pulls.listCommits(context.pullRequest())
+    let commitObjs = await context.octokit.rest.pulls.listCommits(context.pullRequest()) // TODO: do we need "rest" here?
         .then(resp => resp.data);
     // load the configuration options
     let opts = await loadOptions(config);
@@ -134,9 +129,7 @@ function parseLintStatus(lintStatus) {
 // load default and custom commitlint options
 async function loadOptions (config) {
     if(config && config.rules) {
-        let customConfig = DEFAULT_CONFIG;
-        customConfig.rules = config.rules;
-        return load(customConfig);
+        return load({...DEFAULT_CONFIG, ...config});
     } else {
         return load(DEFAULT_CONFIG);
     }
