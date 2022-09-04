@@ -28,7 +28,7 @@ suite('Testing the auto-me-bot export', () => {
 
     suite('Test various pull request related configurations', () => {
         let conventionalCommitsHandlerStub;
-        let signedCommitsHandlerStub
+        let signedCommitsHandlerStub;
         let tasksListHandlerStub;
         let configFuncStub;
 
@@ -37,10 +37,19 @@ suite('Testing the auto-me-bot export', () => {
         let prHandlersControllerSut;
 
         beforeEach(() => {
-            // create stubs
+            //
             conventionalCommitsHandlerStub = sinon.stub();
+            let conventionalCommitsHandlerFake = require('../src/handlers/pr-conventional-commits');
+            conventionalCommitsHandlerFake.run = conventionalCommitsHandlerStub;
+            //
             signedCommitsHandlerStub = sinon.stub();
+            let signedCommitsHandlerFake = require('../src/handlers/pr-signed-commits');
+            signedCommitsHandlerFake.run = signedCommitsHandlerStub;
+            //
             tasksListHandlerStub = sinon.stub();
+            let tasksListHandlerFake = require('../src/handlers/pr-tasks-list');
+            tasksListHandlerFake.run = tasksListHandlerStub;
+            //
             configFuncStub = sinon.stub();
             // create a fake context for invoking the application with
             fakeContext = {
@@ -53,9 +62,9 @@ suite('Testing the auto-me-bot export', () => {
             };
             // inject handlers stubs
             autoMeBot.__set__({
-                prConventionalCommitsHandler: conventionalCommitsHandlerStub,
-                prSignedCommitsHandler: signedCommitsHandlerStub,
-                prTasksListHandler: tasksListHandlerStub
+                prConventionalCommitsHandler: conventionalCommitsHandlerFake,
+                prSignedCommitsHandler: signedCommitsHandlerFake,
+                prTasksListHandler: tasksListHandlerFake
             });
             // grab the handlersController configured for pr related operations
             prHandlersControllerSut = autoMeBot.__get__('handlersController')(

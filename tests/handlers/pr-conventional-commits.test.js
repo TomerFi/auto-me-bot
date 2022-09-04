@@ -257,17 +257,17 @@ suite('Testing the pr-conventional-commits handler', () => {
     ## ############################ */
     let testCases = [
         {
-            testTitle: 'Test with one warning commit message, expect one warning report',
+            testTitle: 'Test handler with one warning commit message, expect one warning report',
             stubCommitsList: oneWarning_commitsListResponse,
             expectedUpdateCheck: oneWarning_expectedUpdateCheck
         },
         {
-            testTitle: 'Test with one error commit message, expect one error report',
+            testTitle: 'Test handler with one error commit message, expect one error report',
             stubCommitsList: oneError_commitsListResponse,
             expectedUpdateCheck: oneError_expectedUpdateCheck
         },
         {
-            testTitle: 'Test with one good commit message, expect a successful result',
+            testTitle: 'Test handler with one good commit message, expect a successful result',
             stubCommitsList: oneGood_commitsListResponse,
             expectedUpdateCheck: oneGood_expectedUpdateCheck
         },
@@ -343,7 +343,7 @@ suite('Testing the pr-conventional-commits handler', () => {
             listCommitsStub.resolves(testCase.stubCommitsList);
 
             // when invoking the handler with the fake context, a fake config, and a iso timestamp
-            await prConventionalCommitsHandler(fakeContext, sinon.fake(), new Date().toISOString());
+            await prConventionalCommitsHandler.run(fakeContext, sinon.fake(), new Date().toISOString());
 
             // then expect the following functions invocation flow
             expect(repoFuncStub).to.have.been.calledWith(expectedCreateCheckRunInfo);
@@ -367,7 +367,7 @@ suite('Testing the pr-conventional-commits handler', () => {
         listCommitsStub.resolves(oneWarningOneError_commitsListResponse);
 
         // when invoking the handler with the fake context, a fake config, and a iso timestamp
-        await prConventionalCommitsHandler(fakeContext, sinon.fake(), new Date().toISOString());
+        await prConventionalCommitsHandler.run(fakeContext, sinon.fake(), new Date().toISOString());
 
         // then expect the following functions invocation flow
         expect(repoFuncStub).to.have.calledWith(expectedCreateCheckRunInfo);
@@ -393,7 +393,7 @@ suite('Testing the pr-conventional-commits handler', () => {
             rules :{'body-max-line-length': [2, 'always', 10]}
         };
         // when invoking the handler with the fake context, a fake config, and a iso timestamp
-        await prConventionalCommitsHandler(fakeContext, customConfig, new Date().toISOString());
+        await prConventionalCommitsHandler.run(fakeContext, customConfig, new Date().toISOString());
 
         // then expect the following functions invocation flow
         expect(repoFuncStub).to.have.calledWith(expectedCreateCheckRunInfo);

@@ -130,7 +130,7 @@ suite('Testing the pr-lifecycle-labels', () => {
         let fakeContext = { ...baseFakeContext }
         fakeContext.payload.pull_request.draft = true;
         // when invoking the handler with the fake context, a fake config, and a iso timestamp
-        await prLifecycleLabelsHandler(fakeContext, config, new Date().toISOString());
+        await prLifecycleLabelsHandler.run(fakeContext, config, new Date().toISOString());
         // then expect the following functions invocation flow
         expect(createCheckStub).to.have.been.calledOnceWith(expectedCreateCheckRunInfo);
         expect(updateCheckStub).to.have.been.calledOnceWith(expectedUpdateCheck);
@@ -153,7 +153,7 @@ suite('Testing the pr-lifecycle-labels', () => {
             let fakeContext = { ...baseFakeContext }
             fakeContext.payload.pull_request.draft = true;
             // when invoking the handler with the fake context, a fake config, and a iso timestamp
-            await prLifecycleLabelsHandler(fakeContext, invalidConfig, new Date().toISOString());
+            await prLifecycleLabelsHandler.run(fakeContext, invalidConfig, new Date().toISOString());
             // then expect the following functions invocation flow
             expect(createCheckStub).to.have.been.calledOnceWith(expectedCreateCheckRunInfo);
             expect(updateCheckStub).to.have.been.calledOnceWith(expectedUpdateCheck);
@@ -182,7 +182,7 @@ suite('Testing the pr-lifecycle-labels', () => {
         fakeContext.payload.action = 'closed';
         fakeContext.payload.pull_request.merged = true;
         // when invoking the handler with the fake context, a fake config, and a iso timestamp
-        await prLifecycleLabelsHandler(fakeContext, config, new Date().toISOString());
+        await prLifecycleLabelsHandler.run(fakeContext, config, new Date().toISOString());
         // then expect the following functions invocation flow
         expect(createCheckStub).to.have.been.calledOnceWith(expectedCreateCheckRunInfo);
         expect(updateCheckStub).to.have.been.calledOnceWith(expectedUpdateCheck);
@@ -213,7 +213,7 @@ suite('Testing the pr-lifecycle-labels', () => {
         // given the getLabel function will resolved to code 404 indicating the label doesn't exists
         getLabelStub.withArgs({...getPullRequestInfoResponse, name: 'this pr is merged'}).resolves({code: 404});
         // when invoking the handler with the fake context, a fake config, and a iso timestamp
-        await prLifecycleLabelsHandler(fakeContext, config, new Date().toISOString());
+        await prLifecycleLabelsHandler.run(fakeContext, config, new Date().toISOString());
         // then expect the following functions invocation flow
         expect(createCheckStub).to.have.been.calledOnceWith(expectedCreateCheckRunInfo);
         expect(updateCheckStub).to.have.been.calledOnceWith(expectedUpdateCheck);
@@ -248,7 +248,7 @@ suite('Testing the pr-lifecycle-labels', () => {
         // given the addLabels function will succeed for the following argument
         addLabelsStub.withArgs({...getPullRequestInfoResponse, names: ['this pr is merged', 'unrelated label']}).resolves({code: 200});
         // when invoking the handler with the fake context, a fake config, and a iso timestamp
-        await prLifecycleLabelsHandler(fakeContext, config, new Date().toISOString());
+        await prLifecycleLabelsHandler.run(fakeContext, config, new Date().toISOString());
         // then expect the following functions invocation flow
         expect(createCheckStub).to.have.been.calledOnceWith(expectedCreateCheckRunInfo);
         expect(updateCheckStub).to.have.been.calledOnceWith(expectedUpdateCheck);
@@ -282,7 +282,7 @@ suite('Testing the pr-lifecycle-labels', () => {
         // given the addLabels function will report and internal error (500) for the following argument
         addLabelsStub.withArgs({...getPullRequestInfoResponse, names: ['this pr is merged', 'unrelated label']}).resolves({code: 500});
         // when invoking the handler with the fake context, a fake config, and a iso timestamp
-        await prLifecycleLabelsHandler(fakeContext, config, new Date().toISOString());
+        await prLifecycleLabelsHandler.run(fakeContext, config, new Date().toISOString());
         // then expect the following functions invocation flow
         expect(createCheckStub).to.have.been.calledOnceWith(expectedCreateCheckRunInfo);
         expect(updateCheckStub).to.have.been.calledOnceWith(expectedUpdateCheck);
@@ -315,7 +315,7 @@ suite('Testing the pr-lifecycle-labels', () => {
         // given the listReviews function will return an empty list of reviews
         listReviewStub.withArgs({...getPullRequestInfoResponse}).resolves({code: 200, data: []})
         // when invoking the handler with the fake context, a fake config, and a iso timestamp
-        await prLifecycleLabelsHandler(fakeContext, config, new Date().toISOString());
+        await prLifecycleLabelsHandler.run(fakeContext, config, new Date().toISOString());
         // then expect the following functions invocation flow
         expect(createCheckStub).to.have.been.calledOnceWith(expectedCreateCheckRunInfo);
         expect(updateCheckStub).to.have.been.calledOnceWith(expectedUpdateCheck);
@@ -348,7 +348,7 @@ suite('Testing the pr-lifecycle-labels', () => {
         // given the listReviews function will return an empty list of reviews
         listReviewStub.withArgs({...getPullRequestInfoResponse}).resolves({code: 200, data: [{state: 'CHANGES_REQUESTED'}]})
         // when invoking the handler with the fake context, a fake config, and a iso timestamp
-        await prLifecycleLabelsHandler(fakeContext, config, new Date().toISOString());
+        await prLifecycleLabelsHandler.run(fakeContext, config, new Date().toISOString());
         // then expect the following functions invocation flow
         expect(createCheckStub).to.have.been.calledOnceWith(expectedCreateCheckRunInfo);
         expect(updateCheckStub).to.have.been.calledOnceWith(expectedUpdateCheck);
@@ -381,7 +381,7 @@ suite('Testing the pr-lifecycle-labels', () => {
         // given the listReviews function will return an empty list of reviews
         listReviewStub.withArgs({...getPullRequestInfoResponse}).resolves({code: 200, data: [{state: 'NOTHING_SPECIAL'}, {state: 'MAKING_UP_STATES'}]})
         // when invoking the handler with the fake context, a fake config, and a iso timestamp
-        await prLifecycleLabelsHandler(fakeContext, config, new Date().toISOString());
+        await prLifecycleLabelsHandler.run(fakeContext, config, new Date().toISOString());
         // then expect the following functions invocation flow
         expect(createCheckStub).to.have.been.calledOnceWith(expectedCreateCheckRunInfo);
         expect(updateCheckStub).to.have.been.calledOnceWith(expectedUpdateCheck);
@@ -423,7 +423,7 @@ suite('Testing the pr-lifecycle-labels', () => {
             }
         });
         // when invoking the handler with the fake context, a fake config, and a iso timestamp
-        await prLifecycleLabelsHandler(fakeContext, config, new Date().toISOString());
+        await prLifecycleLabelsHandler.run(fakeContext, config, new Date().toISOString());
         // then expect the following functions invocation flow
         expect(createCheckStub).to.have.been.calledOnceWith(expectedCreateCheckRunInfo);
         expect(updateCheckStub).to.have.been.calledOnceWith(expectedUpdateCheck);
@@ -465,7 +465,7 @@ suite('Testing the pr-lifecycle-labels', () => {
             }
         });
         // when invoking the handler with the fake context, a fake config, and a iso timestamp
-        await prLifecycleLabelsHandler(fakeContext, config, new Date().toISOString());
+        await prLifecycleLabelsHandler.run(fakeContext, config, new Date().toISOString());
         // then expect the following functions invocation flow
         expect(createCheckStub).to.have.been.calledOnceWith(expectedCreateCheckRunInfo);
         expect(updateCheckStub).to.have.been.calledOnceWith(expectedUpdateCheck);

@@ -25,8 +25,26 @@ const LABEL_KEYS = Object.freeze({
 
 const KNOWN_LABELS = Object.freeze(Object.values(LABEL_KEYS));
 
+// matcher for picking up events
+module.exports.match = function(payload) {
+    let eventPr = 'pull_request';
+    let actionsPr = ['opened', 'edited', 'synchronize', 'closed', 'ready_for_review', 'reopened'];
+
+    let eventPrReview = 'pull_request_review';
+    let actionsPrReview = ['submitted', 'edited', 'dismissed'];
+
+    if (eventPr in payload) {
+        return actionsPr.includes(payload[eventPr].action);
+    }
+
+    if (eventPrReview in payload) {
+        return actionsPrReview.includes(payload[eventPr].action);
+    }
+
+}
+
 // handler for labeling pull requests based on lifecycle
-module.exports = async function(context, config, startedAt) {
+module.exports.run = async function(context, config, startedAt) {
     // create the initial check run and mark it as in_progress
     let checkRun = await context.octokit.checks.create(context.repo({
         head_sha: context.payload.pull_request.head.sha,

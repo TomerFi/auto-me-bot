@@ -2,6 +2,7 @@ const yaml = require('js-yaml');
 
 // import handlers
 const prConventionalCommitsHandler = require('./handlers/pr-conventional-commits');
+const prLifecycleLabelsHandler = require('./handlers/pr-lifecycle-labels');
 const prSignedCommitsHandler = require('./handlers/pr-signed-commits');
 const prTasksListHandler = require('./handlers/pr-tasks-list');
 
@@ -19,27 +20,24 @@ pr:
 const ON_EVENTS = Object.freeze([
     'pull_request.opened',
     'pull_request.edited',
-    'pull_request.synchronize'
+    'pull_request.synchronize',
+    'pull_request.closed',
+    'pull_request.ready_for_review',
+    'pull_request.reopened',
+    'pull_request_review.submitted',
+    'pull_request_review.edited',
+    'pull_request_review.dismissed',
 ]);
 
-// handler functions should take context, config, and an iso startedAt (config is nullable)
+// handler object should export two function, match and run
+// the match function should take a context and return true if it can handle its payload
+// the run function should take context, config, and an iso startedAt (config is nullable)
 const CONFIG_SPEC = Object.freeze({
     pr: {
-        conventionalCommits: {
-            event: 'pull_request',
-            actions: ['opened', 'edited', 'synchronize'],
-            run: () => prConventionalCommitsHandler,
-        },
-        signedCommits: {
-            event: 'pull_request',
-            actions: ['opened', 'edited', 'synchronize'],
-            run: () => prSignedCommitsHandler,
-        },
-        tasksList: {
-            event: 'pull_request',
-            actions: ['opened', 'edited', 'synchronize'],
-            run: () => prTasksListHandler,
-        },
+        conventionalCommits: prConventionalCommitsHandler,
+        lifecycleLabels: prLifecycleLabelsHandler,
+        signedCommits: prSignedCommitsHandler,
+        tasksList: prTasksListHandler,
     }
 });
 
@@ -68,13 +66,10 @@ function handlersController(configSpec) {
                     let currentHandlerConfig = currentConfig[handlerType]; // nullable
                     let currentHandlerSpec = currentConfigSpec[handlerType];
                     // verify the handler matches the current event and action types
-                    if (currentHandlerSpec.event in context.payload) {
-                        if (currentHandlerSpec.actions.includes(context.payload[currentHandlerSpec.event].action)) {
-                            // invoke current handler
-                            invocations.push(currentHandlerSpec.run()(context, currentHandlerConfig, startedAt));
-                        }
+                    if (currentHandlerSpec.match(context)) {
+                        // invoke current handler
+                        invocations.push(currentHandlerSpec.run(context, currentHandlerConfig, startedAt));
                     }
-
                 }
             }
         }

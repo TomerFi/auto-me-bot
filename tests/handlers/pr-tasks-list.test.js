@@ -1,11 +1,9 @@
 const beforeEach = require('mocha').beforeEach;
 const chai = require('chai');
 const sinon = require('sinon');
-const rewire = require('rewire');
-
 chai.use(require('sinon-chai'));
 
-const prTasksListHandler = rewire('../../src/handlers/pr-tasks-list');
+const prTasksListHandler = Object.assign({}, require('../../src/handlers/pr-tasks-list'));
 const expect = chai.expect;
 
 const EOL = require('os').EOL;
@@ -173,7 +171,7 @@ suite('Testing the pr-tasks-list handler', () => {
             createCheckStub.resolves(createCheckResponse);
 
             // when invoking the handler with the fake context, a fake config, and a iso timestamp
-            await prTasksListHandler(fakeContext, sinon.fake(), new Date().toISOString());
+            await prTasksListHandler.run(fakeContext, sinon.fake(), new Date().toISOString());
 
             // then expect the following functions invocation flow
             expect(repoFuncStub).to.have.calledWith(expectedCreateCheckRunInfo);
