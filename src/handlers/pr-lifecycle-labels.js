@@ -26,21 +26,21 @@ const LABEL_KEYS = Object.freeze({
 const KNOWN_LABELS = Object.freeze(Object.values(LABEL_KEYS));
 
 // matcher for picking up events
-module.exports.match = function(payload) {
+module.exports.match = function(context) {
     let eventPr = 'pull_request';
     let actionsPr = ['opened', 'edited', 'synchronize', 'closed', 'ready_for_review', 'reopened'];
 
     let eventPrReview = 'pull_request_review';
     let actionsPrReview = ['submitted', 'edited', 'dismissed'];
 
-    if (eventPr in payload) {
-        return actionsPr.includes(payload[eventPr].action);
+    if (eventPr in context.payload) {
+        return actionsPr.includes(context.payload[eventPr].action);
     }
 
-    if (eventPrReview in payload) {
-        return actionsPrReview.includes(payload[eventPr].action);
+    if (eventPrReview in context.payload) {
+        return actionsPrReview.includes(context.payload[eventPrReview].action);
     }
-
+    return false;
 }
 
 // handler for labeling pull requests based on lifecycle

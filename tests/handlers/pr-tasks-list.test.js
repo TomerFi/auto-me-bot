@@ -1,137 +1,47 @@
-const beforeEach = require('mocha').beforeEach;
 const chai = require('chai');
 const sinon = require('sinon');
+const { beforeEach } = require('mocha');
+
 chai.use(require('sinon-chai'));
 
-const prTasksListHandler = Object.assign({}, require('../../src/handlers/pr-tasks-list'));
 const expect = chai.expect;
+const sut = require('../../src/handlers/pr-tasks-list');
 
 const EOL = require('os').EOL;
 
 suite('Testing the pr-tasks-list handler', () => {
-    /* ######################### ##
-    ## #### Shared Fixtures #### ##
-    ## ######################### */
-    const fakeSha = '#f54dda543@';
-    const fakeCheckId = 13;
+    suite('Test handler matching', () => {
+        ['opened', 'edited', 'synchronize'].forEach(action => {
+            test(`Test pull_request event type with ${action} action type, expect a match` , () => {
+                expect(sut.match({ payload: { pull_request: { action: action } } })).to.be.true;
+            });
+        });
 
-    // the expected arg for creating a new check run
-    const expectedCreateCheckRunInfo = {
-        head_sha: fakeSha,
-        name: sinon.match.string,
-        details_url: sinon.match(u => new URL(u)),
-        started_at: sinon.match(t => Date.parse(t)),
-        status: 'in_progress'
-    };
-    // the stubbed response for creating a new check run
-    const createCheckResponse = {
-        data: {
-            id: fakeCheckId
-        }
-    };
+        test('Test pull_request event type with an unknown action type, expect a false match' , () => {
+            expect(sut.match({ payload: { pull_request: { action: 'unknownAction' } } })).to.be.false;
+        });
 
-    /* ######################################################## ##
-    ## #### Fixtures for testing a full checked tasks list #### ##
-    ## ######################################################## */
-    const checkedBody = [
-        '- [x] task 1',
-        '- [x] task 2',
-        '- [x] task 3'
-    ].join(EOL);
+        test('Test an unknown event type, expect a false match', () => {
+            expect(sut.match({ payload: { unknownEvent: { action: 'opened' } } })).to.be.false;
+        });
+    });
 
-    const checkedConclusion = 'success';
+    suite('Test handler running', () => {
+        let createCheckStub;
+        let repoFuncStub;
+        let updateCheckStub;
 
-    const checkedOutput = {
-        title: 'All Done!',
-        summary: 'You made it through',
-        text: [
-            '### Here\'s a list of your accomplishments',
-            '- task 1',
-            '- task 2',
-            '- task 3'
-        ].join(EOL)
-    };
+        let baseFakeContext;
 
-    /* ###################################################### ##
-    ## #### Fixtures for testing an unchecked tasks list #### ##
-    ## ###################################################### */
-    const uncheckedBody = [
-        '- [x] task 1',
-        '- [ ] task 2',
-        '- [ ] task 3'
-    ].join(EOL);
+        const fakeSha = '#f54dda543@';
+        const fakeCheckId = 13;
+        const fakeOwner = 'jonDoe';
+        const fakeRepository = 'aProject';
 
-    const uncheckedConclusion = 'failure';
-
-    const uncheckedOutput = {
-        title: 'Found 2 unchecked tasks',
-        summary: 'I\'m sure you know what do with these',
-        text: [
-            '### The following tasks needs to be completed',
-            '- task 2',
-            '- task 3'
-        ].join(EOL)
-    };
-
-    /* ############################################### ##
-    ## #### Fixtures for testing a non-tasks list #### ##
-    ## ############################################### */
-    const noTasksBody = [
-        '- [] task 1',
-        '- task 2',
-        '- ( ) task 3'
-    ].join(EOL);
-
-    const noTasksConclusion = 'success';
-
-    const noTasksOutput = {
-        title: 'No tasks lists found',
-        summary: 'Nothing for me to do here'
-    };
-
-    /* ############################ ##
-    ## #### Dynamic Test Cases #### ##
-    ## ############################ */
-    let testCases = [
-        {
-            testTitle: 'Test with all tasks checked, expect the check to pass with a summary of the completed tasks',
-            prBody: checkedBody,
-            expectConclusion: checkedConclusion,
-            expectedOutput: checkedOutput
-        },
-        {
-            testTitle: 'Test with unchecked tasks, expect the check to fail with a report of the not yet completed tasks',
-            prBody: uncheckedBody,
-            expectConclusion: uncheckedConclusion,
-            expectedOutput: uncheckedOutput
-        },
-        {
-            testTitle: 'Test with not tasks, expect the check to fail providing notification indicating no tasks found',
-            prBody: noTasksBody,
-            expectConclusion: noTasksConclusion,
-            expectedOutput: noTasksOutput
-        }
-    ];
-
-    /* ######################### ##
-    ## #### Stubs and Fakes #### ##
-    ## ######################### */
-    let createCheckStub;
-    let repoFuncStub;
-    let updateCheckStub;
-
-    let fakeContext = {};
-    let expectedUpdateCheck = {};
-
-    beforeEach(() => {
-        // unwrap any previous wrapped sinon objects
-        sinon.restore();
-        // create stubs for the context functions
-        createCheckStub = sinon.stub();
-        repoFuncStub = sinon.stub();
-        updateCheckStub = sinon.stub();
-        // expected update check run argument
-        expectedUpdateCheck = {
+        // expected objects
+        let baseExpectedUpdateCheck = {
+            owner: fakeOwner,
+            repo: fakeRepository,
             check_run_id: fakeCheckId,
             name: sinon.match.string,
             details_url: sinon.match(u => new URL(u)),
@@ -139,46 +49,133 @@ suite('Testing the pr-tasks-list handler', () => {
             status: 'completed',
             completed_at: sinon.match(t => Date.parse(t)),
         }
-        // create a fake context for invoking the application with
-        fakeContext = {
-            payload: {
-                pull_request: {
-                    head: {
-                        sha: fakeSha
-                    }
-                }
-            },
-            octokit: {
-                checks: {
-                    create: createCheckStub,
-                    update: updateCheckStub
-                },
-            },
-            repo: repoFuncStub
+        const expectedCreateCheckRunInfo = {
+            owner: fakeOwner,
+            repo: fakeRepository,
+            head_sha: fakeSha,
+            name: sinon.match.string,
+            details_url: sinon.match(u => new URL(u)),
+            started_at: sinon.match(t => Date.parse(t)),
+            status: 'in_progress'
         };
-    });
+        // function responses
+        const createCheckResponse = { data: { id: fakeCheckId } };
+        const getRepositoryInfoResponse = { owner: fakeOwner, repo: fakeRepository };
 
-    testCases.forEach(testCase => {
-        test(testCase.testTitle, async () => {
-            // given the context will be stubbed with the sut pr body
-            fakeContext.payload.pull_request.body = testCase.prBody;
-            // given the expected update will be stubbed with info from the current sut
-            expectedUpdateCheck.conclusion = testCase.expectConclusion;
-            expectedUpdateCheck.output = testCase.expectedOutput;
-            // given the repo function will loop back the first argument it gets
-            repoFuncStub.returnsArg(0);
-            // given the create check function will resolve to the fake response
+        beforeEach(() => {
+            sinon.restore(); // unwrap any previous wrapped sinon objects
+
+            createCheckStub = sinon.stub(); // stub for context.octokit.checks.create function to short-circuit return the expected response
             createCheckStub.resolves(createCheckResponse);
+            updateCheckStub = sinon.stub(); // stub for context.octokit.checks.update function
+            repoFuncStub = sinon.stub(); // stub for context.repo function to short-circuit return the expected response
+            repoFuncStub.callsFake((a) => {return { ...getRepositoryInfoResponse, ...a }});
+            // create a fake context for invoking the application with (base)
+            baseFakeContext = Object.freeze({
+                payload: {
+                    pull_request: {
+                        head: {
+                            sha: fakeSha
+                        }
+                    }
+                },
+                octokit: {
+                    checks: {
+                        create: createCheckStub,
+                        update: updateCheckStub
+                    },
+                },
+                repo: repoFuncStub
+            });
+        });
+
+        test('Test with all tasks checked, expect the check to pass with a summary of the completed tasks', async () => {
+            // expected check update request parts
+            let expectedUpdateCheck = { ...baseExpectedUpdateCheck, ...{
+                conclusion: 'success',
+                output: {
+                    title: 'All Done!',
+                    summary: 'You made it through',
+                    text: [
+                        '### Here\'s a list of your accomplishments',
+                        '- task 1',
+                        '- task 2',
+                        '- task 3'
+                    ].join(EOL)
+                }
+            }};
+
+            // given the context will be stubbed with the sut pr body
+            let fakeContext = { ...baseFakeContext }
+            fakeContext.payload.pull_request.body = [
+                '- [x] task 1',
+                '- [x] task 2',
+                '- [x] task 3'
+            ].join(EOL);
 
             // when invoking the handler with the fake context, a fake config, and a iso timestamp
-            await prTasksListHandler.run(fakeContext, sinon.fake(), new Date().toISOString());
+            await sut.run(fakeContext, sinon.fake(), new Date().toISOString());
 
-            // then expect the following functions invocation flow
-            expect(repoFuncStub).to.have.calledWith(expectedCreateCheckRunInfo);
+            // then expect the following functions invocations
             expect(createCheckStub).to.have.been.calledOnceWith(expectedCreateCheckRunInfo);
-
-            expect(repoFuncStub).to.have.calledWith(expectedUpdateCheck);
             expect(updateCheckStub).to.have.been.calledOnceWith(expectedUpdateCheck);
         });
-    })
+
+        test('Test with unchecked tasks, expect the check to fail with a report of the not yet completed tasks', async () => {
+            // expected check update request parts
+            let expectedUpdateCheck = { ...baseExpectedUpdateCheck, ...{
+                conclusion: 'failure',
+                output: {
+                    title: 'Found 2 unchecked tasks',
+                    summary: 'I\'m sure you know what do with these',
+                    text: [
+                        '### The following tasks needs to be completed',
+                        '- task 2',
+                        '- task 3'
+                    ].join(EOL)
+                }
+            }};
+
+            // given the context will be stubbed with the sut pr body
+            let fakeContext = { ...baseFakeContext }
+            fakeContext.payload.pull_request.body = [
+                '- [x] task 1',
+                '- [ ] task 2',
+                '- [ ] task 3'
+            ].join(EOL);
+
+            // when invoking the handler with the fake context, a fake config, and a iso timestamp
+            await sut.run(fakeContext, sinon.fake(), new Date().toISOString());
+
+            // then expect the following functions invocations
+            expect(createCheckStub).to.have.been.calledOnceWith(expectedCreateCheckRunInfo);
+            expect(updateCheckStub).to.have.been.calledOnceWith(expectedUpdateCheck);
+        });
+
+        test('Test with not tasks, expect the check to fail providing notification indicating no tasks found', async () => {
+            // expected check update request parts
+            let expectedUpdateCheck = { ...baseExpectedUpdateCheck, ...{
+                conclusion: 'success',
+                output: {
+                    title: 'No tasks lists found',
+                    summary: 'Nothing for me to do here'
+                }
+            }};
+
+            // given the context will be stubbed with the sut pr body
+            let fakeContext = { ...baseFakeContext }
+            fakeContext.payload.pull_request.body = [
+                '- [] task 1',
+                '- task 2',
+                '- ( ) task 3'
+            ].join(EOL);
+            // when invoking the handler with the fake context, a fake config, and a iso timestamp
+            await sut.run(fakeContext, sinon.fake(), new Date().toISOString());
+
+            // then expect the following functions invocations
+            expect(createCheckStub).to.have.been.calledOnceWith(expectedCreateCheckRunInfo);
+            expect(updateCheckStub).to.have.been.calledOnceWith(expectedUpdateCheck);
+        });
+
+    });
 });
