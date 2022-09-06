@@ -5,6 +5,7 @@
 Contributing is pretty straight-forward:
 
 - Fork the repository
+- Create a new branch
 - Commit your changes
 - Create a pull request against the `main` branch
 

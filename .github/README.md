@@ -24,6 +24,7 @@ Place a file :memo: called **auto-me-bot.yml** in your **.github** folder :file_
 ---
 pr:
   conventionalCommits: # this means I'll enforce conventional commit messages in PRs.
+  lifecycleLabels: # this means you I'll label PRs based on the their lifecycle.
   signedCommits: # this means I'll make sure all commits in PRs are signed with the 'Signed-off-by' trailer.
   tasksList: # this means I'll verify completion of tasks list in PRs.
 ```
@@ -41,7 +42,6 @@ Check out the [documentation][auto-me-bot-doc] to see what else I can do :call_m
 ## Future Plans
 
 - Size based labeling for pull requests.
-- Lifecycle based labeling for pull requests.
 - Automate assignees and reviewers for pull requests.
 - Auto approving pull requests with consideration to GitHub code owners.
 - Various handlers for event types other then _pull_request_, such as _push_ and and _issue_ event types.
@@ -51,9 +51,10 @@ Check out the [documentation][auto-me-bot-doc] to see what else I can do :call_m
 
 Other awesome applications the offer similar handlers as [auto-me-bot][auto-me-bot-app]:
 
-- [Semantic Pull Request][semantic-pull-request]
 - [DCO][dco]
+- [Semantic Pull Request][semantic-pull-request]
 - [Task List Completed][task-list-completed]
+- [Trafico][trafico]
 
 ## Works well with
 
@@ -89,3 +90,4 @@ you can use the [version-bumper-action][version-bumper-action] for _GitHub_, to 
 [dco]: https://github.com/apps/dco
 [semantic-pull-request]: https://github.com/apps/semantic-pull-requests
 [task-list-completed]: https://github.com/marketplace/task-list-completed
+[trafico]: https://github.com/marketplace/trafico-pull-request-labeler/
