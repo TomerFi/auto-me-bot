@@ -1,7 +1,7 @@
-const beforeEach = require('mocha').beforeEach;
 const chai = require('chai');
 const rewire = require('rewire');
 const sinon = require('sinon');
+const { beforeEach } = require('mocha');
 
 chai.use(require('sinon-chai'));
 
@@ -28,6 +28,7 @@ suite('Testing the auto-me-bot export', () => {
 
     suite('Test various pull request related configurations', () => {
         let conventionalCommitsHandlerStub;
+        let lifecycleLabelsHandlerStub;
         let signedCommitsHandlerStub;
         let tasksListHandlerStub;
         let configFuncStub;
@@ -37,21 +38,31 @@ suite('Testing the auto-me-bot export', () => {
         let prHandlersControllerSut;
 
         beforeEach(() => {
-            //
+            // patch the conventionalCommits handler's run function to a stub
             conventionalCommitsHandlerStub = sinon.stub();
-            let conventionalCommitsHandlerFake = require('../src/handlers/pr-conventional-commits');
-            conventionalCommitsHandlerFake.run = conventionalCommitsHandlerStub;
-            //
+            let conventionalCommitsHandlerPatch = require('../src/handlers/pr-conventional-commits');
+            conventionalCommitsHandlerPatch.run = conventionalCommitsHandlerStub;
+            // patch the lifecycle handler's run function to a stub
+            lifecycleLabelsHandlerStub = sinon.stub();
+            let lifecycleLabelHandlerPatch = require('../src/handlers/pr-lifecycle-labels');
+            lifecycleLabelHandlerPatch.run = lifecycleLabelsHandlerStub;
+            // patch the signedCommits handler's run function to a stub
             signedCommitsHandlerStub = sinon.stub();
-            let signedCommitsHandlerFake = require('../src/handlers/pr-signed-commits');
-            signedCommitsHandlerFake.run = signedCommitsHandlerStub;
-            //
+            let signedCommitsHandlerPatch = require('../src/handlers/pr-signed-commits');
+            signedCommitsHandlerPatch.run = signedCommitsHandlerStub;
+            // patch the tasksList handler's run function to a stub
             tasksListHandlerStub = sinon.stub();
-            let tasksListHandlerFake = require('../src/handlers/pr-tasks-list');
-            tasksListHandlerFake.run = tasksListHandlerStub;
-            //
+            let tasksListHandlerPatch = require('../src/handlers/pr-tasks-list');
+            tasksListHandlerPatch.run = tasksListHandlerStub;
+            // inject the patched handlers into the application
+            autoMeBot.__set__({
+                prConventionalCommitsHandler: conventionalCommitsHandlerPatch,
+                prLifecycleLabelsHandler: lifecycleLabelHandlerPatch,
+                prSignedCommitsHandler: signedCommitsHandlerPatch,
+                prTasksListHandler: tasksListHandlerPatch
+            });
+            // create a fake context for invoking the application with and stub the config method
             configFuncStub = sinon.stub();
-            // create a fake context for invoking the application with
             fakeContext = {
                 payload: {
                     pull_request: {
@@ -60,12 +71,6 @@ suite('Testing the auto-me-bot export', () => {
                 },
                 config: configFuncStub
             };
-            // inject handlers stubs
-            autoMeBot.__set__({
-                prConventionalCommitsHandler: conventionalCommitsHandlerFake,
-                prSignedCommitsHandler: signedCommitsHandlerFake,
-                prTasksListHandler: tasksListHandlerFake
-            });
             // grab the handlersController configured for pr related operations
             prHandlersControllerSut = autoMeBot.__get__('handlersController')(
                 autoMeBot.__get__('CONFIG_SPEC')
@@ -74,7 +79,7 @@ suite('Testing the auto-me-bot export', () => {
 
         test('When all PR operations are checked, execute all PR related handlers', async () => {
             // given the following pr full configuration
-            let fullConfig = {pr: { conventionalCommits:{}, signedCommits: {}, tasksList: {} }};
+            let fullConfig = {pr: { conventionalCommits:{}, lifecycleLabels: {}, signedCommits: {}, tasksList: {} }};
             configFuncStub.withArgs('auto-me-bot.yml').resolves(fullConfig);
             // when invoking the controller
             await prHandlersControllerSut(fakeContext);
@@ -82,6 +87,8 @@ suite('Testing the auto-me-bot export', () => {
             return Promise.all([
                 expect(conventionalCommitsHandlerStub).to.have.been.calledOnceWith(
                     fakeContext, fullConfig.pr.conventionalCommits, sinon.match(t => Date.parse(t))),
+                expect(lifecycleLabelsHandlerStub).to.have.been.calledOnceWith(
+                    fakeContext, fullConfig.pr.lifecycleLabels, sinon.match(t => Date.parse(t))),
                 expect(signedCommitsHandlerStub).to.have.been.calledOnceWith(
                     fakeContext, fullConfig.pr.signedCommits, sinon.match(t => Date.parse(t))),
                 expect(tasksListHandlerStub).to.have.been.calledOnceWith(
@@ -99,6 +106,23 @@ suite('Testing the auto-me-bot export', () => {
             return Promise.all([
                 expect(conventionalCommitsHandlerStub).to.have.been.calledOnceWith(
                     fakeContext, fullConfig.pr.conventionalCommits, sinon.match(t => Date.parse(t))),
+                expect(lifecycleLabelsHandlerStub).to.have.not.been.called,
+                expect(signedCommitsHandlerStub).to.have.not.been.called,
+                expect(tasksListHandlerStub).to.have.not.been.called,
+            ]);
+        });
+
+        test('When the lifecycleLabels operation is checked, execute the related handler', async () => {
+            // given the following pr configuration
+            let fullConfig = {pr: { lifecycleLabels: {} }};
+            configFuncStub.withArgs('auto-me-bot.yml').resolves(fullConfig);
+            // when invoking the controller
+            await prHandlersControllerSut(fakeContext);
+            // then expect only the related handler to be invoked
+            return Promise.all([
+                expect(conventionalCommitsHandlerStub).to.have.not.been.called,
+                expect(lifecycleLabelsHandlerStub).to.have.been.calledOnceWith(
+                    fakeContext, fullConfig.pr.lifecycleLabels, sinon.match(t => Date.parse(t))),
                 expect(signedCommitsHandlerStub).to.have.not.been.called,
                 expect(tasksListHandlerStub).to.have.not.been.called,
             ]);
@@ -113,6 +137,7 @@ suite('Testing the auto-me-bot export', () => {
             // then expect only the related handler to be invoked
             return Promise.all([
                 expect(conventionalCommitsHandlerStub).to.have.not.been.called,
+                expect(lifecycleLabelsHandlerStub).to.have.not.been.called,
                 expect(signedCommitsHandlerStub).to.have.been.calledOnceWith(
                     fakeContext, config.pr.signedCommits, sinon.match(t => Date.parse(t))),
                 expect(tasksListHandlerStub).to.have.not.been.called,
@@ -128,6 +153,7 @@ suite('Testing the auto-me-bot export', () => {
             // then expect only the related handler to be invoked
             return Promise.all([
                 expect(conventionalCommitsHandlerStub).to.have.not.been.called,
+                expect(lifecycleLabelsHandlerStub).to.have.not.been.called,
                 expect(signedCommitsHandlerStub).to.have.not.been.called,
                 expect(tasksListHandlerStub).to.have.been.calledOnceWith(
                     fakeContext, config.pr.tasksList, sinon.match(t => Date.parse(t))),
@@ -143,6 +169,7 @@ suite('Testing the auto-me-bot export', () => {
                 // then expect no handlers to be invoked
                 return Promise.all([
                     expect(conventionalCommitsHandlerStub).to.have.not.been.called,
+                    expect(lifecycleLabelsHandlerStub).to.have.not.been.called,
                     expect(signedCommitsHandlerStub).to.have.not.been.called,
                     expect(tasksListHandlerStub).to.have.not.been.called,
                 ]);
@@ -166,6 +193,7 @@ suite('Testing the auto-me-bot export', () => {
             // then expect no handlers to be invoked
             return Promise.all([
                 expect(conventionalCommitsHandlerStub).to.have.not.been.called,
+                expect(lifecycleLabelsHandlerStub).to.have.not.been.called,
                 expect(signedCommitsHandlerStub).to.have.not.been.called,
                 expect(tasksListHandlerStub).to.have.not.been.called,
             ]);
@@ -188,6 +216,7 @@ suite('Testing the auto-me-bot export', () => {
             // then expect no handlers to be invoked
             return Promise.all([
                 expect(conventionalCommitsHandlerStub).to.have.not.been.called,
+                expect(lifecycleLabelsHandlerStub).to.have.not.been.called,
                 expect(signedCommitsHandlerStub).to.have.not.been.called,
                 expect(tasksListHandlerStub).to.have.not.been.called,
             ]);
