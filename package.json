@@ -25,8 +25,8 @@
     "start": "probot run ./src/auto-me-bot.js",
     "lint": "eslint src tests --ext js",
     "test": "nyc npm run tests",
-    "tests": "mocha --check-leaks --fail-zero --color --parallel --ui tdd --recursive ./tests/",
-    "tests:rep": "mocha --check-leaks --fail-zero --parallel --ui tdd --recursive --reporter json ./tests/ > unit-tests-result.json"
+    "tests": "mocha --check-leaks --fail-zero --color --ui tdd --recursive ./tests/",
+    "tests:rep": "mocha --check-leaks --fail-zero --ui tdd --recursive --reporter json ./tests/ > unit-tests-result.json"
   },
   "dependencies": {
     "@commitlint/config-conventional": "^17.1.0",
