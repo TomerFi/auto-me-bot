@@ -15,7 +15,7 @@
         <link rel="canonical" href="https://auto-me-bot.info.tomfi/configuration/">
       
       <link rel="icon" href="../img/favicon.ico">
-      <meta name="generator" content="mkdocs-1.3.1, mkdocs-material-8.4.1">
+      <meta name="generator" content="mkdocs-1.3.1, mkdocs-material-8.4.2">
     
     
       
@@ -528,18 +528,32 @@ If I can't find my configuration file in the repo I'm working with, I'll look fo
 <span class="nt">pr</span><span class="p">:</span><span class="w"></span>
 <span class="w">  </span><span class="nt">conventionalCommits</span><span class="p">:</span><span class="w"> </span><span class="c1"># (1)</span><span class="w"></span>
 <span class="w">    </span><span class="nt">rules</span><span class="p">:</span><span class="w"> </span><span class="c1"># (2)</span><span class="w"></span>
+<span class="w">  </span><span class="nt">lifecycleLabels</span><span class="p">:</span><span class="w"> </span><span class="c1"># (8)</span><span class="w"></span>
+<span class="w">    </span><span class="nt">ignoreDrafts</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># (9)</span><span class="w"></span>
+<span class="w">    </span><span class="nt">labels</span><span class="p">:</span><span class="w"> </span><span class="c1"># (10)</span><span class="w"></span>
+<span class="w">      </span><span class="nt">reviewRequired</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;waiting</span><span class="nv"> </span><span class="s">for</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">review&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="nt">changesRequested</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;changes</span><span class="nv"> </span><span class="s">were</span><span class="nv"> </span><span class="s">requested&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="nt">moreReviewsRequired</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;approved</span><span class="nv"> </span><span class="s">but</span><span class="nv"> </span><span class="s">waiting</span><span class="nv"> </span><span class="s">for</span><span class="nv"> </span><span class="s">more</span><span class="nv"> </span><span class="s">reviews&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="nt">reviewStarted</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;a</span><span class="nv"> </span><span class="s">review</span><span class="nv"> </span><span class="s">was</span><span class="nv"> </span><span class="s">started&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="nt">approved</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;approved</span><span class="nv"> </span><span class="s">and</span><span class="nv"> </span><span class="s">ready&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="nt">merged</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;merged</span><span class="nv"> </span><span class="s">and</span><span class="nv"> </span><span class="s">done&quot;</span><span class="w"></span>
 <span class="w">  </span><span class="nt">signedCommits</span><span class="p">:</span><span class="w"> </span><span class="c1"># (3)</span><span class="w"></span>
 <span class="w">    </span><span class="nt">ignore</span><span class="p">:</span><span class="w"> </span><span class="c1"># (4)</span><span class="w"></span>
-<span class="w">      </span><span class="nt">users</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[]</span><span class="w"></span>
-<span class="w">      </span><span class="nt">emails</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[]</span><span class="w"></span>
+<span class="w">      </span><span class="nt">users</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[]</span><span class="w"> </span><span class="c1"># (6)</span><span class="w"></span>
+<span class="w">      </span><span class="nt">emails</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[]</span><span class="w"> </span><span class="c1"># (7)</span><span class="w"></span>
 <span class="w">  </span><span class="nt">tasksList</span><span class="p">:</span><span class="w"> </span><span class="c1"># (5)</span><span class="w"></span>
 </code></pre></div>
 <ol>
 <li>this means I'll enforce conventional commit messages in PRs.</li>
-<li>you can optionally configure some rules for me.<br/> <a href="https://commitlint.js.org/#/reference-rules">see commitlint options</a></li>
+<li>you can optionally configure some rules for me.<br/><a href="https://commitlint.js.org/#/reference-rules">see commitlint options</a></li>
 <li>this means I'll make sure all commits in PRs are signed with the 'Signed-off-by' trailer.</li>
 <li>you can optionally list users and/or emails for me to ignore.</li>
 <li>this means I'll verify the completion of the tasks list in PRs.</li>
+<li>list users you want my to ignore.</li>
+<li>list email addresses you want my to ignore.</li>
+<li>this means you I'll label PRs based on the their lifecycle.</li>
+<li>you can optionally instruct me to ignore drafts, my default value for this is false for including drafts.</li>
+<li>you don't have to specify all of the lifecycle's stages, just the ones you want.<br/>and I don't create the labels yet, so you'll have to create them.</li>
 </ol>
 
   <hr>
@@ -547,7 +561,7 @@ If I can't find my configuration file in the repo I'm working with, I'll look fo
   <small>
     
       Last update:
-      2022-08-17
+      2022-09-06
     
   </small>
 </div>
@@ -665,7 +679,7 @@ If I can't find my configuration file in the repo I'm working with, I'll look fo
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "..", "features": ["content.code.annotate", "header.autohide", "navigation.indexes", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest", "toc.integrate"], "search": "../assets/javascripts/workers/search.ecf98df9.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": "1.2.2"}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": ["content.code.annotate", "header.autohide", "navigation.indexes", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest", "toc.integrate"], "search": "../assets/javascripts/workers/search.ecf98df9.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": "1.3.0"}</script>
     
     
       <script src="../assets/javascripts/bundle.9c69f0bc.min.js"></script>
