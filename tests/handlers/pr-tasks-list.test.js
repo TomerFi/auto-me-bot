@@ -104,7 +104,6 @@ suite('Testing the pr-tasks-list handler', () => {
                     ].join(EOL)
                 }
             }};
-
             // given the context will be stubbed with the sut pr body
             let fakeContext = { ...baseFakeContext }
             fakeContext.payload.pull_request.body = [
@@ -112,11 +111,9 @@ suite('Testing the pr-tasks-list handler', () => {
                 '- [x] task 2',
                 '- [x] task 3'
             ].join(EOL);
-
-            // when invoking the handler with the fake context, a fake config, and a iso timestamp
-            await sut.run(fakeContext, sinon.fake(), new Date().toISOString());
-
-            // then expect the following functions invocations
+            // when invoking the handler with the fake context, no config, and a iso timestamp
+            await sut.run(fakeContext, undefined, new Date().toISOString());
+            // then verify a check run to be created and updated as expected
             expect(createCheckStub).to.have.been.calledOnceWith(expectedCreateCheckRunInfo);
             expect(updateCheckStub).to.have.been.calledOnceWith(expectedUpdateCheck);
         });
@@ -135,7 +132,6 @@ suite('Testing the pr-tasks-list handler', () => {
                     ].join(EOL)
                 }
             }};
-
             // given the context will be stubbed with the sut pr body
             let fakeContext = { ...baseFakeContext }
             fakeContext.payload.pull_request.body = [
@@ -143,11 +139,9 @@ suite('Testing the pr-tasks-list handler', () => {
                 '- [ ] task 2',
                 '- [ ] task 3'
             ].join(EOL);
-
-            // when invoking the handler with the fake context, a fake config, and a iso timestamp
-            await sut.run(fakeContext, sinon.fake(), new Date().toISOString());
-
-            // then expect the following functions invocations
+            // when invoking the handler with the fake context, no config, and a iso timestamp
+            await sut.run(fakeContext, undefined, new Date().toISOString());
+            // then verify a check run to be created and updated as expected
             expect(createCheckStub).to.have.been.calledOnceWith(expectedCreateCheckRunInfo);
             expect(updateCheckStub).to.have.been.calledOnceWith(expectedUpdateCheck);
         });
@@ -161,7 +155,6 @@ suite('Testing the pr-tasks-list handler', () => {
                     summary: 'Nothing for me to do here'
                 }
             }};
-
             // given the context will be stubbed with the sut pr body
             let fakeContext = { ...baseFakeContext }
             fakeContext.payload.pull_request.body = [
@@ -169,13 +162,11 @@ suite('Testing the pr-tasks-list handler', () => {
                 '- task 2',
                 '- ( ) task 3'
             ].join(EOL);
-            // when invoking the handler with the fake context, a fake config, and a iso timestamp
-            await sut.run(fakeContext, sinon.fake(), new Date().toISOString());
-
-            // then expect the following functions invocations
+            // when invoking the handler with the fake context, no config, and a iso timestamp
+            await sut.run(fakeContext, undefined, new Date().toISOString());
+            // then verify a check run to be created and updated as expected
             expect(createCheckStub).to.have.been.calledOnceWith(expectedCreateCheckRunInfo);
             expect(updateCheckStub).to.have.been.calledOnceWith(expectedUpdateCheck);
         });
-
     });
 });

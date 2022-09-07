@@ -144,7 +144,7 @@ suite('Testing the pr-lifecycle-labels', () => {
             fakeContext.payload.pull_request.draft = true;
             // when invoking the handler with the fake context, a fake config, and a iso timestamp
             await sut.run(fakeContext, config, new Date().toISOString());
-            // then expect the following functions invocations
+            // then verify a check run to be created and updated as expected
             expect(createCheckStub).to.have.been.calledOnceWith(expectedCreateCheckRunInfo);
             expect(updateCheckStub).to.have.been.calledOnceWith(expectedUpdateCheck);
             // then no labels should be added or removed
@@ -167,7 +167,7 @@ suite('Testing the pr-lifecycle-labels', () => {
                 fakeContext.payload.pull_request.draft = true;
                 // when invoking the handler with the fake context, a fake config, and a iso timestamp
                 await sut.run(fakeContext, invalidConfig, new Date().toISOString());
-                // then expect the following functions invocations
+                // then verify a check run to be created and updated as expected
                 expect(createCheckStub).to.have.been.calledOnceWith(expectedCreateCheckRunInfo);
                 expect(updateCheckStub).to.have.been.calledOnceWith(expectedUpdateCheck);
                 expect(addLabelsStub).to.have.not.been.called;
@@ -195,7 +195,7 @@ suite('Testing the pr-lifecycle-labels', () => {
             fakeContext.payload.pull_request.merged = true;
             // when invoking the handler with the fake context, a fake config, and a iso timestamp
             await sut.run(fakeContext, config, new Date().toISOString());
-            // then expect the following functions invocations
+            // then verify a check run to be created and updated as expected
             expect(createCheckStub).to.have.been.calledOnceWith(expectedCreateCheckRunInfo);
             expect(updateCheckStub).to.have.been.calledOnceWith(expectedUpdateCheck);
             // then no labels should be added or removed
@@ -226,7 +226,7 @@ suite('Testing the pr-lifecycle-labels', () => {
             getLabelStub.withArgs({...getPullRequestInfoResponse, name: 'this pr is merged'}).resolves({code: 404});
             // when invoking the handler with the fake context, a fake config, and a iso timestamp
             await sut.run(fakeContext, config, new Date().toISOString());
-            // then expect the following functions invocations
+            // then verify a check run to be created and updated as expected
             expect(createCheckStub).to.have.been.calledOnceWith(expectedCreateCheckRunInfo);
             expect(updateCheckStub).to.have.been.calledOnceWith(expectedUpdateCheck);
             // then no labels should be added or removed
@@ -261,7 +261,7 @@ suite('Testing the pr-lifecycle-labels', () => {
             addLabelsStub.withArgs({...getPullRequestInfoResponse, names: ['this pr is merged', 'unrelated label']}).resolves({code: 200});
             // when invoking the handler with the fake context, a fake config, and a iso timestamp
             await sut.run(fakeContext, config, new Date().toISOString());
-            // then expect the following functions invocations
+            // then verify a check run to be created and updated as expected
             expect(createCheckStub).to.have.been.calledOnceWith(expectedCreateCheckRunInfo);
             expect(updateCheckStub).to.have.been.calledOnceWith(expectedUpdateCheck);
             // then the add labels should have been called once
@@ -295,7 +295,7 @@ suite('Testing the pr-lifecycle-labels', () => {
             addLabelsStub.withArgs({...getPullRequestInfoResponse, names: ['this pr is merged', 'unrelated label']}).resolves({code: 500});
             // when invoking the handler with the fake context, a fake config, and a iso timestamp
             await sut.run(fakeContext, config, new Date().toISOString());
-            // then expect the following functions invocations
+            // then verify a check run to be created and updated as expected
             expect(createCheckStub).to.have.been.calledOnceWith(expectedCreateCheckRunInfo);
             expect(updateCheckStub).to.have.been.calledOnceWith(expectedUpdateCheck);
             // then the add labels should have been called once
@@ -328,7 +328,7 @@ suite('Testing the pr-lifecycle-labels', () => {
             listReviewStub.withArgs({...getPullRequestInfoResponse}).resolves({code: 200, data: []})
             // when invoking the handler with the fake context, a fake config, and a iso timestamp
             await sut.run(fakeContext, config, new Date().toISOString());
-            // then expect the following functions invocations
+            // then verify a check run to be created and updated as expected
             expect(createCheckStub).to.have.been.calledOnceWith(expectedCreateCheckRunInfo);
             expect(updateCheckStub).to.have.been.calledOnceWith(expectedUpdateCheck);
             // then the add labels should have been called once
@@ -361,7 +361,7 @@ suite('Testing the pr-lifecycle-labels', () => {
             listReviewStub.withArgs({...getPullRequestInfoResponse}).resolves({code: 200, data: [{state: 'CHANGES_REQUESTED'}]})
             // when invoking the handler with the fake context, a fake config, and a iso timestamp
             await sut.run(fakeContext, config, new Date().toISOString());
-            // then expect the following functions invocations
+            // then verify a check run to be created and updated as expected
             expect(createCheckStub).to.have.been.calledOnceWith(expectedCreateCheckRunInfo);
             expect(updateCheckStub).to.have.been.calledOnceWith(expectedUpdateCheck);
             // then the add labels should have been called once
@@ -394,7 +394,7 @@ suite('Testing the pr-lifecycle-labels', () => {
             listReviewStub.withArgs({...getPullRequestInfoResponse}).resolves({code: 200, data: [{state: 'NOTHING_SPECIAL'}, {state: 'MAKING_UP_STATES'}]})
             // when invoking the handler with the fake context, a fake config, and a iso timestamp
             await sut.run(fakeContext, config, new Date().toISOString());
-            // then expect the following functions invocations
+            // then verify a check run to be created and updated as expected
             expect(createCheckStub).to.have.been.calledOnceWith(expectedCreateCheckRunInfo);
             expect(updateCheckStub).to.have.been.calledOnceWith(expectedUpdateCheck);
             // then the add labels should have been called once
@@ -436,7 +436,7 @@ suite('Testing the pr-lifecycle-labels', () => {
             });
             // when invoking the handler with the fake context, a fake config, and a iso timestamp
             await sut.run(fakeContext, config, new Date().toISOString());
-            // then expect the following functions invocations
+            // then verify a check run to be created and updated as expected
             expect(createCheckStub).to.have.been.calledOnceWith(expectedCreateCheckRunInfo);
             expect(updateCheckStub).to.have.been.calledOnceWith(expectedUpdateCheck);
             // then the add labels should have been called once
@@ -478,7 +478,7 @@ suite('Testing the pr-lifecycle-labels', () => {
             });
             // when invoking the handler with the fake context, a fake config, and a iso timestamp
             await sut.run(fakeContext, config, new Date().toISOString());
-            // then expect the following functions invocations
+            // then verify a check run to be created and updated as expected
             expect(createCheckStub).to.have.been.calledOnceWith(expectedCreateCheckRunInfo);
             expect(updateCheckStub).to.have.been.calledOnceWith(expectedUpdateCheck);
             // then the add labels should have been called once

@@ -75,7 +75,7 @@ suite('Testing the pr-conventional-commits handler', () => {
             createCheckStub = sinon.stub(); // stub for context.octokit.checks.create function to short-circuit return the expected response
             createCheckStub.resolves(createCheckResponse);
             updateCheckStub = sinon.stub(); // stub for context.octokit.checks.update function
-            listCommitsStub = sinon.stub(); // stub for context.octokit.rest.pulls.listCommits function //TODO
+            listCommitsStub = sinon.stub(); // stub for context.octokit.rest.pulls.listCommits function
             repoFuncStub = sinon.stub(); // stub for context.repo function to short-circuit return the expected response
             repoFuncStub.callsFake((a) => {return { ...getRepositoryInfoResponse, ...a }});
             pullRequestFuncStub = sinon.stub(); //stub for context.pullRequest function to short-circuit return the expected response
@@ -101,7 +101,7 @@ suite('Testing the pr-conventional-commits handler', () => {
                         create: createCheckStub,
                         update: updateCheckStub
                     },
-                    rest: { // TODO: do we need "rest" here?
+                    rest: {
                         pulls: {
                             listCommits: listCommitsStub
                         }
