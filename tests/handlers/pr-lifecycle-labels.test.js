@@ -223,7 +223,7 @@ suite('Testing the pr-lifecycle-labels', () => {
             fakeContext.payload.pull_request.merged = true;
             fakeContext.payload.pull_request.labels = [{name: 'in review'}]
             // given the getLabel function will resolved to code 404 indicating the label doesn't exists
-            getLabelStub.withArgs({...getPullRequestInfoResponse, name: 'this pr is merged'}).resolves({code: 404});
+            getLabelStub.withArgs({...getPullRequestInfoResponse, name: 'this pr is merged'}).resolves({status: 404});
             // when invoking the handler with the fake context, a fake config, and a iso timestamp
             await sut.run(fakeContext, config, new Date().toISOString());
             // then verify a check run to be created and updated as expected
@@ -256,9 +256,9 @@ suite('Testing the pr-lifecycle-labels', () => {
             fakeContext.payload.pull_request.merged = true;
             fakeContext.payload.pull_request.labels = [{name: 'in review'}, {name: 'unrelated label'}]
             // given the getLabel function will resolved to code 200 indicating the label exists
-            getLabelStub.withArgs({...getPullRequestInfoResponse, name: 'this pr is merged'}).resolves({code: 200});
+            getLabelStub.withArgs({...getPullRequestInfoResponse, name: 'this pr is merged'}).resolves({status: 200});
             // given the addLabels function will succeed for the following argument
-            addLabelsStub.withArgs({...getPullRequestInfoResponse, names: ['this pr is merged', 'unrelated label']}).resolves({code: 200});
+            addLabelsStub.withArgs({...getPullRequestInfoResponse, names: ['this pr is merged', 'unrelated label']}).resolves({status: 200});
             // when invoking the handler with the fake context, a fake config, and a iso timestamp
             await sut.run(fakeContext, config, new Date().toISOString());
             // then verify a check run to be created and updated as expected
@@ -290,9 +290,9 @@ suite('Testing the pr-lifecycle-labels', () => {
             fakeContext.payload.pull_request.merged = true;
             fakeContext.payload.pull_request.labels = [{name: 'in review'}, {name: 'unrelated label'}]
             // given the getLabel function will resolved to code 200 indicating the label exists
-            getLabelStub.withArgs({...getPullRequestInfoResponse, name: 'this pr is merged'}).resolves({code: 200});
+            getLabelStub.withArgs({...getPullRequestInfoResponse, name: 'this pr is merged'}).resolves({status: 200});
             // given the addLabels function will report and internal error (500) for the following argument
-            addLabelsStub.withArgs({...getPullRequestInfoResponse, names: ['this pr is merged', 'unrelated label']}).resolves({code: 500});
+            addLabelsStub.withArgs({...getPullRequestInfoResponse, names: ['this pr is merged', 'unrelated label']}).resolves({status: 500});
             // when invoking the handler with the fake context, a fake config, and a iso timestamp
             await sut.run(fakeContext, config, new Date().toISOString());
             // then verify a check run to be created and updated as expected
@@ -321,11 +321,11 @@ suite('Testing the pr-lifecycle-labels', () => {
             let fakeContext = { ...baseFakeContext }
             fakeContext.payload.action = 'opened';
             // given the getLabel function will resolved to code 200 indicating the label exists
-            getLabelStub.withArgs({...getPullRequestInfoResponse, name: 'waiting 4 review'}).resolves({code: 200});
+            getLabelStub.withArgs({...getPullRequestInfoResponse, name: 'waiting 4 review'}).resolves({status: 200});
             // given the addLabels function will succeed for the following argument
-            addLabelsStub.withArgs({...getPullRequestInfoResponse, names: ['waiting 4 review']}).resolves({code: 200});
+            addLabelsStub.withArgs({...getPullRequestInfoResponse, names: ['waiting 4 review']}).resolves({status: 200});
             // given the listReviews function will return an empty list of reviews
-            listReviewStub.withArgs({...getPullRequestInfoResponse}).resolves({code: 200, data: []})
+            listReviewStub.withArgs({...getPullRequestInfoResponse}).resolves({status: 200, data: []})
             // when invoking the handler with the fake context, a fake config, and a iso timestamp
             await sut.run(fakeContext, config, new Date().toISOString());
             // then verify a check run to be created and updated as expected
@@ -354,11 +354,11 @@ suite('Testing the pr-lifecycle-labels', () => {
             let fakeContext = { ...baseFakeContext }
             fakeContext.payload.action = 'opened';
             // given the getLabel function will resolved to code 200 indicating the label exists
-            getLabelStub.withArgs({...getPullRequestInfoResponse, name: 'changes were requested'}).resolves({code: 200});
+            getLabelStub.withArgs({...getPullRequestInfoResponse, name: 'changes were requested'}).resolves({status: 200});
             // given the addLabels function will succeed for the following argument
-            addLabelsStub.withArgs({...getPullRequestInfoResponse, names: ['changes were requested']}).resolves({code: 200});
+            addLabelsStub.withArgs({...getPullRequestInfoResponse, names: ['changes were requested']}).resolves({status: 200});
             // given the listReviews function will return an empty list of reviews
-            listReviewStub.withArgs({...getPullRequestInfoResponse}).resolves({code: 200, data: [{state: 'CHANGES_REQUESTED'}]})
+            listReviewStub.withArgs({...getPullRequestInfoResponse}).resolves({status: 200, data: [{state: 'CHANGES_REQUESTED'}]})
             // when invoking the handler with the fake context, a fake config, and a iso timestamp
             await sut.run(fakeContext, config, new Date().toISOString());
             // then verify a check run to be created and updated as expected
@@ -387,11 +387,11 @@ suite('Testing the pr-lifecycle-labels', () => {
             let fakeContext = { ...baseFakeContext }
             fakeContext.payload.action = 'opened';
             // given the getLabel function will resolved to code 200 indicating the label exists
-            getLabelStub.withArgs({...getPullRequestInfoResponse, name: 'review has started'}).resolves({code: 200});
+            getLabelStub.withArgs({...getPullRequestInfoResponse, name: 'review has started'}).resolves({status: 200});
             // given the addLabels function will succeed for the following argument
-            addLabelsStub.withArgs({...getPullRequestInfoResponse, names: ['review has started']}).resolves({code: 200});
+            addLabelsStub.withArgs({...getPullRequestInfoResponse, names: ['review has started']}).resolves({status: 200});
             // given the listReviews function will return an empty list of reviews
-            listReviewStub.withArgs({...getPullRequestInfoResponse}).resolves({code: 200, data: [{state: 'NOTHING_SPECIAL'}, {state: 'MAKING_UP_STATES'}]})
+            listReviewStub.withArgs({...getPullRequestInfoResponse}).resolves({status: 200, data: [{state: 'NOTHING_SPECIAL'}, {state: 'MAKING_UP_STATES'}]})
             // when invoking the handler with the fake context, a fake config, and a iso timestamp
             await sut.run(fakeContext, config, new Date().toISOString());
             // then verify a check run to be created and updated as expected
@@ -420,14 +420,14 @@ suite('Testing the pr-lifecycle-labels', () => {
             let fakeContext = { ...baseFakeContext }
             fakeContext.payload.action = 'opened';
             // given the getLabel function will resolved to code 200 indicating the label exists
-            getLabelStub.withArgs({...getPullRequestInfoResponse, name: 'this pr is approved'}).resolves({code: 200});
+            getLabelStub.withArgs({...getPullRequestInfoResponse, name: 'this pr is approved'}).resolves({status: 200});
             // given the addLabels function will succeed for the following argument
-            addLabelsStub.withArgs({...getPullRequestInfoResponse, names: ['this pr is approved']}).resolves({code: 200});
+            addLabelsStub.withArgs({...getPullRequestInfoResponse, names: ['this pr is approved']}).resolves({status: 200});
             // given the listReviews function will return an empty list of reviews
-            listReviewStub.withArgs({...getPullRequestInfoResponse}).resolves({code: 200, data: [{state: 'APPROVED'}, {state: 'APPROVED'}]})
+            listReviewStub.withArgs({...getPullRequestInfoResponse}).resolves({status: 200, data: [{state: 'APPROVED'}, {state: 'APPROVED'}]})
             //
             branchProtectFuncStub.withArgs({...getRepositoryInfoResponse, branch: fakeBaseSha}).resolves({
-                code: 200,
+                status: 200,
                 data: {
                     required_pull_request_reviews: {
                         required_approving_review_count: 2
@@ -462,14 +462,14 @@ suite('Testing the pr-lifecycle-labels', () => {
             let fakeContext = { ...baseFakeContext }
             fakeContext.payload.action = 'opened';
             // given the getLabel function will resolved to code 200 indicating the label exists
-            getLabelStub.withArgs({...getPullRequestInfoResponse, name: 'we need more approvals'}).resolves({code: 200});
+            getLabelStub.withArgs({...getPullRequestInfoResponse, name: 'we need more approvals'}).resolves({status: 200});
             // given the addLabels function will succeed for the following argument
-            addLabelsStub.withArgs({...getPullRequestInfoResponse, names: ['we need more approvals']}).resolves({code: 200});
+            addLabelsStub.withArgs({...getPullRequestInfoResponse, names: ['we need more approvals']}).resolves({status: 200});
             // given the listReviews function will return an empty list of reviews
-            listReviewStub.withArgs({...getPullRequestInfoResponse}).resolves({code: 200, data: [{state: 'APPROVED'}]})
+            listReviewStub.withArgs({...getPullRequestInfoResponse}).resolves({status: 200, data: [{state: 'APPROVED'}]})
             //
             branchProtectFuncStub.withArgs({...getRepositoryInfoResponse, branch: fakeBaseSha}).resolves({
-                code: 200,
+                status: 200,
                 data: {
                     required_pull_request_reviews: {
                         required_approving_review_count: 2

@@ -105,7 +105,7 @@ async function getLifecycleLabel(context) {
     }
 
     let reviews = await context.octokit.pulls.listReviews(context.pullRequest())
-        .then(resp => resp.code === 200 ? resp.data : []);
+        .then(resp => resp.status === 200 ? resp.data : []);
 
     if (reviews.length === 0) {
         return LABEL_KEYS.REVIEW_REQUIRED;
@@ -131,7 +131,7 @@ async function getLifecycleLabel(context) {
     }
 
     let baseProtections = await context.octokit.repos.getBranchProtection(
-        context.repo({branch: context.payload.pull_request.base.sha})).then(resp => resp.code === 200 ? resp.data : undefined);
+        context.repo({branch: context.payload.pull_request.base.sha})).then(resp => resp.status === 200 ? resp.data : undefined);
 
     let requiredApprovals = baseProtections?.required_pull_request_reviews?.required_approving_review_count;
     if (approvals < requiredApprovals) {
@@ -163,7 +163,7 @@ async function workThemLabels(context, config, report) {
         if (!isEqual(prLabels.sort(), targetLabels.sort())) {
             if (!prLabels.includes(addLabel)) {
                 let labelExist = await context.octokit.issues.getLabel(context.pullRequest({name: addLabel}))
-                    .then(resp => resp.code === 200);
+                    .then(resp => resp.status === 200);
                 if (!labelExist) {
                     report.conclusion = 'failure';
                     report.output.title = `Label for '${lifecycleLabel}' not found`;
@@ -174,7 +174,7 @@ async function workThemLabels(context, config, report) {
 
             await context.octokit.issues.addLabels(context.pullRequest({names: targetLabels}))
                 .then(resp => {
-                    if (resp.code !== 200) {
+                    if (resp.status !== 200) {
                         report.conclusion = 'failure';
                         report.output.title = 'Failed to add the label';
                         report.output.summary = 'This might be an internal time out, please try again';
