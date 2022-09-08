@@ -71,7 +71,7 @@ module.exports.run = async function(context, config, startedAt) {
         await workThemLabels(context, config, report);
     }
 
-    // update check run and mark it as completed
+    //  update check run and mark it as completed
     await context.octokit.checks.update(context.repo({
         check_run_id: checkRun.data.id,
         name: CHECK_NAME,
@@ -131,7 +131,7 @@ async function getLifecycleLabel(context) {
     }
 
     let baseProtections = await context.octokit.repos.getBranchProtection(
-        context.repo({branch: context.payload.pull_request.base.sha})).then(resp => resp.status === 200 ? resp.data : undefined);
+        context.repo({branch: context.payload.pull_request.base.ref})).then(resp => resp.status === 200 ? resp.data : undefined);
 
     let requiredApprovals = baseProtections?.required_pull_request_reviews?.required_approving_review_count;
     if (approvals < requiredApprovals) {
@@ -162,7 +162,7 @@ async function workThemLabels(context, config, report) {
 
         if (!isEqual(prLabels.sort(), targetLabels.sort())) {
             if (!prLabels.includes(addLabel)) {
-                let labelExist = await context.octokit.issues.getLabel(context.pullRequest({name: addLabel}))
+                let labelExist = await context.octokit.issues.getLabel(context.repo({name: addLabel}))
                     .then(resp => resp.status === 200);
                 if (!labelExist) {
                     report.conclusion = 'failure';
@@ -171,8 +171,7 @@ async function workThemLabels(context, config, report) {
                     return;
                 }
             }
-
-            await context.octokit.issues.addLabels(context.pullRequest({names: targetLabels}))
+            await context.octokit.issues.addLabels(context.repo({issue_number: context.payload.number, labels: targetLabels}))
                 .then(resp => {
                     if (resp.status !== 200) {
                         report.conclusion = 'failure';
