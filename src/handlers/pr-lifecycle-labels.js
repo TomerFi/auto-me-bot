@@ -34,11 +34,11 @@ module.exports.match = function(context) {
     let actionsPrReview = ['submitted', 'edited', 'dismissed'];
 
     if (eventPr in context.payload) {
-        return actionsPr.includes(context.payload[eventPr].action);
+        return actionsPr.includes(context.payload.action);
     }
 
     if (eventPrReview in context.payload) {
-        return actionsPrReview.includes(context.payload[eventPrReview].action);
+        return actionsPrReview.includes(context.payload.action);
     }
     return false;
 }

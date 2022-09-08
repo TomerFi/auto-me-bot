@@ -16,7 +16,7 @@ const SIGN_OFF_TRAILER_REGEX = /^Signed-off-by: (.*) <(.*)@(.*)>$/;
 module.exports.match = function(context) {
     let event = 'pull_request';
     let actions = ['opened', 'edited', 'synchronize'];
-    return event in context.payload ? actions.includes(context.payload[event].action) : false;
+    return event in context.payload ? actions.includes(context.payload.action) : false;
 }
 
 // handler for verifying all commits are sign with the Signed-off-by trailer and a legit email

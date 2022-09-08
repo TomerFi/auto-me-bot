@@ -13,16 +13,16 @@ suite('Testing the pr-conventional-commits handler', () => {
     suite('Test handler matching', () => {
         ['opened', 'edited', 'synchronize'].forEach(action => {
             test(`Test pull_request event type with ${action} action type, expect a match` , () => {
-                expect(sut.match({ payload: { pull_request: { action: action } } })).to.be.true;
+                expect(sut.match({ payload: { pull_request: {}, action: action } })).to.be.true;
             });
         });
 
         test('Test pull_request event type with an unknown action type, expect a false match' , () => {
-            expect(sut.match({ payload: { pull_request: { action: 'unknownAction' } } })).to.be.false;
+            expect(sut.match({ payload: { pull_request: {}, action: 'unknownAction' } })).to.be.false;
         });
 
         test('Test an unknown event type, expect a false match', () => {
-            expect(sut.match({ payload: { unknownEvent: { action: 'opened' } } })).to.be.false;
+            expect(sut.match({ payload: { unknownEvent: {}, action: 'opened' } })).to.be.false;
         });
     });
 

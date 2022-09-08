@@ -15,7 +15,7 @@ const DEFAULT_CONFIG = {extends: ['@commitlint/config-conventional']};
 module.exports.match = function(context) {
     let event = 'pull_request';
     let actions = ['opened', 'edited', 'synchronize'];
-    return event in context.payload ? actions.includes(context.payload[event].action) : false;
+    return event in context.payload ? actions.includes(context.payload.action) : false;
 }
 
 // handler for verifying commit messages as conventional

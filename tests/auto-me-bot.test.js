@@ -77,9 +77,8 @@ suite('Testing the auto-me-bot export', () => {
             configFuncStub = sinon.stub();
             fakeContext = {
                 payload: {
-                    pull_request: {
-                        action: 'opened'
-                    }
+                    pull_request: {},
+                    action: 'opened'
                 },
                 config: configFuncStub
             };
@@ -180,9 +179,8 @@ suite('Testing the auto-me-bot export', () => {
             // when invoking the controller with a patched context
             let patchedContext = {
                 payload: {
-                    unknown_event_type: {
-                        action: 'opened'
-                    }
+                    unknown_event_type: {},
+                    action: 'opened'
                 },
                 config: configFuncStub
             };
@@ -201,9 +199,8 @@ suite('Testing the auto-me-bot export', () => {
             // when invoking the controller with a patched context
             let patchedContext = {
                 payload: {
-                    pull_request: {
-                        action: 'closed_shades'
-                    }
+                    pull_request: {},
+                    action: 'closed_shades'
                 },
                 config: configFuncStub
             };

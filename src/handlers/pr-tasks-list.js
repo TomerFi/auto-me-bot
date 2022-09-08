@@ -10,7 +10,7 @@ module.exports.match = function(context) {
     let actions = ['opened', 'edited', 'synchronize'];
 
     if (event in context.payload) {
-        return actions.includes(context.payload[event].action);
+        return actions.includes(context.payload.action);
     }
 
     return false;

@@ -11,26 +11,26 @@ suite('Testing the pr-lifecycle-labels', () => {
     suite('Test handler matching', () => {
         ['opened', 'edited', 'synchronize', 'closed', 'ready_for_review', 'reopened'].forEach(action => {
             test(`Test pull_request event type with ${action} action type, expect a match` , () => {
-                expect(sut.match({ payload: { pull_request: { action: action } } })).to.be.true;
+                expect(sut.match({ payload: { pull_request: {}, action: action } })).to.be.true;
             });
         });
 
         test('Test pull_request event type with an unknown action type, expect a false match' , () => {
-            expect(sut.match({ payload: { pull_request: { action: 'unknownAction' } } })).to.be.false;
+            expect(sut.match({ payload: { pull_request: {}, action: 'unknownAction' } })).to.be.false;
         });
 
         ['submitted', 'edited', 'dismissed'].forEach(action => {
             test(`Test pull_request_review event type with ${action} action type, expect a match` , () => {
-                expect(sut.match({ payload: { pull_request_review: { action: action } } })).to.be.true;
+                expect(sut.match({ payload: { pull_request_review: {}, action: action } })).to.be.true;
             });
         });
 
         test('Test pull_request_review event type with an unknown action type, expect a false match' , () => {
-            expect(sut.match({ payload: { pull_request_review: { action: 'unknownAction' } } })).to.be.false;
+            expect(sut.match({ payload: { pull_request_review: {}, action: 'unknownAction' } })).to.be.false;
         });
 
         test('Test an unknown event type, expect a false match', () => {
-            expect(sut.match({ payload: { unknownEvent: { action: 'opened' } } })).to.be.false;
+            expect(sut.match({ payload: { unknownEvent: {}, action: 'opened' } })).to.be.false;
         });
     });
 
