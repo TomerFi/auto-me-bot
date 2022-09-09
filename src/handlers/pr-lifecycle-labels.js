@@ -1,4 +1,4 @@
-const { dropWhile, isEmpty, isEqual, union } = require('lodash');
+const { isEmpty } = require('lodash');
 
 /* example configuration (for reference):
 ignoreDrafts: true
@@ -152,26 +152,26 @@ async function workThemLabels(context, config, report) {
         }
 
         let addLabel = configuredLabels[lifecycleLabel];
+        let prLabels = context.payload.pull_request.labels.map(l => l.name);
         let removeLabels = KNOWN_LABELS
             .filter(l => l !== lifecycleLabel)
             .filter(l => l in configuredLabels)
-            .map(l => configuredLabels[l]);
+            .map(l => configuredLabels[l])
+            .filter(l => prLabels.includes(l));
 
-        let prLabels = context.payload.pull_request.labels.map(l => l.name);
-        let targetLabels = union(dropWhile(prLabels, l => removeLabels.includes(l)), [addLabel]);
+        removeLabels.forEach(removeLabel =>
+            context.octokit.issues.removeLabel(context.repo({issue_number: context.payload.number, name: removeLabel})));
 
-        if (!isEqual(prLabels.sort(), targetLabels.sort())) {
-            if (!prLabels.includes(addLabel)) {
-                let labelExist = await context.octokit.issues.getLabel(context.repo({name: addLabel}))
-                    .then(resp => resp.status === 200);
-                if (!labelExist) {
-                    report.conclusion = 'failure';
-                    report.output.title = `Label for '${lifecycleLabel}' not found`;
-                    report.output.summary = `Are you sure the '${addLabel}' label exists?`;
-                    return;
-                }
+        if (!prLabels.includes(addLabel)) {
+            let labelExist = await context.octokit.issues.getLabel(context.repo({name: addLabel}))
+                .then(resp => resp.status === 200);
+            if (!labelExist) {
+                report.conclusion = 'failure';
+                report.output.title = `Label for '${lifecycleLabel}' not found`;
+                report.output.summary = `Are you sure the '${addLabel}' label exists?`;
+                return;
             }
-            await context.octokit.issues.addLabels(context.repo({issue_number: context.payload.number, labels: targetLabels}))
+            await context.octokit.issues.addLabels(context.repo({issue_number: context.payload.number, labels: [addLabel]}))
                 .then(resp => {
                     if (resp.status !== 200) {
                         report.conclusion = 'failure';
