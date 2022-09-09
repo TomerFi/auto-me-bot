@@ -10,7 +10,7 @@ const expect = chai.expect;
 
 suite('Testing the auto-me-bot export', () => {
     // turn off logs
-    console.log = function() { /**/ };
+    console.info = function() { /**/ };
 
     test('When invoking the application, expect a registration of the events', () => {
         let probotFake = sinon.fake(); // create a fake probot for starting the app

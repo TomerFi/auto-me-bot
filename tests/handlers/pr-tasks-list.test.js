@@ -68,6 +68,7 @@ suite('Testing the pr-tasks-list handler', () => {
             createCheckStub = sinon.stub(); // stub for context.octokit.checks.create function to short-circuit return the expected response
             createCheckStub.resolves(createCheckResponse);
             updateCheckStub = sinon.stub(); // stub for context.octokit.checks.update function
+            updateCheckStub.resolves();
             repoFuncStub = sinon.stub(); // stub for context.repo function to short-circuit return the expected response
             repoFuncStub.callsFake((a) => {return { ...getRepositoryInfoResponse, ...a }});
             // create a fake context for invoking the application with (base)

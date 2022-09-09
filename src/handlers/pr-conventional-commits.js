@@ -28,23 +28,6 @@ module.exports.run =  async function(context, config, startedAt) {
         started_at: startedAt,
         status: 'in_progress'
     }));
-    // get the commits associated with the PR
-    let commitObjs = await context.octokit.rest.pulls.listCommits(context.pullRequest()) // TODO: do we need "rest" here?
-        .then(resp => resp.data);
-    // load the configuration options
-    let opts = await loadOptions(config);
-    // get lint status for every commit
-    let lintStatuses = await commitObjs.map(commitObj => lintCommit(commitObj, opts));
-    // list warning and error statuses
-    let errorStatuses = [];
-    let warningStatuses = [];
-    await Promise.all(lintStatuses).then(statuses => statuses.forEach(status => {
-        if(!status.report.valid) {
-            errorStatuses.push(status); // the lint status is not valid
-        } else if (status.report.warnings.length > 0) {
-            warningStatuses.push(status); // the lint status is valid but has warnings
-        }
-    }));
     // default output for successful lint
     let report = {
         conclusion: 'success',
@@ -53,31 +36,63 @@ module.exports.run =  async function(context, config, startedAt) {
             summary: 'Nothing to do here, no one told me you\'re a commit-message-master'
         }
     };
-    // check for error and warning
-    let numError = errorStatuses.length;
-    let numWarnings = warningStatuses.length;
-    if (numError > 0) {
-        // found errors
-        report.conclusion = 'failure';
-        let title;
-        if (numWarnings > 0) {
-            // found errors and warnings
-            let totalFound = numError + numWarnings;
-            title = `Found ${totalFound} non-conventional commit message${totalFound > 1 ? 's' : ''}`;
+    // get the commits associated with the PR
+    let commitObjs = [];
+    await context.octokit.rest.pulls.listCommits(context.pullRequest()) // TODO: do we need "rest" here?
+        .then(response => {
+            if (response.status === 200) {
+                commitObjs = response.data;
+            } else {
+                let {status, message} = response;
+                console.error({status,  message});
+            }
+        })
+        .catch(error => console.error(error));
+    if (commitObjs.length === 0) {
+        report.conclusion = 'failure'
+        report.output.title = 'No commits found'
+        report.output.summary = 'Unable to fetch commits from GH API'
+    } else {
+        // load the configuration options
+        let opts = await loadOptions(config);
+        // get lint status for every commit
+        let lintStatuses = await commitObjs.map(commitObj => lintCommit(commitObj, opts));
+        // list warning and error statuses
+        let errorStatuses = [];
+        let warningStatuses = [];
+        await Promise.all(lintStatuses).then(statuses => statuses.forEach(status => {
+            if(!status.report.valid) {
+                errorStatuses.push(status); // the lint status is not valid
+            } else if (status.report.warnings.length > 0) {
+                warningStatuses.push(status); // the lint status is valid but has warnings
+            }
+        }));
+        // check for error and warning
+        let numError = errorStatuses.length;
+        let numWarnings = warningStatuses.length;
+        if (numError > 0) {
+            // found errors
+            report.conclusion = 'failure';
+            let title;
+            if (numWarnings > 0) {
+                // found errors and warnings
+                let totalFound = numError + numWarnings;
+                title = `Found ${totalFound} non-conventional commit message${totalFound > 1 ? 's' : ''}`;
 
-        } else {
-            // found only errors - no warnings
-            title = `Found ${numError} non-conventional commit message${numError > 1 ? 's' : ''}`;
+            } else {
+                // found only errors - no warnings
+                title = `Found ${numError} non-conventional commit message${numError > 1 ? 's' : ''}`;
+            }
+            // create output for error/error+warning
+            report.output.title = title;
+            report.output.summary = 'We need to amend these commits messages';
+            report.output.text = errorStatuses.concat(warningStatuses).map(lintSts => parseLintStatus(lintSts)).join(EOL);
+        } else if (numWarnings > 0) {
+            // found only warning - no errors
+            report.output.title = `Found ${numWarnings} non-conventional commit message${numWarnings > 1 ? 's' : ''}`;
+            report.output.summary = 'Take a look at these';
+            report.output.text = warningStatuses.map(lintSts => parseLintStatus(lintSts)).join(EOL);
         }
-        // create output for error/error+warning
-        report.output.title = title;
-        report.output.summary = 'We need to amend these commits messages';
-        report.output.text = errorStatuses.concat(warningStatuses).map(lintSts => parseLintStatus(lintSts)).join(EOL);
-    } else if (numWarnings > 0) {
-        // found only warning - no errors
-        report.output.title = `Found ${numWarnings} non-conventional commit message${numWarnings > 1 ? 's' : ''}`;
-        report.output.summary = 'Take a look at these';
-        report.output.text = warningStatuses.map(lintSts => parseLintStatus(lintSts)).join(EOL);
     }
     // update check run and mark it as completed
     await context.octokit.checks.update(context.repo({

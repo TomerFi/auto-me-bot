@@ -75,6 +75,7 @@ suite('Testing the pr-conventional-commits handler', () => {
             createCheckStub = sinon.stub(); // stub for context.octokit.checks.create function to short-circuit return the expected response
             createCheckStub.resolves(createCheckResponse);
             updateCheckStub = sinon.stub(); // stub for context.octokit.checks.update function
+            updateCheckStub.resolves();
             listCommitsStub = sinon.stub(); // stub for context.octokit.rest.pulls.listCommits function
             repoFuncStub = sinon.stub(); // stub for context.repo function to short-circuit return the expected response
             repoFuncStub.callsFake((a) => {return { ...getRepositoryInfoResponse, ...a }});
@@ -115,6 +116,7 @@ suite('Testing the pr-conventional-commits handler', () => {
         test('Test with one warning commit message, expect one warning report', async () => {
             // fake api response
             let listCommitsResponse = {
+                status: 200,
                 data: [
                     {
                         html_url: fakeCommitUrl,
@@ -151,6 +153,7 @@ suite('Testing the pr-conventional-commits handler', () => {
         test('Test with one error commit message, expect one error report', async () => {
             // fake api response
             let listCommitsResponse = {
+                status: 200,
                 data: [
                     {
                         html_url: fakeCommitUrl,
@@ -187,6 +190,7 @@ suite('Testing the pr-conventional-commits handler', () => {
         test('Test with one good commit message, expect a successful result', async () => {
             // fake api response
             let listCommitsResponse = {
+                status: 200,
                 data: [
                     {
                         html_url: fakeCommitUrl,
@@ -212,6 +216,7 @@ suite('Testing the pr-conventional-commits handler', () => {
         test('Test with one warning, one error, and one good commit message, expect a report for both the warning and the error', async () => {
             // fake api response
             let listCommitsResponse = {
+                status: 200,
                 data: [
                     {
                         html_url: fakeCommitUrl,
@@ -264,11 +269,12 @@ suite('Testing the pr-conventional-commits handler', () => {
             };
             // assert the api response creates the expected updated check run arg
             await assertHandlerOperation(listCommitsResponse, expectedUpdateCheck);
-        })
+        });
 
         test('Test with one non-standard error based a custom configuration, expect a report error', async () => {
             // fake api response
             let listCommitsResponse = {
+                status: 200,
                 data: [
                     {
                         html_url: fakeCommitUrl,
@@ -315,5 +321,48 @@ suite('Testing the pr-conventional-commits handler', () => {
             // verify custom configuration is included in the used configuration
             expect(loadSpy).to.have.been.calledOnceWith(optionalConfig ? {...baseConfig, ...optionalConfig} : baseConfig);
         }
+
+        test('Test with listCommits API endpoint response not successful, expect a report indicating a possible API error', async () => {
+            // fake api response
+            let listCommitsResponse = {
+                status: 300,
+                message: 'say what'
+            };
+            // expected report output
+            let expectedUpdateCheck = {
+                ...baseExpectedUpdateCheck,
+                conclusion: 'failure',
+                output: {
+                    title: 'No commits found',
+                    summary: 'Unable to fetch commits from GH API'
+                }
+            };
+            // given the listCommits api endpoint will resolve to the fake response
+            listCommitsStub.resolves(listCommitsResponse);
+            // when invoking the handler with the fake context, no config, and an iso timestamp
+            await sut.run(fakeContext, undefined, new Date().toISOString());
+            // then verify a check run to be created and updated as expected
+            expect(createCheckStub).to.have.been.calledOnceWith(expectedCreateCheckRunInfo);
+            expect(updateCheckStub).to.have.been.calledOnceWith(expectedUpdateCheck);
+        });
+
+        test('Test with listCommits API response endpoint promise rejection, expect a report indicating a possible API error', async () => {
+            // expected report output
+            let expectedUpdateCheck = {
+                ...baseExpectedUpdateCheck,
+                conclusion: 'failure',
+                output: {
+                    title: 'No commits found',
+                    summary: 'Unable to fetch commits from GH API'
+                }
+            };
+            // given the listCommits api endpoint will resolve to the fake response
+            listCommitsStub.rejects('I have my reasons');
+            // when invoking the handler with the fake context, no config, and an iso timestamp
+            await sut.run(fakeContext, undefined, new Date().toISOString());
+            // then verify a check run to be created and updated as expected
+            expect(createCheckStub).to.have.been.calledOnceWith(expectedCreateCheckRunInfo);
+            expect(updateCheckStub).to.have.been.calledOnceWith(expectedUpdateCheck);
+        });
     });
 });

@@ -9,6 +9,7 @@ and select the repos you want me to keep an eye out for.</br>
     | scope                   | permission |
     | ----------------------- | ---------- |
     | .github/auto-me-bot.yml | read       |
+    | administration          | read       |
     | checks                  | write      |
     | metadata                | read       |
     | pull_requests           | write      |

@@ -29,13 +29,6 @@ module.exports.run = async function(context, config, startedAt) {
         started_at: startedAt,
         status: 'in_progress'
     }));
-    // grab all commits related the pr
-    let allCommits = await context.octokit.rest.pulls.listCommits(context.pullRequest()) // TODO: do we need "rest" here?
-        .then(resp => resp.data);
-    // list all unsigned commits
-    let unsignedCommits = [];
-    await Promise.all(allCommits.map(commit =>
-        verifyCommitTrailer(commit.commit, config).catch(() => unsignedCommits.push(commit))))
     // default output when all commits are signed
     let report = {
         conclusion: 'success',
@@ -44,14 +37,36 @@ module.exports.run = async function(context, config, startedAt) {
             summary: 'All commits are signed'
         }
     };
-    // check if found unsigned commits
-    let numUnsignedCommits = unsignedCommits.length;
-    if (numUnsignedCommits > 0) {
-        // if found unsigned commit/s update output
-        report.conclusion = 'failure';
-        report.output.title = `Found ${numUnsignedCommits} unsigned commits`;
-        report.output.summary = 'We need to get the these commits signed';
-        report.output.text = unsignedCommits.map(commit => `- ${commit.html_url}`).join(EOL);
+    // grab all commits related the pr
+    let allCommits = [];
+    await context.octokit.rest.pulls.listCommits(context.pullRequest()) // TODO: do we need "rest" here?
+        .then(response => {
+            if (response.status === 200) {
+                allCommits = response.data;
+            } else {
+                let {status, message} = response;
+                console.error({status,  message});
+            }
+        })
+        .catch(error => console.error(error));
+    if (allCommits.length === 0) {
+        report.conclusion = 'failure'
+        report.output.title = 'No commits found'
+        report.output.summary = 'Unable to fetch commits from GH API'
+    } else {
+        // list all unsigned commits
+        let unsignedCommits = [];
+        await Promise.all(allCommits.map(commit =>
+            verifyCommitTrailer(commit.commit, config).catch(() => unsignedCommits.push(commit))))
+        // check if found unsigned commits
+        let numUnsignedCommits = unsignedCommits.length;
+        if (numUnsignedCommits > 0) {
+            // if found unsigned commit/s update output
+            report.conclusion = 'failure';
+            report.output.title = `Found ${numUnsignedCommits} unsigned commits`;
+            report.output.summary = 'We need to get the these commits signed';
+            report.output.text = unsignedCommits.map(commit => `- ${commit.html_url}`).join(EOL);
+        }
     }
     // update check run and mark it as completed
     await context.octokit.checks.update(context.repo({

@@ -104,8 +104,17 @@ async function getLifecycleLabel(context) {
         return LABEL_KEYS.MERGED;
     }
 
-    let reviews = await context.octokit.pulls.listReviews(context.pullRequest())
-        .then(resp => resp.status === 200 ? resp.data : []);
+    let reviews = [];
+    await context.octokit.pulls.listReviews(context.pullRequest())
+        .then(response => {
+            if (response.status === 200) {
+                reviews = response.data;
+            } else {
+                let {status, message} = response;
+                console.error({status,  message});
+            }
+        })
+        .catch(error => console.error(error));
 
     if (reviews.length === 0) {
         return LABEL_KEYS.REVIEW_REQUIRED;
@@ -130,11 +139,20 @@ async function getLifecycleLabel(context) {
         return LABEL_KEYS.REVIEW_STARTED;
     }
 
-    let baseProtections = await context.octokit.repos.getBranchProtection(
-        context.repo({branch: context.payload.pull_request.base.ref})).then(resp => resp.status === 200 ? resp.data : undefined);
+    let baseProtections;
+    await context.octokit.repos.getBranchProtection(context.repo({branch: context.payload.pull_request.base.ref}))
+        .then(response => {
+            if (response.status === 200){
+                baseProtections = response.data;
+            } else {
+                let {status, message} = response;
+                console.error({status,  message});
+            }
+        })
+        .catch(error => console.error(error));
 
     let requiredApprovals = baseProtections?.required_pull_request_reviews?.required_approving_review_count;
-    if (approvals < requiredApprovals) {
+    if (!requiredApprovals || approvals < requiredApprovals) {
         return LABEL_KEYS.MORE_REVIEWS_REQUIRED;
     }
     return LABEL_KEYS.APPROVED;
@@ -160,11 +178,20 @@ async function workThemLabels(context, config, report) {
             .filter(l => prLabels.includes(l));
 
         removeLabels.forEach(removeLabel =>
-            context.octokit.issues.removeLabel(context.repo({issue_number: context.payload.number, name: removeLabel})));
+            context.octokit.issues.removeLabel(context.repo({issue_number: context.payload.number, name: removeLabel}))
+                .then(response => {
+                    if (response.status !== 200) {
+                        let {status, message} = response;
+                        console.error({status,  message});
+                    }
+                })
+                .catch(error => console.error(error)));
 
         if (!prLabels.includes(addLabel)) {
-            let labelExist = await context.octokit.issues.getLabel(context.repo({name: addLabel}))
-                .then(resp => resp.status === 200);
+            let labelExist = false;
+            await context.octokit.issues.getLabel(context.repo({name: addLabel}))
+                .then(resp => labelExist = resp.status === 200)
+                .catch(error => console.error(error));
             if (!labelExist) {
                 report.conclusion = 'failure';
                 report.output.title = `Label for '${lifecycleLabel}' not found`;
@@ -178,6 +205,12 @@ async function workThemLabels(context, config, report) {
                         report.output.title = 'Failed to add the label';
                         report.output.summary = 'This might be an internal time out, please try again';
                     }
+                })
+                .catch(error => {
+                    console.error(error);
+                    report.conclusion = 'failure';
+                    report.output.title = 'Failed to add the label';
+                    report.output.summary = 'This might be a permissions issue';
                 });
         }
     } else {

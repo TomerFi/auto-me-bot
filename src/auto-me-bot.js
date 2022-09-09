@@ -53,8 +53,9 @@ function handlersController(configSpec) {
     return async context => {
         // get config from current repo .github folder or from the .github repo's .github folder
         let config = await context.config('auto-me-bot.yml');
-        console.log('CONTEXT\n' + JSON.stringify(context, null, 2));
-        console.log('CONFIG\n' + yaml.dump(config));
+        let contextJson = JSON.stringify(context, null, 2);
+        let configYaml = yaml.dump(config);
+        console.info({contextJson, configYaml})
         let invocations = []
         let startedAt = new Date().toISOString();
         // iterate over user config keys, i.e. "pr"
