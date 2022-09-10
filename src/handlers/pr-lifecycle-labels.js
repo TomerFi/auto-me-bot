@@ -67,6 +67,10 @@ module.exports.run = async function(context, config, startedAt) {
         report.conclusion = 'skipped'
         report.output.title = 'Ignoring drafts'
         report.output.summary = 'I\'m configured to ignore drafts';
+    } else if (!verifyConfiguration(config)) {
+        report.conclusion = 'neutral';
+        report.output.title = 'Nothing for me to do';
+        report.output.summary = 'Are you sure your configuration is valid?';
     } else {
         await workThemLabels(context, config, report);
     }
@@ -159,64 +163,57 @@ async function getLifecycleLabel(context) {
 }
 
 async function workThemLabels(context, config, report) {
-    if (verifyConfiguration(config)) {
-        let configuredLabels = getConfiguredLabels(config.labels);
-        let lifecycleLabel = await getLifecycleLabel(context);
+    let configuredLabels = getConfiguredLabels(config.labels);
+    let lifecycleLabel = await getLifecycleLabel(context);
 
-        if (!(lifecycleLabel in configuredLabels)) {
-            report.output.title = 'Label not configured'
-            report.output.summary = `Lifecycle label '${lifecycleLabel}' not configured`;
+    if (!(lifecycleLabel in configuredLabels)) {
+        report.output.title = 'Label not configured'
+        report.output.summary = `Lifecycle label '${lifecycleLabel}' not configured`;
+        return;
+    }
+
+    let addLabel = configuredLabels[lifecycleLabel];
+    let prLabels = context.payload.pull_request.labels.map(l => l.name);
+    let removeLabels = KNOWN_LABELS
+        .filter(l => l !== lifecycleLabel)
+        .filter(l => l in configuredLabels)
+        .map(l => configuredLabels[l])
+        .filter(l => prLabels.includes(l));
+
+    removeLabels.forEach(removeLabel =>
+        context.octokit.issues.removeLabel(context.repo({issue_number: context.payload.number, name: removeLabel}))
+            .then(response => {
+                if (response.status !== 200) {
+                    let {status, message} = response;
+                    console.error({status,  message});
+                }
+            })
+            .catch(error => console.error(error)));
+
+    if (!prLabels.includes(addLabel)) {
+        let labelExist = false;
+        await context.octokit.issues.getLabel(context.repo({name: addLabel}))
+            .then(resp => labelExist = resp.status === 200)
+            .catch(error => console.error(error));
+        if (!labelExist) {
+            report.conclusion = 'failure';
+            report.output.title = `Label for '${lifecycleLabel}' not found`;
+            report.output.summary = `Are you sure the '${addLabel}' label exists?`;
             return;
         }
-
-        let addLabel = configuredLabels[lifecycleLabel];
-        let prLabels = context.payload.pull_request.labels.map(l => l.name);
-        let removeLabels = KNOWN_LABELS
-            .filter(l => l !== lifecycleLabel)
-            .filter(l => l in configuredLabels)
-            .map(l => configuredLabels[l])
-            .filter(l => prLabels.includes(l));
-
-        removeLabels.forEach(removeLabel =>
-            context.octokit.issues.removeLabel(context.repo({issue_number: context.payload.number, name: removeLabel}))
-                .then(response => {
-                    if (response.status !== 200) {
-                        let {status, message} = response;
-                        console.error({status,  message});
-                    }
-                })
-                .catch(error => console.error(error)));
-
-        if (!prLabels.includes(addLabel)) {
-            let labelExist = false;
-            await context.octokit.issues.getLabel(context.repo({name: addLabel}))
-                .then(resp => labelExist = resp.status === 200)
-                .catch(error => console.error(error));
-            if (!labelExist) {
-                report.conclusion = 'failure';
-                report.output.title = `Label for '${lifecycleLabel}' not found`;
-                report.output.summary = `Are you sure the '${addLabel}' label exists?`;
-                return;
-            }
-            await context.octokit.issues.addLabels(context.repo({issue_number: context.payload.number, labels: [addLabel]}))
-                .then(resp => {
-                    if (resp.status !== 200) {
-                        report.conclusion = 'failure';
-                        report.output.title = 'Failed to add the label';
-                        report.output.summary = 'This might be an internal time out, please try again';
-                    }
-                })
-                .catch(error => {
-                    console.error(error);
+        await context.octokit.issues.addLabels(context.repo({issue_number: context.payload.number, labels: [addLabel]}))
+            .then(resp => {
+                if (resp.status !== 200) {
                     report.conclusion = 'failure';
                     report.output.title = 'Failed to add the label';
-                    report.output.summary = 'This might be a permissions issue';
-                });
-        }
-    } else {
-        // the configuration is not valid
-        report.conclusion = 'neutral';
-        report.output.title = 'Nothing for me to do';
-        report.output.summary = 'Are you sure your configuration is valid?';
+                    report.output.summary = 'This might be an internal time out, please try again';
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                report.conclusion = 'failure';
+                report.output.title = 'Failed to add the label';
+                report.output.summary = 'This might be a permissions issue';
+            });
     }
 }
