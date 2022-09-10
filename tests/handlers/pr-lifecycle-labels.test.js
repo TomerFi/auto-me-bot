@@ -21,12 +21,12 @@ suite('Testing the pr-lifecycle-labels', () => {
 
         ['submitted', 'edited', 'dismissed'].forEach(action => {
             test(`Test pull_request_review event type with ${action} action type, expect a match` , () => {
-                expect(sut.match({ payload: { pull_request_review: {}, action: action } })).to.be.true;
+                expect(sut.match({ payload: { review: {}, pull_request: {}, action: action } })).to.be.true;
             });
         });
 
         test('Test pull_request_review event type with an unknown action type, expect a false match' , () => {
-            expect(sut.match({ payload: { pull_request_review: {}, action: 'unknownAction' } })).to.be.false;
+            expect(sut.match({ payload: { review: {}, pull_request: {}, action: 'unknownAction' } })).to.be.false;
         });
 
         test('Test an unknown event type, expect a false match', () => {
@@ -53,6 +53,8 @@ suite('Testing the pr-lifecycle-labels', () => {
         const fakePRNumber = 66;
         const fakeOwner = 'jonDoe';
         const fakeRepository = 'aProject';
+        const fakeReviewer1 = 'ReviewerReviewerzon';
+        const fakeReviewer2 = 'ReviewerNoLastName';
 
         // expected objects
         const baseExpectedUpdateCheck = {
@@ -98,7 +100,6 @@ suite('Testing the pr-lifecycle-labels', () => {
             // create a fake context for invoking the application with (base)
             baseFakeContext = Object.freeze({
                 payload: {
-                    number: fakePRNumber,
                     pull_request: {
                         base: {
                             ref: fakeBaseRef
@@ -106,7 +107,8 @@ suite('Testing the pr-lifecycle-labels', () => {
                         head: {
                             sha: fakeHeadSha
                         },
-                        labels: []
+                        labels: [],
+                        number: fakePRNumber
                     }
                 },
                 octokit: {
@@ -448,7 +450,7 @@ suite('Testing the pr-lifecycle-labels', () => {
             getLabelStub.withArgs({...getRepositoryInfoResponse, name: 'waiting 4 review'}).resolves({status: 200});
             // given the addLabels function will succeed
             addLabelsStub.resolves({status: 200});
-            // given the listReviews function will return an empty list of reviews
+            // given the listReviews function will return faulty response
             listReviewStub.withArgs({...getPullRequestInfoResponse}).resolves({status: 300, message: 'sup with that'})
             // when invoking the handler with the fake context, a fake config, and a iso timestamp
             await sut.run(fakeContext, config, new Date().toISOString());
@@ -485,7 +487,7 @@ suite('Testing the pr-lifecycle-labels', () => {
             getLabelStub.withArgs({...getRepositoryInfoResponse, name: 'waiting 4 review'}).resolves({status: 200});
             // given the addLabels function will succeed
             addLabelsStub.resolves({status: 200});
-            // given the listReviews function will return an empty list of reviews
+            // given the listReviews function will be rejected
             listReviewStub.withArgs({...getPullRequestInfoResponse}).rejects('let go');
             // when invoking the handler with the fake context, a fake config, and a iso timestamp
             await sut.run(fakeContext, config, new Date().toISOString());
@@ -514,7 +516,7 @@ suite('Testing the pr-lifecycle-labels', () => {
                 labels: {
                     changesRequested: 'changes were requested'
                 }
-            }
+            };
             // given a pull request is opened
             let fakeContext = { ...baseFakeContext }
             fakeContext.payload.action = 'opened';
@@ -522,8 +524,12 @@ suite('Testing the pr-lifecycle-labels', () => {
             getLabelStub.withArgs({...getRepositoryInfoResponse, name: 'changes were requested'}).resolves({status: 200});
             // given the addLabels function will succeed for the following argument
             addLabelsStub.resolves({status: 200});
-            // given the listReviews function will return an empty list of reviews
-            listReviewStub.withArgs({...getPullRequestInfoResponse}).resolves({status: 200, data: [{state: 'CHANGES_REQUESTED'}]})
+            // given the listReviews function will return an empty list of 1 changes requesting review
+            listReviewStub.withArgs({...getPullRequestInfoResponse}).resolves({status: 200, data: [{
+                state: 'CHANGES_REQUESTED',
+                commit_id: fakeHeadSha,
+                user: {login: fakeReviewer1}}]
+            });
             // when invoking the handler with the fake context, a fake config, and a iso timestamp
             await sut.run(fakeContext, config, new Date().toISOString());
             // then verify a check run to be created and updated as expected
@@ -557,8 +563,19 @@ suite('Testing the pr-lifecycle-labels', () => {
             getLabelStub.withArgs({...getRepositoryInfoResponse, name: 'review has started'}).resolves({status: 200});
             // given the addLabels function will succeed for the following argument
             addLabelsStub.resolves({status: 200});
-            // given the listReviews function will return an empty list of reviews
-            listReviewStub.withArgs({...getPullRequestInfoResponse}).resolves({status: 200, data: [{state: 'NOTHING_SPECIAL'}, {state: 'MAKING_UP_STATES'}]})
+            // given the listReviews function will return an empty list 2 commenting reviews
+            listReviewStub.withArgs({...getPullRequestInfoResponse}).resolves({status: 200, data: [
+                {
+                    state: 'COMMENTED',
+                    commit_id: fakeHeadSha,
+                    user: {login: fakeReviewer1}
+                },
+                {
+                    state: 'COMMENTED',
+                    commit_id: fakeHeadSha,
+                    user: {login: fakeReviewer1}
+                }
+            ]});
             // when invoking the handler with the fake context, a fake config, and a iso timestamp
             await sut.run(fakeContext, config, new Date().toISOString());
             // then verify a check run to be created and updated as expected
@@ -592,9 +609,20 @@ suite('Testing the pr-lifecycle-labels', () => {
             getLabelStub.withArgs({...getRepositoryInfoResponse, name: 'this pr is approved'}).resolves({status: 200});
             // given the addLabels function will succeed for the following argument
             addLabelsStub.resolves({status: 200});
-            // given the listReviews function will return an empty list of reviews
-            listReviewStub.withArgs({...getPullRequestInfoResponse}).resolves({status: 200, data: [{state: 'APPROVED'}, {state: 'APPROVED'}]})
-            //
+            // given the listReviews function will return an empty list of 2 approving reviews from 2 different users
+            listReviewStub.withArgs({...getPullRequestInfoResponse}).resolves({status: 200, data: [
+                {
+                    state: 'APPROVED',
+                    commit_id: fakeHeadSha,
+                    user: {login: fakeReviewer1}
+                },
+                {
+                    state: 'APPROVED',
+                    commit_id: fakeHeadSha,
+                    user: {login: fakeReviewer2}
+                }
+            ]});
+            // given the branch protection is configured to require 2 approvals
             branchProtectFuncStub.withArgs({...getRepositoryInfoResponse, branch: fakeBaseRef}).resolves({
                 status: 200,
                 data: {
@@ -636,9 +664,13 @@ suite('Testing the pr-lifecycle-labels', () => {
             getLabelStub.withArgs({...getRepositoryInfoResponse, name: 'we need more approvals'}).resolves({status: 200});
             // given the addLabels function will succeed for the following argument
             addLabelsStub.resolves({status: 200});
-            // given the listReviews function will return an empty list of reviews
-            listReviewStub.withArgs({...getPullRequestInfoResponse}).resolves({status: 200, data: [{state: 'APPROVED'}]})
-            //
+            // given the listReviews function will return an empty list of 1 approving review
+            listReviewStub.withArgs({...getPullRequestInfoResponse}).resolves({status: 200, data: [{
+                state: 'APPROVED',
+                commit_id: fakeHeadSha,
+                user: {login: fakeReviewer1}
+            }]});
+            // given the branch protection is configured to require 2 approvals
             branchProtectFuncStub.withArgs({...getRepositoryInfoResponse, branch: fakeBaseRef}).resolves({
                 status: 200,
                 data: {
@@ -658,7 +690,7 @@ suite('Testing the pr-lifecycle-labels', () => {
             expect(addLabelsStub).to.have.been.calledOnceWith({...getRepositoryInfoResponse, issue_number: fakePRNumber, labels: ['we need more approvals']});
         });
 
-        test('Test with getBranchProtection API endpoint response not successful, expect the moreReviewsRequired label to be added to the pr', async () => {
+        test('Test with getBranchProtection API endpoint response not successful, expect the approved label to be added to the pr', async () => {
             // expected check update request parts
             let expectedUpdateCheck = { ...baseExpectedUpdateCheck, ...{
                 conclusion: 'success',
@@ -670,18 +702,22 @@ suite('Testing the pr-lifecycle-labels', () => {
             // given the merged and reviewStarted lifecycle label is configured
             let config = {
                 labels: {
-                    moreReviewsRequired: 'we need more approvals'
+                    approved: 'this pr is approved'
                 }
             }
             // given a pull request is opened
             let fakeContext = { ...baseFakeContext }
             fakeContext.payload.action = 'opened';
             // given the getLabel function will resolved to code 200 indicating the label exists
-            getLabelStub.withArgs({...getRepositoryInfoResponse, name: 'we need more approvals'}).resolves({status: 200});
+            getLabelStub.withArgs({...getRepositoryInfoResponse, name: 'this pr is approved'}).resolves({status: 200});
             // given the addLabels function will succeed for the following argument
             addLabelsStub.resolves({status: 200});
-            // given the listReviews function will return an empty list of reviews
-            listReviewStub.withArgs({...getPullRequestInfoResponse}).resolves({status: 200, data: [{state: 'APPROVED'}]})
+            // given the listReviews function will return an empty list of 1 approving review
+            listReviewStub.withArgs({...getPullRequestInfoResponse}).resolves({status: 200, data: [{
+                state: 'APPROVED',
+                commit_id: fakeHeadSha,
+                user: {login: fakeReviewer1}
+            }]});
             // given the getBranchProtection function will return unsuccessful
             branchProtectFuncStub.withArgs({...getRepositoryInfoResponse, branch: fakeBaseRef}).resolves({status: 300, message: 'ok ok ok'});
             // when invoking the handler with the fake context, a fake config, and a iso timestamp
@@ -692,10 +728,10 @@ suite('Testing the pr-lifecycle-labels', () => {
             // then no label should be removed
             expect(removeLabelStub).to.have.not.been.called;
             // then the 'we need more approvals' label should be added
-            expect(addLabelsStub).to.have.been.calledOnceWith({...getRepositoryInfoResponse, issue_number: fakePRNumber, labels: ['we need more approvals']});
+            expect(addLabelsStub).to.have.been.calledOnceWith({...getRepositoryInfoResponse, issue_number: fakePRNumber, labels: ['this pr is approved']});
         });
 
-        test('Test with getBranchProtection API endpoint response promise rejection, expect the moreReviewsRequired label to be added to the pr', async () => {
+        test('Test with getBranchProtection API endpoint response promise rejection, expect the approved label to be added to the pr', async () => {
             // expected check update request parts
             let expectedUpdateCheck = { ...baseExpectedUpdateCheck, ...{
                 conclusion: 'success',
@@ -707,18 +743,22 @@ suite('Testing the pr-lifecycle-labels', () => {
             // given the merged and reviewStarted lifecycle label is configured
             let config = {
                 labels: {
-                    moreReviewsRequired: 'we need more approvals'
+                    approved: 'this pr is approved'
                 }
             }
             // given a pull request is opened
             let fakeContext = { ...baseFakeContext }
             fakeContext.payload.action = 'opened';
             // given the getLabel function will resolved to code 200 indicating the label exists
-            getLabelStub.withArgs({...getRepositoryInfoResponse, name: 'we need more approvals'}).resolves({status: 200});
+            getLabelStub.withArgs({...getRepositoryInfoResponse, name: 'this pr is approved'}).resolves({status: 200});
             // given the addLabels function will succeed for the following argument
             addLabelsStub.resolves({status: 200});
-            // given the listReviews function will return an empty list of reviews
-            listReviewStub.withArgs({...getPullRequestInfoResponse}).resolves({status: 200, data: [{state: 'APPROVED'}]})
+            // given the listReviews function will return an empty list with 1 approving review
+            listReviewStub.withArgs({...getPullRequestInfoResponse}).resolves({status: 200, data: [{
+                state: 'APPROVED',
+                commit_id: fakeHeadSha,
+                user: {login: fakeReviewer1}
+            }]});
             // given the getBranchProtection function will be rejected
             branchProtectFuncStub.withArgs({...getRepositoryInfoResponse, branch: fakeBaseRef}).rejects('get out of here');
             // when invoking the handler with the fake context, a fake config, and a iso timestamp
@@ -729,7 +769,7 @@ suite('Testing the pr-lifecycle-labels', () => {
             // then no label should be removed
             expect(removeLabelStub).to.have.not.been.called;
             // then the 'we need more approvals' label should be added
-            expect(addLabelsStub).to.have.been.calledOnceWith({...getRepositoryInfoResponse, issue_number: fakePRNumber, labels: ['we need more approvals']});
+            expect(addLabelsStub).to.have.been.calledOnceWith({...getRepositoryInfoResponse, issue_number: fakePRNumber, labels: ['this pr is approved']});
         });
     });
 });

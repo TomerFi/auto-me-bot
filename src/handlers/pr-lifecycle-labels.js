@@ -30,15 +30,16 @@ module.exports.match = function(context) {
     let eventPr = 'pull_request';
     let actionsPr = ['opened', 'edited', 'synchronize', 'closed', 'ready_for_review', 'reopened'];
 
-    let eventPrReview = 'pull_request_review';
+    let eventPrReview = 'review';
     let actionsPrReview = ['submitted', 'edited', 'dismissed'];
+
+    // keep this switch before the next one
+    if (eventPrReview in context.payload) {
+        return actionsPrReview.includes(context.payload.action);
+    }
 
     if (eventPr in context.payload) {
         return actionsPr.includes(context.payload.action);
-    }
-
-    if (eventPrReview in context.payload) {
-        return actionsPrReview.includes(context.payload.action);
     }
     return false;
 }
@@ -126,7 +127,20 @@ async function getLifecycleLabel(context) {
 
     let changeRequests = 0;
     let approvals = 0;
-    reviews.forEach(review => {
+    Object.values(reviews.reduce((finalReviews, currentReview) => {
+        // get the latest review per user_login+commit_id
+        let key = `${currentReview.user.login}-${currentReview.commit_id}`;
+        if (finalReviews && finalReviews[key]) {
+            let existing = new Date(finalReviews[key].submitted_at).getTime();
+            let current = new Date(currentReview.submitted_at).getTime();
+            if (current > existing) {
+                finalReviews[key] = currentReview;
+            }
+        } else {
+            finalReviews[key] = currentReview;
+        }
+        return finalReviews;
+    }, {})).forEach(review => {
         if (review.state === 'CHANGES_REQUESTED') {
             changeRequests++;
         }
@@ -156,7 +170,7 @@ async function getLifecycleLabel(context) {
         .catch(error => console.error(error));
 
     let requiredApprovals = baseProtections?.required_pull_request_reviews?.required_approving_review_count;
-    if (!requiredApprovals || approvals < requiredApprovals) {
+    if (approvals < requiredApprovals) {
         return LABEL_KEYS.MORE_REVIEWS_REQUIRED;
     }
     return LABEL_KEYS.APPROVED;
@@ -181,7 +195,7 @@ async function workThemLabels(context, config, report) {
         .filter(l => prLabels.includes(l));
 
     removeLabels.forEach(removeLabel =>
-        context.octokit.issues.removeLabel(context.repo({issue_number: context.payload.number, name: removeLabel}))
+        context.octokit.issues.removeLabel(context.repo({issue_number: context.payload.pull_request.number, name: removeLabel}))
             .then(response => {
                 if (response.status !== 200) {
                     let {status, message} = response;
@@ -201,7 +215,7 @@ async function workThemLabels(context, config, report) {
             report.output.summary = `Are you sure the '${addLabel}' label exists?`;
             return;
         }
-        await context.octokit.issues.addLabels(context.repo({issue_number: context.payload.number, labels: [addLabel]}))
+        await context.octokit.issues.addLabels(context.repo({issue_number: context.payload.pull_request.number, labels: [addLabel]}))
             .then(resp => {
                 if (resp.status !== 200) {
                     report.conclusion = 'failure';

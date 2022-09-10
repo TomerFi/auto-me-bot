@@ -10,6 +10,8 @@
 
 --8<-- "docs/handlers/conventional-commits.md"
 
+--8<-- "docs/handlers/lifecycle-labels.md"
+
 --8<-- "docs/handlers/signed-commits.md"
 
 --8<-- "docs/handlers/tasks-list.md"
