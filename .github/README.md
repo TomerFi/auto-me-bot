@@ -36,15 +36,15 @@
     Place a file :memo: called <em>auto-me-bot.yml</em> in your <em>.github</em> folder :file_folder: in the repos you want me to help out with.<br/>
     Check out the <a href="https://auto-me-bot.tomfi.info/">documentation</a> to see what else I can do :call_me_hand:.
 
-    ```yaml
-    # .github/auto-me-bot.yml
-    ---
-    pr:
-      conventionalCommits: # this means I'll enforce conventional commit messages in PRs.
-      lifecycleLabels: # this means you I'll label PRs based on the their lifecycle.
-      signedCommits: # this means I'll make sure all commits in PRs are signed with the 'Signed-off-by' trailer.
-      tasksList: # this means I'll verify completion of tasks list in PRs.
-    ```
+```yaml
+# .github/auto-me-bot.yml
+---
+pr:
+  conventionalCommits: # this means I'll enforce conventional commit messages in PRs.
+  lifecycleLabels: # this means you I'll label PRs based on the their lifecycle.
+  signedCommits: # this means I'll make sure all commits in PRs are signed with the 'Signed-off-by' trailer.
+  tasksList: # this means I'll verify completion of tasks list in PRs.
+```
 
   </p>
   </summary>
