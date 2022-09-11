@@ -1,68 +1,87 @@
-<!-- markdownlint-disable MD033 -->
-# <b>Auto-Me-Bot</b>
+<h1 align="center">
+  Auto-Me-Bot
+</h1>
 
-<p align="left">
-  <table align="left">
+<p align="center">
+  Managing a repository can be cumbersome :construction_worker: and tiresome :tired_face:.<br/>
+  Let alone managing multiple repositories used by multiple contributors and bots :anguished:.<br/><br/>
+  <strong>
+  My name is <a href="https://github.com/apps/auto-me-bot">auto-me-bot 🤖</a> I'm here to take some of the repo management load off your shoulders!
+  </strong>
+</p>
+
+<p align="center">
+  <table align="center">
     <td align="left"><a href=https://github.com/apps/auto-me-bot target="_blank">Install App</a></td>
     <td align="left"><a href="https://auto-me-bot.tomfi.info/" target="_blank">Read Docs</a></td>
     <td align="left"><a href="https://github.com/TomerFi/auto-me-bot/blob/main/.github/auto-me-bot.yml" target="_blank">Example Config</a></td>
   </table>
-</p></br></br></br>
+</p>
 
-Managing a repository can be cumbersome :construction_worker: and tiresome :tired_face:.</br>
-Let alone managing multiple repositories used by multiple contributors and bots :anguished:.</br>
+<a href="https://auto-me-bot.tomfi.info/">
+  <img align="center" src="https://raw.githubusercontent.com/TomerFi/auto-me-bot/main/docs/img/all-handlers-success.png" alt="all-handlers-success"/>
+<a/>
 
-My name is [**auto-me-bot**][auto-me-bot-app]!</br>
-I was created with [Probot][probot-pages] :robot: and I live my life
-as a _serverless function_ residing in [AWS Lambda][aws-lambda] :floppy_disk:.</br>
+<details>
+  <summary><strong>Failed Checks</strong></summary>
+  <a href="https://auto-me-bot.tomfi.info/">
+    <img align="center" src="https://raw.githubusercontent.com/TomerFi/auto-me-bot/main/docs/img/all-handlers-fail.png" alt="all-handlers-fail"/>
+  <a/>
+  </summary>
+</details>
 
-I'm here to take some of the repo management load off your shoulders, just tell me what you want me to do...</br>
-Place a file :memo: called **auto-me-bot.yml** in your **.github** folder :file_folder: in the repos you want me to help out with.</br>
+<details>
+  <summary><strong>Configuration</strong></summary>
+  <p align="left">
+    Place a file :memo: called <em>auto-me-bot.yml</em> in your <em>.github</em> folder :file_folder: in the repos you want me to help out with.<br/>
+    Check out the <a href="https://auto-me-bot.tomfi.info/">documentation</a> to see what else I can do :call_me_hand:.
 
-```yaml
-# .github/auto-me-bot.yml
----
-pr:
-  conventionalCommits: # this means I'll enforce conventional commit messages in PRs.
-  lifecycleLabels: # this means you I'll label PRs based on the their lifecycle.
-  signedCommits: # this means I'll make sure all commits in PRs are signed with the 'Signed-off-by' trailer.
-  tasksList: # this means I'll verify completion of tasks list in PRs.
-```
+    ```yaml
+    # .github/auto-me-bot.yml
+    ---
+    pr:
+      conventionalCommits: # this means I'll enforce conventional commit messages in PRs.
+      lifecycleLabels: # this means you I'll label PRs based on the their lifecycle.
+      signedCommits: # this means I'll make sure all commits in PRs are signed with the 'Signed-off-by' trailer.
+      tasksList: # this means I'll verify completion of tasks list in PRs.
+    ```
 
-> Place the file in your **.github** repository if you want me to take on multiple repos with one file :muscle:.
+  </p>
+  </summary>
+</details>
 
-Check out the [documentation][auto-me-bot-doc] to see what else I can do :call_me_hand:.
+<details>
+  <summary><strong>Future Plans</strong></summary>
+  <ul>
+    <li>Size based labeling for pull requests</li>
+    <li>Automate assignees and reviewers for pull requests</li>
+    <li>Auto approving pull requests with consideration to GitHub code owners</li>
+    <li>Various handlers for event types other then <em>pull_request</em, such as <em>push</em> and and <em>issue</em> event types</li>
+    <li>Repository management capabilities, such as labels creation and settings syncing</li>
+  </ul>
+</details>
 
-## Work Pics
+<details>
+  <summary><strong>Alternatives</strong></summary>
+  <p>Other awesome applications the offer similar handlers as <a href="https://github.com/apps/auto-me-bot">auto-me-bot</a></p>
+  <ul>
+    <li><a href="https://github.com/apps/dco">DCO</a></li>
+    <li><a href="https://github.com/apps/semantic-pull-requests">Semantic Pull Request</a></li>
+    <li><a href="https://github.com/marketplace/task-list-completed">Task List Completed</a></li>
+    <li><a href="https://github.com/marketplace/trafico-pull-request-labeler">Trafico</a></li>
+  </ul>
+</details>
 
-[![all-handlers-success]][auto-me-bot-doc]
+<details>
+  <summary><strong>Works well with</strong></summary>
+  <p>
+    If you keep your commits conventional,<br/>
+    you can use the <a href="https://github.com/TomerFi/version-bumper-action">version-bumper-action</a> for <em>GitHub</em>, to automate your releases.
+  </p>
+</details>
 
-[![all-handlers-fail]][auto-me-bot-doc]
-
-## Future Plans
-
-- Size based labeling for pull requests.
-- Automate assignees and reviewers for pull requests.
-- Auto approving pull requests with consideration to GitHub code owners.
-- Various handlers for event types other then _pull_request_, such as _push_ and and _issue_ event types.
-- Repository management capabilities, such as labels creation and settings syncing.
-
-## Alternatives
-
-Other awesome applications the offer similar handlers as [auto-me-bot][auto-me-bot-app]:
-
-- [DCO][dco]
-- [Semantic Pull Request][semantic-pull-request]
-- [Task List Completed][task-list-completed]
-- [Trafico][trafico]
-
-## Works well with
-
-If you keep your commits conventional,</br>
-you can use the [version-bumper-action][version-bumper-action] for _GitHub_, to automate your releases.
-
-## Contributors
-
+<details>
+  <summary><strong>Contributors</strong></summary>
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
@@ -77,17 +96,4 @@ you can use the [version-bumper-action][version-bumper-action] for _GitHub_, to 
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
-<!-- REAL LINKS -->
-[auto-me-bot-app]: https://github.com/apps/auto-me-bot
-[auto-me-bot-doc]: https://auto-me-bot.tomfi.info/
-[aws-lambda]: https://aws.amazon.com/lambda/
-[probot-pages]: https://probot.github.io/
-[version-bumper-action]: https://github.com/TomerFi/version-bumper-action
-<!-- IMAGE LINKS -->
-[all-handlers-fail]: https://raw.githubusercontent.com/TomerFi/auto-me-bot/main/docs/img/all-handlers-fail.png
-[all-handlers-success]: https://raw.githubusercontent.com/TomerFi/auto-me-bot/main/docs/img/all-handlers-success.png
-<!-- ALTERNATIVES LINKS -->
-[dco]: https://github.com/apps/dco
-[semantic-pull-request]: https://github.com/apps/semantic-pull-requests
-[task-list-completed]: https://github.com/marketplace/task-list-completed
-[trafico]: https://github.com/marketplace/trafico-pull-request-labeler/
+</details>

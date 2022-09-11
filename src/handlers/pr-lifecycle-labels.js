@@ -169,7 +169,7 @@ async function getLifecycleLabel(context) {
         })
         .catch(error => console.error(error));
 
-    let requiredApprovals = baseProtections?.required_pull_request_reviews?.required_approving_review_count;
+    let requiredApprovals = baseProtections?.required_pull_request_reviews?.required_approving_review_count || 0;
     if (approvals < requiredApprovals) {
         return LABEL_KEYS.MORE_REVIEWS_REQUIRED;
     }
