@@ -35,7 +35,7 @@ jobs:
 
       - name: Report tests results
         if: always()
-        uses: dorny/test-reporter@v1.5.0
+        uses: dorny/test-reporter@v1.6.0
         with:
           name: Unit Tests Run
           path: unit-tests-result.json
