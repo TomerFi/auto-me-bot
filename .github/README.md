@@ -81,8 +81,8 @@ pr:
   </p>
 </details>
 
-<details>
-  <summary><strong>Contributors</strong></summary>
+<h3>💪 Auto-me-bot Awesome Contributors 💪</h3>
+
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
@@ -98,5 +98,3 @@ pr:
 <!-- prettier-ignore-end -->
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
-
-</details>

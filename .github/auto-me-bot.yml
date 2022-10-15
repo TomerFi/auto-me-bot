@@ -1,9 +1,9 @@
 # https://github.com/apps/auto-me-bot
 ---
 pr:
-  conventionalCommits:
-    rules:
-      'body-max-line-length': [2, 'always', 150]
+  # conventionalCommits:
+  #   rules:
+  #     'body-max-line-length': [2, 'always', 150]
   conventionalTitle:
     rules:
       'header-max-length': [2, 'always', 80]
@@ -16,8 +16,8 @@ pr:
       reviewStarted: "status: review started"
       approved: "status: approved"
       merged: "status: merged"
-  signedCommits:
-    ignore:
-      users: ['notrealuser']
-      emails: ['not.real@email.address']
+  # signedCommits:
+  #   ignore:
+  #     users: ['allcontributors[bot]', 'dependabot[bot]']
+  #     emails: ['not.real@email.address']
   tasksList:
