@@ -41,6 +41,7 @@
 ---
 pr:
   conventionalCommits: # this means I'll enforce conventional commit messages in PRs.
+  conventionalTitle: # this means I'll enforce conventional title for PRs.
   lifecycleLabels: # this means you I'll label PRs based on the their lifecycle.
   signedCommits: # this means I'll make sure all commits in PRs are signed with the 'Signed-off-by' trailer.
   tasksList: # this means I'll verify completion of tasks list in PRs.
