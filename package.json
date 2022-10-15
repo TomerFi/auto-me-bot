@@ -1,6 +1,6 @@
 {
   "name": "auto-me-bot",
-  "version": "1.3.5",
+  "version": "1.4.0",
   "private": true,
   "description": "A Probot app that takes care of your GitHub repos for you",
   "author": {
