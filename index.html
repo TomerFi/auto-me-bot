@@ -15,7 +15,7 @@
         <link rel="canonical" href="https://auto-me-bot.info.tomfi/">
       
       <link rel="icon" href="img/favicon.ico">
-      <meta name="generator" content="mkdocs-1.3.1, mkdocs-material-8.4.3">
+      <meta name="generator" content="mkdocs-1.4.0, mkdocs-material-8.5.6">
     
     
       
@@ -23,13 +23,14 @@
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.6b80c2a2.min.css">
+      <link rel="stylesheet" href="assets/stylesheets/main.20d9efc8.min.css">
       
         
         <link rel="stylesheet" href="assets/stylesheets/palette.cbb835fc.min.css">
         
       
       
+
     
     
     
@@ -46,6 +47,7 @@
     
       
 
+    
     
     
   </head>
@@ -153,11 +155,11 @@
       </label>
       <nav class="md-search__options" aria-label="Search">
         
-          <a href="javascript:void(0)" class="md-search__icon md-icon" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7 0-.24-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91 1.61 0 2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08Z"/></svg>
           </a>
         
-        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
         </button>
       </nav>
@@ -462,6 +464,10 @@
         
           
         
+          
+        
+          
+        
       
       
         <label class="md-nav__link" for="__nav_4">
@@ -498,6 +504,34 @@
     <li class="md-nav__item">
       <a href="handlers/conventional-commits/" class="md-nav__link">
         Conventional Commits
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="handlers/conventional-title/" class="md-nav__link">
+        Conventional Title
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="handlers/lifecycle-labels/" class="md-nav__link">
+        Lifecycle Labels
       </a>
     </li>
   
@@ -576,10 +610,11 @@
             
             
           
-          <div class="md-content" data-md-component="content">
-            <article class="md-content__inner md-typeset">
-              
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
                 
+                  
 
 
   <h1>Home</h1>
@@ -641,6 +676,8 @@ If I can't find my configuration file in the repo I'm working with, I'll look fo
 <span class="nt">pr</span><span class="p">:</span><span class="w"></span>
 <span class="w">  </span><span class="nt">conventionalCommits</span><span class="p">:</span><span class="w"> </span><span class="c1"># (1)</span><span class="w"></span>
 <span class="w">    </span><span class="nt">rules</span><span class="p">:</span><span class="w"> </span><span class="c1"># (2)</span><span class="w"></span>
+<span class="w">  </span><span class="nt">conventionalTitle</span><span class="p">:</span><span class="w"> </span><span class="c1"># (11)</span><span class="w"></span>
+<span class="w">    </span><span class="nt">rules</span><span class="p">:</span><span class="w"> </span><span class="c1"># (12)</span><span class="w"></span>
 <span class="w">  </span><span class="nt">lifecycleLabels</span><span class="p">:</span><span class="w"> </span><span class="c1"># (8)</span><span class="w"></span>
 <span class="w">    </span><span class="nt">ignoreDrafts</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># (9)</span><span class="w"></span>
 <span class="w">    </span><span class="nt">labels</span><span class="p">:</span><span class="w"> </span><span class="c1"># (10)</span><span class="w"></span>
@@ -667,6 +704,8 @@ If I can't find my configuration file in the repo I'm working with, I'll look fo
 <li>this means you I'll label PRs based on the their lifecycle.</li>
 <li>you can optionally instruct me to ignore drafts, my default value for this is false for including drafts.</li>
 <li>you don't have to specify all of the lifecycle's stages, just the ones you want.<br/>and I don't create the labels yet, so you'll have to create them.</li>
+<li>this means I'll enforce conventional titles for PRs.</li>
+<li>you can optionally configure some rules for me.<br/><a href="https://commitlint.js.org/#/reference-rules">see commitlint options</a></li>
 </ol>
 <h2 id="look-see">Look-See<a class="headerlink" href="#look-see" title="Permanent link">⚓︎</a></h2>
 <figure>
@@ -688,6 +727,11 @@ If I can't find my configuration file in the repo I'm working with, I'll look fo
 <p><img alt="" src="https://raw.githubusercontent.com/TomerFi/auto-me-bot/main/docs/img/conventional-commits-fail.gif" width="800" />
   </p>
 <figcaption>conventional commits failed</figcaption>
+</figure>
+<figure>
+<p><img alt="" src="https://raw.githubusercontent.com/TomerFi/auto-me-bot/main/docs/img/conventional-title-full.gif" width="800" />
+  </p>
+<figcaption>conventional title enforcement</figcaption>
 </figure>
 <figure>
 <p><img alt="" src="https://raw.githubusercontent.com/TomerFi/auto-me-bot/main/docs/img/lifecycle-labels-reviewRequired.png" width="800" />
@@ -785,10 +829,12 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.</p>
 
 
 
-              
-            </article>
-            
-          </div>
+
+                
+              </article>
+            </div>
+          
+          
         </div>
         
           <a href="#" class="md-top md-icon" data-md-component="top" hidden>
@@ -880,10 +926,10 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.</p>
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": ".", "features": ["content.code.annotate", "header.autohide", "navigation.indexes", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest", "toc.integrate"], "search": "assets/javascripts/workers/search.ecf98df9.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": "1.3.5"}</script>
+    <script id="__config" type="application/json">{"base": ".", "features": ["content.code.annotate", "header.autohide", "navigation.indexes", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest", "toc.integrate"], "search": "assets/javascripts/workers/search.5bf1dace.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": "1.4.0"}</script>
     
     
-      <script src="assets/javascripts/bundle.2ab50757.min.js"></script>
+      <script src="assets/javascripts/bundle.078830c0.min.js"></script>
       
     
   </body>
