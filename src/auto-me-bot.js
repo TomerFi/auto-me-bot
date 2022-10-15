@@ -2,6 +2,7 @@ const yaml = require('js-yaml');
 
 // import handlers
 const prConventionalCommitsHandler = require('./handlers/pr-conventional-commits');
+const prConventionalTitleHandler = require('./handlers/pr-conventional-title');
 const prLifecycleLabelsHandler = require('./handlers/pr-lifecycle-labels');
 const prSignedCommitsHandler = require('./handlers/pr-signed-commits');
 const prTasksListHandler = require('./handlers/pr-tasks-list');
@@ -9,6 +10,8 @@ const prTasksListHandler = require('./handlers/pr-tasks-list');
 /* example configuration (for reference):
 pr:
     conventionalCommits:
+        ...
+    conventionalTitle:
         ...
     lifecycleLabels:
         ...
@@ -37,6 +40,7 @@ const ON_EVENTS = Object.freeze([
 const CONFIG_SPEC = Object.freeze({
     pr: {
         conventionalCommits: prConventionalCommitsHandler,
+        conventionalTitle: prConventionalTitleHandler,
         lifecycleLabels: prLifecycleLabelsHandler,
         signedCommits: prSignedCommitsHandler,
         tasksList: prTasksListHandler,

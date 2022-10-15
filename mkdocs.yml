@@ -18,6 +18,8 @@ nav:
   - Look-See:
     - look-see.md
     - Conventional Commits: handlers/conventional-commits.md
+    - Conventional Title: handlers/conventional-title.md
+    - Lifecycle Labels: handlers/lifecycle-labels.md
     - Signed Commits: handlers/signed-commits.md
     - Tasks List: handlers/tasks-list.md
   - Spec: spec.md

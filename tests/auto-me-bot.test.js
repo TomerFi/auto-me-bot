@@ -28,6 +28,7 @@ suite('Testing the auto-me-bot export', () => {
 
     suite('Test various pull request related configurations', () => {
         let conventionalCommitsHandlerStub;
+        let conventionalTitleHandlerStub;
         let lifecycleLabelsHandlerStub;
         let signedCommitsHandlerStub;
         let tasksListHandlerStub;
@@ -43,6 +44,12 @@ suite('Testing the auto-me-bot export', () => {
             let conventionalCommitsHandlerPatch = {
                 match: require('../src/handlers/pr-conventional-commits').match,
                 run: conventionalCommitsHandlerStub
+            };
+            // patch the conventionalTitle handler's run function to a stub
+            conventionalTitleHandlerStub = sinon.stub();
+            let conventionalTitleHandlerPatch = {
+                match: require('../src/handlers/pr-conventional-commits').match,
+                run: conventionalTitleHandlerStub
             };
             // patch the lifecycle handler's run function to a stub
             lifecycleLabelsHandlerStub = sinon.stub();
@@ -66,6 +73,7 @@ suite('Testing the auto-me-bot export', () => {
             let patchedConfigSpec = {
                 pr: {
                     conventionalCommits: conventionalCommitsHandlerPatch,
+                    conventionalTitle: conventionalTitleHandlerPatch,
                     lifecycleLabels: lifecycleLabelHandlerPatch,
                     signedCommits: signedCommitsHandlerPatch,
                     tasksList: tasksListHandlerPatch,
@@ -87,11 +95,13 @@ suite('Testing the auto-me-bot export', () => {
 
         test('When all PR operations are checked, execute all PR related handlers', async () => {
             // given the following pr full configuration
-            let fullConfig = {pr: { conventionalCommits:{}, lifecycleLabels: {}, signedCommits: {}, tasksList: {} }};
+            let fullConfig = {pr: { conventionalCommits:{}, conventionalTitle: {}, lifecycleLabels: {}, signedCommits: {}, tasksList: {} }};
             configFuncStub.withArgs('auto-me-bot.yml').resolves(fullConfig);
             // when invoking the controller
             await prHandlersControllerSut(fakeContext);
             // then expect all pr related handlers to be invoked
+            expect(conventionalTitleHandlerStub).to.have.been.calledOnceWith(
+                fakeContext, fullConfig.pr.conventionalTitle, sinon.match(t => Date.parse(t)));
             expect(conventionalCommitsHandlerStub).to.have.been.calledOnceWith(
                 fakeContext, fullConfig.pr.conventionalCommits, sinon.match(t => Date.parse(t)));
             expect(lifecycleLabelsHandlerStub).to.have.been.calledOnceWith(
@@ -111,6 +121,22 @@ suite('Testing the auto-me-bot export', () => {
             // then expect only the related handler to be invoked
             expect(conventionalCommitsHandlerStub).to.have.been.calledOnceWith(
                 fakeContext, fullConfig.pr.conventionalCommits, sinon.match(t => Date.parse(t)));
+            expect(conventionalTitleHandlerStub).to.have.not.been.called;
+            expect(lifecycleLabelsHandlerStub).to.have.not.been.called;
+            expect(signedCommitsHandlerStub).to.have.not.been.called;
+            expect(tasksListHandlerStub).to.have.not.been.called;
+        });
+
+        test('When the conventionalTitle operation is checked, execute the related handler', async () => {
+            // given the following pr configuration
+            let fullConfig = {pr: { conventionalTitle:{} }};
+            configFuncStub.withArgs('auto-me-bot.yml').resolves(fullConfig);
+            // when invoking the controller
+            await prHandlersControllerSut(fakeContext);
+            // then expect only the related handler to be invoked
+            expect(conventionalCommitsHandlerStub).to.have.not.been.called;
+            expect(conventionalTitleHandlerStub).to.have.been.calledOnceWith(
+                fakeContext, fullConfig.pr.conventionalTitle, sinon.match(t => Date.parse(t)));
             expect(lifecycleLabelsHandlerStub).to.have.not.been.called;
             expect(signedCommitsHandlerStub).to.have.not.been.called;
             expect(tasksListHandlerStub).to.have.not.been.called;
@@ -124,6 +150,7 @@ suite('Testing the auto-me-bot export', () => {
             await prHandlersControllerSut(fakeContext);
             // then expect only the related handler to be invoked
             expect(conventionalCommitsHandlerStub).to.have.not.been.called;
+            expect(conventionalTitleHandlerStub).to.have.not.been.called;
             expect(lifecycleLabelsHandlerStub).to.have.been.calledOnceWith(
                 fakeContext, fullConfig.pr.lifecycleLabels, sinon.match(t => Date.parse(t)));
             expect(signedCommitsHandlerStub).to.have.not.been.called;
@@ -138,6 +165,7 @@ suite('Testing the auto-me-bot export', () => {
             await prHandlersControllerSut(fakeContext);
             // then expect only the related handler to be invoked
             expect(conventionalCommitsHandlerStub).to.have.not.been.called;
+            expect(conventionalTitleHandlerStub).to.have.not.been.called;
             expect(lifecycleLabelsHandlerStub).to.have.not.been.called;
             expect(signedCommitsHandlerStub).to.have.been.calledOnceWith(
                 fakeContext, config.pr.signedCommits, sinon.match(t => Date.parse(t)));
@@ -152,6 +180,7 @@ suite('Testing the auto-me-bot export', () => {
             await prHandlersControllerSut(fakeContext);
             // then expect only the related handler to be invoked
             expect(conventionalCommitsHandlerStub).to.have.not.been.called;
+            expect(conventionalTitleHandlerStub).to.have.not.been.called;
             expect(lifecycleLabelsHandlerStub).to.have.not.been.called;
             expect(signedCommitsHandlerStub).to.have.not.been.called;
             expect(tasksListHandlerStub).to.have.been.calledOnceWith(
@@ -166,6 +195,7 @@ suite('Testing the auto-me-bot export', () => {
                 await prHandlersControllerSut(fakeContext);
                 // then expect no handlers to be invoked
                 expect(conventionalCommitsHandlerStub).to.have.not.been.called;
+                expect(conventionalTitleHandlerStub).to.have.not.been.called;
                 expect(lifecycleLabelsHandlerStub).to.have.not.been.called;
                 expect(signedCommitsHandlerStub).to.have.not.been.called;
                 expect(tasksListHandlerStub).to.have.not.been.called;
@@ -187,6 +217,7 @@ suite('Testing the auto-me-bot export', () => {
             await prHandlersControllerSut(patchedContext);
             // then expect no handlers to be invoked
             expect(conventionalCommitsHandlerStub).to.have.not.been.called;
+            expect(conventionalTitleHandlerStub).to.have.not.been.called;
             expect(lifecycleLabelsHandlerStub).to.have.not.been.called;
             expect(signedCommitsHandlerStub).to.have.not.been.called;
             expect(tasksListHandlerStub).to.have.not.been.called;
@@ -207,6 +238,7 @@ suite('Testing the auto-me-bot export', () => {
             await prHandlersControllerSut(patchedContext);
             // then expect no handlers to be invoked
             expect(conventionalCommitsHandlerStub).to.have.not.been.called;
+            expect(conventionalTitleHandlerStub).to.have.not.been.called;
             expect(lifecycleLabelsHandlerStub).to.have.not.been.called;
             expect(signedCommitsHandlerStub).to.have.not.been.called;
             expect(tasksListHandlerStub).to.have.not.been.called;

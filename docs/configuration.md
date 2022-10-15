@@ -6,6 +6,8 @@ If I can't find my configuration file in the repo I'm working with, I'll look fo
 pr:
   conventionalCommits: # (1)
     rules: # (2)
+  conventionalTitle: # (11)
+    rules: # (12)
   lifecycleLabels: # (8)
     ignoreDrafts: false # (9)
     labels: # (10)
@@ -32,3 +34,5 @@ pr:
 8. this means you I'll label PRs based on the their lifecycle.
 9. you can optionally instruct me to ignore drafts, my default value for this is false for including drafts.
 10. you don't have to specify all of the lifecycle's stages, just the ones you want.<br/>and I don't create the labels yet, so you'll have to create them.
+11. this means I'll enforce conventional titles for PRs.
+12. you can optionally configure some rules for me.<br/>[see commitlint options](https://commitlint.js.org/#/reference-rules)
