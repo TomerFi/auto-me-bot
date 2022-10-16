@@ -30,7 +30,7 @@ pr:
 - `npm test` run the unit tests and verify code coverage
 - `npm run tests` run the tests with no code coverage verification
 - `npm run tests:rep` run the tests with no code coverage verification and create *unit-tests-result.json*
-- `npm run lint` linting the project
+- `npm run lint` lint the project
 
 ### Developing Handlers
 
@@ -49,7 +49,7 @@ module.exports.match = function(context) {
 
 A *run* function that will be used for handling a request, it will be invoked only if the aforementioned *match* function returns *true*, it takes [probot's context](https://probot.github.io/api/latest/classes/context.Context.html), the configuration for handler, and an *ISO8601 timestamp* marking the start timestamp of the handler run:
 
-> Note that *config* contains the running handler configuration **only**, and not configuration of other handlers.
+> Note that *config* contains the running handler configuration **only** and nothing above it, so other handlers configuration will not available.
 
 ```javascript
 module.exports.run =  async function(context, config, startedAt) {
@@ -57,7 +57,7 @@ module.exports.run =  async function(context, config, startedAt) {
 }
 ```
 
-For pull requests, the run function is expected, to [create a check-run](https://docs.github.com/en/rest/checks/runs#create-a-check-run) right off its invocation, and mark its *status* as *in_progress*:
+For pull requests, the run function is expected to [create a check-run](https://docs.github.com/en/rest/checks/runs#create-a-check-run) right off its invocation, and mark its *status* as *in_progress*:
 
 ```javascript
 module.exports.run =  async function(context, config, startedAt) {
@@ -74,7 +74,7 @@ module.exports.run =  async function(context, config, startedAt) {
 }
 ```
 
-The *run* function, is also expected, as a final stage, to [update the previously created check-run](https://docs.github.com/en/rest/checks/runs#update-a-check-run), and mark its *status* as *completed*, use the *conclusion* key to relay the check-run result:
+The *run* function, is also expected, as a final stage, to [update the previously created check-run](https://docs.github.com/en/rest/checks/runs#update-a-check-run), and mark its *status* as *completed*, use the *conclusion* and *output* keys to relay the check-run result:
 
 ```javascript
 module.exports.run =  async function(context, config, startedAt) {
