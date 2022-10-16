@@ -81,7 +81,10 @@ pr:
   </p>
 </details>
 
-<h3>💪 Auto-me-bot Awesome Contributors 💪</h3>
+<p align="left">
+<strong>Our contributors </strong><a href="https://allcontributors.org/docs/en/emoji-key"><em>emoji keys</em></a>
+<br/>
+<div align="left">
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
@@ -98,3 +101,6 @@ pr:
 <!-- prettier-ignore-end -->
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+</div>
+</p>
