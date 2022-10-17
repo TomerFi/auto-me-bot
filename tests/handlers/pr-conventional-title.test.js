@@ -11,7 +11,7 @@ const sut = rewire('../../src/handlers/pr-conventional-title');
 
 suite('Testing the pr-conventional-title handler', () => {
     suite('Test handler matching', () => {
-        ['opened', 'edited'].forEach(action => {
+        ['opened', 'edited', 'synchronize'].forEach(action => {
             test(`Test pull_request event type with ${action} action type, expect a match` , () => {
                 expect(sut.match({ payload: { pull_request: {}, action: action } })).to.be.true;
             });
