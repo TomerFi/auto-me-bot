@@ -7,7 +7,7 @@
 - Commit your changes
 - Create a pull request against the `main` branch
 
-## Project walk through
+## Project walkthrough
 
 *auto-me-bot* was created around the concept of *handlers* and *config types*.<br/>
 A *config type* is the type of *GitHub* event, i.e. *pr*, a *handler* represents an operation supported for a *config type*.<br/>
