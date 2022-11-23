@@ -35,7 +35,7 @@
     "@digitalroute/email-verify": "^0.2.2",
     "js-yaml": "^4.1.0",
     "lodash": "^4.17.21",
-    "marked": "^4.2.2",
+    "marked": "^4.2.3",
     "probot": "^12.2.8"
   },
   "devDependencies": {
