@@ -29,7 +29,7 @@
     "tests:rep": "mocha --check-leaks --fail-zero --ui tdd --recursive --reporter json ./tests/ > unit-tests-result.json"
   },
   "dependencies": {
-    "@commitlint/config-conventional": "^17.2.0",
+    "@commitlint/config-conventional": "^17.3.0",
     "@commitlint/lint": "^17.3.0",
     "@commitlint/load": "^17.3.0",
     "@digitalroute/email-verify": "^0.2.2",
