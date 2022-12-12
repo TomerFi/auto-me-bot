@@ -44,7 +44,7 @@ jobs:
 
       - name: Determine next SemVer
         id: bumper
-        uses: tomerfi/version-bumper-action@1.2.1
+        uses: tomerfi/version-bumper-action@1.2.2
 
       - name: Update package with new version
         run: |
