@@ -36,7 +36,7 @@
     "js-yaml": "^4.1.0",
     "lodash": "^4.17.21",
     "marked": "^4.2.5",
-    "probot": "^12.2.8"
+    "probot": "^12.2.9"
   },
   "devDependencies": {
     "chai": "^4.3.7",
