@@ -64,6 +64,9 @@ extra:
     - icon: fontawesome/brands/linkedin
       link: https://www.linkedin.com/in/tomerfi/
       name: tomerfi on LinkedIn
+  analytics:
+    provider: google
+    property: G-PC4VP771PV
 
 plugins:
   - search
