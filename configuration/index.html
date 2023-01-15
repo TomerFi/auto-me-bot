@@ -14,8 +14,14 @@
       
         <link rel="canonical" href="https://auto-me-bot.info.tomfi/configuration/">
       
+      
+        <link rel="prev" href="../installation/">
+      
+      
+        <link rel="next" href="../look-see/">
+      
       <link rel="icon" href="../img/favicon.ico">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.5.10">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.4">
     
     
       
@@ -23,11 +29,10 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.975780f9.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.9c788c91.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.2505c338.min.css">
-        
       
       
 
@@ -46,6 +51,18 @@
     <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
+  
+
+
+  
+  
+
+
+  <script id="__analytics">function __md_analytics(){function n(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],n("js",new Date),n("config","G-PC4VP771PV"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){this.value&&n("event","search",{search_term:this.value})}),document$.subscribe(function(){var a=document.forms.feedback;if(void 0!==a)for(var e of a.querySelectorAll("[type=submit]"))e.addEventListener("click",function(e){e.preventDefault();var t=document.location.pathname,e=this.getAttribute("data-md-value");n("event","feedback",{page:t,data:e}),a.firstElementChild.disabled=!0;e=a.querySelector(".md-feedback__note [data-md-value='"+e+"']");e&&(e.hidden=!1)}),a.hidden=!1}),location$.subscribe(function(e){n("config","G-PC4VP771PV",{page_path:e.pathname})})});var e=document.createElement("script");e.async=!0,e.src="https://www.googletagmanager.com/gtag/js?id=G-PC4VP771PV",document.getElementById("__analytics").insertAdjacentElement("afterEnd",e)}</script>
+
+  
+    <script>"undefined"!=typeof __md_analytics&&__md_analytics()</script>
+  
 
     
     
@@ -115,8 +132,6 @@
       <form class="md-header__option" data-md-component="palette">
         
           
-          
-          
           <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="" data-md-color-accent=""  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
           
             <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
@@ -124,8 +139,6 @@
             </label>
           
         
-          
-          
           
           <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="" data-md-color-accent=""  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_2">
           
@@ -391,26 +404,27 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
       
       
-      
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
       
       
-        <label class="md-nav__link" for="__nav_4">
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      
+      
+        <label class="md-nav__link" for="__nav_4" tabindex="0" aria-expanded="false">
           Look-See
           <span class="md-nav__icon md-icon"></span>
         </label>
@@ -557,30 +571,29 @@
                   
 
 
-  <h1>Configuration</h1>
 
 <p>I take my instructions in <em>yaml</em>.</br>
 If I can't find my configuration file in the repo I'm working with, I'll look for it in your <em>.github</em> repo.</p>
-<div class="highlight"><span class="filename">.github/auto-me-bot.yml</span><pre><span></span><code><span class="nn">---</span><span class="w"></span>
-<span class="nt">pr</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">conventionalCommits</span><span class="p">:</span><span class="w"> </span><span class="c1"># (1)</span><span class="w"></span>
-<span class="w">    </span><span class="nt">rules</span><span class="p">:</span><span class="w"> </span><span class="c1"># (2)</span><span class="w"></span>
-<span class="w">  </span><span class="nt">conventionalTitle</span><span class="p">:</span><span class="w"> </span><span class="c1"># (11)</span><span class="w"></span>
-<span class="w">    </span><span class="nt">rules</span><span class="p">:</span><span class="w"> </span><span class="c1"># (12)</span><span class="w"></span>
-<span class="w">  </span><span class="nt">lifecycleLabels</span><span class="p">:</span><span class="w"> </span><span class="c1"># (8)</span><span class="w"></span>
-<span class="w">    </span><span class="nt">ignoreDrafts</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># (9)</span><span class="w"></span>
-<span class="w">    </span><span class="nt">labels</span><span class="p">:</span><span class="w"> </span><span class="c1"># (10)</span><span class="w"></span>
-<span class="w">      </span><span class="nt">reviewRequired</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;waiting</span><span class="nv"> </span><span class="s">for</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">review&quot;</span><span class="w"></span>
-<span class="w">      </span><span class="nt">changesRequested</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;changes</span><span class="nv"> </span><span class="s">were</span><span class="nv"> </span><span class="s">requested&quot;</span><span class="w"></span>
-<span class="w">      </span><span class="nt">moreReviewsRequired</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;approved</span><span class="nv"> </span><span class="s">but</span><span class="nv"> </span><span class="s">waiting</span><span class="nv"> </span><span class="s">for</span><span class="nv"> </span><span class="s">more</span><span class="nv"> </span><span class="s">reviews&quot;</span><span class="w"></span>
-<span class="w">      </span><span class="nt">reviewStarted</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;a</span><span class="nv"> </span><span class="s">review</span><span class="nv"> </span><span class="s">was</span><span class="nv"> </span><span class="s">started&quot;</span><span class="w"></span>
-<span class="w">      </span><span class="nt">approved</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;approved</span><span class="nv"> </span><span class="s">and</span><span class="nv"> </span><span class="s">ready&quot;</span><span class="w"></span>
-<span class="w">      </span><span class="nt">merged</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;merged</span><span class="nv"> </span><span class="s">and</span><span class="nv"> </span><span class="s">done&quot;</span><span class="w"></span>
-<span class="w">  </span><span class="nt">signedCommits</span><span class="p">:</span><span class="w"> </span><span class="c1"># (3)</span><span class="w"></span>
-<span class="w">    </span><span class="nt">ignore</span><span class="p">:</span><span class="w"> </span><span class="c1"># (4)</span><span class="w"></span>
-<span class="w">      </span><span class="nt">users</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[]</span><span class="w"> </span><span class="c1"># (6)</span><span class="w"></span>
-<span class="w">      </span><span class="nt">emails</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[]</span><span class="w"> </span><span class="c1"># (7)</span><span class="w"></span>
-<span class="w">  </span><span class="nt">tasksList</span><span class="p">:</span><span class="w"> </span><span class="c1"># (5)</span><span class="w"></span>
+<div class="highlight"><span class="filename">.github/auto-me-bot.yml</span><pre><span></span><code><span class="nn">---</span>
+<span class="nt">pr</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">conventionalCommits</span><span class="p">:</span><span class="w"> </span><span class="c1"># (1)</span>
+<span class="w">    </span><span class="nt">rules</span><span class="p">:</span><span class="w"> </span><span class="c1"># (2)</span>
+<span class="w">  </span><span class="nt">conventionalTitle</span><span class="p">:</span><span class="w"> </span><span class="c1"># (11)</span>
+<span class="w">    </span><span class="nt">rules</span><span class="p">:</span><span class="w"> </span><span class="c1"># (12)</span>
+<span class="w">  </span><span class="nt">lifecycleLabels</span><span class="p">:</span><span class="w"> </span><span class="c1"># (8)</span>
+<span class="w">    </span><span class="nt">ignoreDrafts</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># (9)</span>
+<span class="w">    </span><span class="nt">labels</span><span class="p">:</span><span class="w"> </span><span class="c1"># (10)</span>
+<span class="w">      </span><span class="nt">reviewRequired</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;waiting</span><span class="nv"> </span><span class="s">for</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">review&quot;</span>
+<span class="w">      </span><span class="nt">changesRequested</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;changes</span><span class="nv"> </span><span class="s">were</span><span class="nv"> </span><span class="s">requested&quot;</span>
+<span class="w">      </span><span class="nt">moreReviewsRequired</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;approved</span><span class="nv"> </span><span class="s">but</span><span class="nv"> </span><span class="s">waiting</span><span class="nv"> </span><span class="s">for</span><span class="nv"> </span><span class="s">more</span><span class="nv"> </span><span class="s">reviews&quot;</span>
+<span class="w">      </span><span class="nt">reviewStarted</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;a</span><span class="nv"> </span><span class="s">review</span><span class="nv"> </span><span class="s">was</span><span class="nv"> </span><span class="s">started&quot;</span>
+<span class="w">      </span><span class="nt">approved</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;approved</span><span class="nv"> </span><span class="s">and</span><span class="nv"> </span><span class="s">ready&quot;</span>
+<span class="w">      </span><span class="nt">merged</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;merged</span><span class="nv"> </span><span class="s">and</span><span class="nv"> </span><span class="s">done&quot;</span>
+<span class="w">  </span><span class="nt">signedCommits</span><span class="p">:</span><span class="w"> </span><span class="c1"># (3)</span>
+<span class="w">    </span><span class="nt">ignore</span><span class="p">:</span><span class="w"> </span><span class="c1"># (4)</span>
+<span class="w">      </span><span class="nt">users</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[]</span><span class="w"> </span><span class="c1"># (6)</span>
+<span class="w">      </span><span class="nt">emails</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[]</span><span class="w"> </span><span class="c1"># (7)</span>
+<span class="w">  </span><span class="nt">tasksList</span><span class="p">:</span><span class="w"> </span><span class="c1"># (5)</span>
 </code></pre></div>
 <ol>
 <li>this means I'll enforce conventional commit messages in PRs.</li>
@@ -608,6 +621,8 @@ If I can't find my configuration file in the repo I'm working with, I'll look fo
 </div>
 
 
+  
+
 
 
 
@@ -626,42 +641,6 @@ If I can't find my configuration file in the repo I'm working with, I'll look fo
       </main>
       
         <footer class="md-footer">
-  
-    
-    <nav class="md-footer__inner md-grid" aria-label="Footer" >
-      
-        
-        <a href="../installation/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Installation" rel="prev">
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
-          </div>
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Previous
-              </span>
-              Installation
-            </div>
-          </div>
-        </a>
-      
-      
-        
-        <a href="../look-see/" class="md-footer__link md-footer__link--next" aria-label="Next: Look see" rel="next">
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Next
-              </span>
-              Look see
-            </div>
-          </div>
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
-          </div>
-        </a>
-      
-    </nav>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
@@ -722,12 +701,11 @@ If I can't find my configuration file in the repo I'm working with, I'll look fo
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "..", "features": ["content.code.annotate", "header.autohide", "navigation.indexes", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest", "toc.integrate"], "search": "../assets/javascripts/workers/search.16e2a7d4.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": "1.4.2"}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": ["content.code.annotate", "header.autohide", "navigation.indexes", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest", "toc.integrate"], "search": "../assets/javascripts/workers/search.e5c33ebb.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "1.4.3"}</script>
     
     
-      <script src="../assets/javascripts/bundle.5a2dcb6a.min.js"></script>
+      <script src="../assets/javascripts/bundle.ba449ae6.min.js"></script>
       
-    
     
   </body>
 </html>
