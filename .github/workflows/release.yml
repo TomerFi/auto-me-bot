@@ -7,10 +7,6 @@ on:
       title:
         description: "Release title"
         required: false
-      tweet:
-        description: "Tweet new release?"
-        required: false
-        default: "no"
 
 jobs:
   release:
@@ -137,18 +133,3 @@ jobs:
           git add mkdocs.yml
           git commit -m "docs: updated docs with ${{ steps.bumper.outputs.new_version }} [skip ci]"
           git push
-
-      - name: Tweet new release
-        if: ${{ github.event.inputs.tweet == 'yes' }}
-        uses: lazy-actions/tweet-action@1.0.1
-        with:
-          oauth_consumer_key: ${{ secrets.TWITTER_API_KEY }}
-          oauth_consumer_secret: ${{ secrets.TWITTER_API_SECRET_KEY }}
-          oauth_token: ${{ secrets.TWITTER_ACCESS_TOKEN }}
-          oauth_token_secret: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
-          message: |
-            🚀🎉 Auto-Me-Bot ${{ steps.bumper.outputs.new_version }} has been released! 🎉🚀
-            ${{ steps.gh_release.outputs.html_url }}
-            https://auto-me-bot.tomfi.info/
-
-            #auto_me_bot #probot #github
