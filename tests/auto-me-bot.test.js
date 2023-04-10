@@ -27,6 +27,7 @@ suite('Testing the auto-me-bot export', () => {
     });
 
     suite('Test various pull request related configurations', () => {
+        let autoApproveHandlerStub;
         let conventionalCommitsHandlerStub;
         let conventionalTitleHandlerStub;
         let lifecycleLabelsHandlerStub;
@@ -42,6 +43,12 @@ suite('Testing the auto-me-bot export', () => {
         let patchedConfigSpec;
 
         beforeEach(() => {
+            // patch the autoApprove handler's run function to a stub
+            autoApproveHandlerStub = sinon.stub();
+            let autoApproveApproveHandlerPatch = {
+                match: require('../src/handlers/pr-auto-approve').match,
+                run: autoApproveHandlerStub
+            }
             // patch the conventionalCommits handler's run function to a stub
             conventionalCommitsHandlerStub = sinon.stub();
             let conventionalCommitsHandlerPatch = {
@@ -83,6 +90,7 @@ suite('Testing the auto-me-bot export', () => {
             // create a patched config spec for injecting the patched handlers into the application
             patchedConfigSpec = {
                 pr: {
+                    autoApprove: autoApproveApproveHandlerPatch,
                     conventionalCommits: conventionalCommitsHandlerPatch,
                     conventionalTitle: conventionalTitleHandlerPatch,
                     lifecycleLabels: lifecycleLabelHandlerPatch,
@@ -115,6 +123,20 @@ suite('Testing the auto-me-bot export', () => {
             // then expect all pr related handlers to be invoked
             allHandlers.forEach(handler => expect(handler).to.have.been.calledOnceWith(
                 fakeContext, {}, sinon.match(t => Date.parse(t))));
+        });
+
+        test('When the autoApprove operation is checked, execute the related handler', async () => {
+            // given the following pr configuration
+            let fullConfig = {pr: { autoApprove:{} }};
+            configFuncStub.withArgs('auto-me-bot.yml').resolves(fullConfig);
+            // when invoking the controller
+            await prHandlersControllerSut(fakeContext);
+            // then expect only the related handler to be invoked
+            allHandlers
+                .filter(handler => handler !== autoApproveHandlerStub)
+                .forEach(handler => expect(handler).to.have.not.been.called);
+            expect(autoApproveHandlerStub).to.have.been.calledOnceWith(
+                fakeContext, fullConfig.pr.autoApprove, sinon.match(t => Date.parse(t)));
         });
 
         test('When the conventionalCommits operation is checked, execute the related handler', async () => {
