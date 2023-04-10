@@ -1,6 +1,9 @@
 # https://github.com/apps/auto-me-bot
 ---
 pr:
+  autoApprove:
+    allBots: false
+    users: ['dependabot']
   # conventionalCommits:
   #   rules:
   #     'body-max-line-length': [2, 'always', 150]

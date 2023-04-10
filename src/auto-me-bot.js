@@ -1,6 +1,7 @@
 const yaml = require('js-yaml');
 
 // import handlers
+const prAutoApproveHandler = require('./handlers/pr-auto-approve');
 const prConventionalCommitsHandler = require('./handlers/pr-conventional-commits');
 const prConventionalTitleHandler = require('./handlers/pr-conventional-title');
 const prLifecycleLabelsHandler = require('./handlers/pr-lifecycle-labels');
@@ -9,6 +10,8 @@ const prTasksListHandler = require('./handlers/pr-tasks-list');
 
 /* example configuration (for reference):
 pr:
+    autoApprove:
+        ...
     conventionalCommits:
         ...
     conventionalTitle:
@@ -39,6 +42,7 @@ const ON_EVENTS = Object.freeze([
 // the run function should take context, config, and an iso startedAt (config is nullable)
 const CONFIG_SPEC = Object.freeze({
     pr: {
+        autoApprove: prAutoApproveHandler,
         conventionalCommits: prConventionalCommitsHandler,
         conventionalTitle: prConventionalTitleHandler,
         lifecycleLabels: prLifecycleLabelsHandler,
