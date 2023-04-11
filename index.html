@@ -688,6 +688,9 @@ and select the repos you want me to keep an eye out for.</br></p>
 If I can't find my configuration file in the repo I'm working with, I'll look for it in your <em>.github</em> repo.</p>
 <div class="highlight"><span class="filename">.github/auto-me-bot.yml</span><pre><span></span><code><span class="nn">---</span>
 <span class="nt">pr</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">autoApprove</span><span class="p">:</span><span class="w"> </span><span class="c1"># (13)</span>
+<span class="w">    </span><span class="nt">allBots</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="w">    </span><span class="nt">users</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;dependabot&quot;</span><span class="p p-Indicator">]</span>
 <span class="w">  </span><span class="nt">conventionalCommits</span><span class="p">:</span><span class="w"> </span><span class="c1"># (1)</span>
 <span class="w">    </span><span class="nt">rules</span><span class="p">:</span><span class="w"> </span><span class="c1"># (2)</span>
 <span class="w">  </span><span class="nt">conventionalTitle</span><span class="p">:</span><span class="w"> </span><span class="c1"># (11)</span>
@@ -720,6 +723,7 @@ If I can't find my configuration file in the repo I'm working with, I'll look fo
 <li>you don't have to specify all of the lifecycle's stages, just the ones you want.<br/>and I don't create the labels yet, so you'll have to create them.</li>
 <li>this means I'll enforce conventional titles for PRs.</li>
 <li>you can optionally configure some rules for me.<br/><a href="https://commitlint.js.org/#/reference-rules">see commitlint options</a></li>
+<li>you can tell about users or bots you trust, and I'll automatically approve their PRs.</li>
 </ol>
 <h2 id="look-see">Look-See<a class="headerlink" href="#look-see" title="Permanent link">⚓︎</a></h2>
 <figure>
@@ -731,6 +735,16 @@ If I can't find my configuration file in the repo I'm working with, I'll look fo
 <p><img alt="" src="https://raw.githubusercontent.com/TomerFi/auto-me-bot/main/docs/img/all-handlers-fail.png" width="800" />
   </p>
 <figcaption>all handlers failed</figcaption>
+</figure>
+<figure>
+<p><img alt="" src="https://raw.githubusercontent.com/TomerFi/auto-me-bot/main/docs/img/auto-approve-approved.png" width="800" />
+  </p>
+<figcaption>auto approved pr - approved</figcaption>
+</figure>
+<figure>
+<p><img alt="" src="https://raw.githubusercontent.com/TomerFi/auto-me-bot/main/docs/img/auto-approve-neutral.gif" width="800" />
+  </p>
+<figcaption>auto approved pr - not approved</figcaption>
 </figure>
 <figure>
 <p><img alt="" src="https://raw.githubusercontent.com/TomerFi/auto-me-bot/main/docs/img/conventional-commits-success.png" width="800" />
@@ -931,7 +945,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.</p>
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": ".", "features": ["content.code.annotate", "header.autohide", "navigation.indexes", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest", "toc.integrate"], "search": "assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "1.5.0"}</script>
+    <script id="__config" type="application/json">{"base": ".", "features": ["content.code.annotate", "header.autohide", "navigation.indexes", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest", "toc.integrate"], "search": "assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "1.5.1"}</script>
     
     
       <script src="assets/javascripts/bundle.51198bba.min.js"></script>
