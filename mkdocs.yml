@@ -17,11 +17,12 @@ nav:
   - Configuration: configuration.md
   - Look-See:
     - look-see.md
+    - Lifecycle Labels: handlers/lifecycle-labels.md
     - Conventional Commits: handlers/conventional-commits.md
     - Conventional Title: handlers/conventional-title.md
-    - Lifecycle Labels: handlers/lifecycle-labels.md
     - Signed Commits: handlers/signed-commits.md
     - Tasks List: handlers/tasks-list.md
+    - Auto Approve: handlers/auto-approve.md
   - Spec: spec.md
   - License: license.md
 
