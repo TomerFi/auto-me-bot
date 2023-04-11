@@ -422,6 +422,8 @@
         
           
         
+          
+        
       
       
         <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
@@ -444,6 +446,20 @@
     <li class="md-nav__item">
       <a href="../look-see/" class="md-nav__link">
         Look see
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../handlers/lifecycle-labels/" class="md-nav__link">
+        Lifecycle Labels
       </a>
     </li>
   
@@ -484,20 +500,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../handlers/lifecycle-labels/" class="md-nav__link">
-        Lifecycle Labels
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../handlers/signed-commits/" class="md-nav__link">
         Signed Commits
       </a>
@@ -514,6 +516,20 @@
     <li class="md-nav__item">
       <a href="../handlers/tasks-list/" class="md-nav__link">
         Tasks List
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../handlers/auto-approve/" class="md-nav__link">
+        Auto Approve
       </a>
     </li>
   
@@ -577,13 +593,6 @@
 If I can't find my configuration file in the repo I'm working with, I'll look for it in your <em>.github</em> repo.</p>
 <div class="highlight"><span class="filename">.github/auto-me-bot.yml</span><pre><span></span><code><span class="nn">---</span>
 <span class="nt">pr</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">autoApprove</span><span class="p">:</span><span class="w"> </span><span class="c1"># (13)</span>
-<span class="w">    </span><span class="nt">allBots</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
-<span class="w">    </span><span class="nt">users</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;dependabot&quot;</span><span class="p p-Indicator">]</span>
-<span class="w">  </span><span class="nt">conventionalCommits</span><span class="p">:</span><span class="w"> </span><span class="c1"># (1)</span>
-<span class="w">    </span><span class="nt">rules</span><span class="p">:</span><span class="w"> </span><span class="c1"># (2)</span>
-<span class="w">  </span><span class="nt">conventionalTitle</span><span class="p">:</span><span class="w"> </span><span class="c1"># (11)</span>
-<span class="w">    </span><span class="nt">rules</span><span class="p">:</span><span class="w"> </span><span class="c1"># (12)</span>
 <span class="w">  </span><span class="nt">lifecycleLabels</span><span class="p">:</span><span class="w"> </span><span class="c1"># (8)</span>
 <span class="w">    </span><span class="nt">ignoreDrafts</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># (9)</span>
 <span class="w">    </span><span class="nt">labels</span><span class="p">:</span><span class="w"> </span><span class="c1"># (10)</span>
@@ -593,11 +602,18 @@ If I can't find my configuration file in the repo I'm working with, I'll look fo
 <span class="w">      </span><span class="nt">reviewStarted</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;a</span><span class="nv"> </span><span class="s">review</span><span class="nv"> </span><span class="s">was</span><span class="nv"> </span><span class="s">started&quot;</span>
 <span class="w">      </span><span class="nt">approved</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;approved</span><span class="nv"> </span><span class="s">and</span><span class="nv"> </span><span class="s">ready&quot;</span>
 <span class="w">      </span><span class="nt">merged</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;merged</span><span class="nv"> </span><span class="s">and</span><span class="nv"> </span><span class="s">done&quot;</span>
+<span class="w">  </span><span class="nt">conventionalCommits</span><span class="p">:</span><span class="w"> </span><span class="c1"># (1)</span>
+<span class="w">    </span><span class="nt">rules</span><span class="p">:</span><span class="w"> </span><span class="c1"># (2)</span>
+<span class="w">  </span><span class="nt">conventionalTitle</span><span class="p">:</span><span class="w"> </span><span class="c1"># (11)</span>
+<span class="w">    </span><span class="nt">rules</span><span class="p">:</span><span class="w"> </span><span class="c1"># (12)</span>
 <span class="w">  </span><span class="nt">signedCommits</span><span class="p">:</span><span class="w"> </span><span class="c1"># (3)</span>
 <span class="w">    </span><span class="nt">ignore</span><span class="p">:</span><span class="w"> </span><span class="c1"># (4)</span>
 <span class="w">      </span><span class="nt">users</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[]</span><span class="w"> </span><span class="c1"># (6)</span>
 <span class="w">      </span><span class="nt">emails</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[]</span><span class="w"> </span><span class="c1"># (7)</span>
 <span class="w">  </span><span class="nt">tasksList</span><span class="p">:</span><span class="w"> </span><span class="c1"># (5)</span>
+<span class="w">  </span><span class="nt">autoApprove</span><span class="p">:</span><span class="w"> </span><span class="c1"># (13)</span>
+<span class="w">    </span><span class="nt">allBots</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="w">    </span><span class="nt">users</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;dependabot&quot;</span><span class="p p-Indicator">]</span>
 </code></pre></div>
 <ol>
 <li>this means I'll enforce conventional commit messages in PRs.</li>
@@ -614,6 +630,11 @@ If I can't find my configuration file in the repo I'm working with, I'll look fo
 <li>you can optionally configure some rules for me.<br/><a href="https://commitlint.js.org/#/reference-rules">see commitlint options</a></li>
 <li>you can tell about users or bots you trust, and I'll automatically approve their PRs.</li>
 </ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When using both the <code>lifecycleLabels</code> and <code>autoApprove</code>, it's advised to keep them separated and in order.
+Otherwise, the GitHub's approve event might not make its way to the lifecycle handler, and we might miss a label.</p>
+</div>
 
   <hr>
 <div class="md-source-file">
@@ -716,7 +737,7 @@ If I can't find my configuration file in the repo I'm working with, I'll look fo
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "..", "features": ["content.code.annotate", "header.autohide", "navigation.indexes", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest", "toc.integrate"], "search": "../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "1.5.1"}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": ["content.code.annotate", "header.autohide", "navigation.indexes", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest", "toc.integrate"], "search": "../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "1.5.2"}</script>
     
     
       <script src="../assets/javascripts/bundle.51198bba.min.js"></script>
