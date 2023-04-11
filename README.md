@@ -40,13 +40,16 @@
 # .github/auto-me-bot.yml
 ---
 pr:
-  autoApprove: # you can tell about users or bots you trust, and I'll automatically approve their PRs.
+  lifecycleLabels: # this means you I'll label PRs based on the their lifecycle.
   conventionalCommits: # this means I'll enforce conventional commit messages in PRs.
   conventionalTitle: # this means I'll enforce conventional title for PRs.
-  lifecycleLabels: # this means you I'll label PRs based on the their lifecycle.
   signedCommits: # this means I'll make sure all commits in PRs are signed with the 'Signed-off-by' trailer.
   tasksList: # this means I'll verify completion of tasks list in PRs.
+  autoApprove: # you can tell about users or bots you trust, and I'll automatically approve their PRs.
 ```
+
+  > When using both the `lifecycleLabels` and `autoApprove`, it's advised to keep them separated and in order.<br/>
+  > Otherwise, the GitHub's approve event might not make its way to the lifecycle handler, and we might miss a label.
 
   </p>
   </summary>
