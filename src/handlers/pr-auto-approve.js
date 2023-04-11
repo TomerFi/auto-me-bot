@@ -37,8 +37,8 @@ module.exports.run = async function(context, config, startedAt) {
         // if allBots is true and the user type is a bot
         if ((config.allBots && context.isBot())
             // if users list is configured and contains the sender login
-            || (config.users && config.users.includes(
-                context.payload.sender.login.replace('[bot]', '').trim()))
+            || (config.users && config.users.map((s) => s.toLowerCase()).includes(
+                context.payload.sender.login.replace('[bot]', '').toLowerCase()))
         ) {
             // send approve request
             await context.octokit.pulls.createReview(context.pullRequest({event: 'APPROVE'}))
