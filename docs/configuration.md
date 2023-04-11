@@ -4,13 +4,6 @@ If I can't find my configuration file in the repo I'm working with, I'll look fo
 ```yaml title=".github/auto-me-bot.yml"
 ---
 pr:
-  autoApprove: # (13)
-    allBots: false
-    users: ["dependabot"]
-  conventionalCommits: # (1)
-    rules: # (2)
-  conventionalTitle: # (11)
-    rules: # (12)
   lifecycleLabels: # (8)
     ignoreDrafts: false # (9)
     labels: # (10)
@@ -20,11 +13,18 @@ pr:
       reviewStarted: "a review was started"
       approved: "approved and ready"
       merged: "merged and done"
+  conventionalCommits: # (1)
+    rules: # (2)
+  conventionalTitle: # (11)
+    rules: # (12)
   signedCommits: # (3)
     ignore: # (4)
       users: [] # (6)
       emails: [] # (7)
   tasksList: # (5)
+  autoApprove: # (13)
+    allBots: false
+    users: ["dependabot"]
 ```
 
 1. this means I'll enforce conventional commit messages in PRs.
@@ -40,3 +40,7 @@ pr:
 11. this means I'll enforce conventional titles for PRs.
 12. you can optionally configure some rules for me.<br/>[see commitlint options](https://commitlint.js.org/#/reference-rules)
 13. you can tell about users or bots you trust, and I'll automatically approve their PRs.
+
+!!! note
+    When using both the `lifecycleLabels` and `autoApprove`, it's advised to keep them separated and in order.
+    Otherwise, the GitHub's approve event might not make its way to the lifecycle handler, and we might miss a label.
