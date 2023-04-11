@@ -40,6 +40,7 @@
 # .github/auto-me-bot.yml
 ---
 pr:
+  autoApprove: # you can tell about users or bots you trust, and I'll automatically approve their PRs.
   conventionalCommits: # this means I'll enforce conventional commit messages in PRs.
   conventionalTitle: # this means I'll enforce conventional title for PRs.
   lifecycleLabels: # this means you I'll label PRs based on the their lifecycle.
@@ -56,7 +57,6 @@ pr:
   <ul>
     <li>Size based labeling for pull requests</li>
     <li>Automate assignees and reviewers for pull requests</li>
-    <li>Auto approving pull requests with consideration to GitHub code owners</li>
     <li>Various handlers for event types other then <em>pull_request</em, such as <em>push</em> and and <em>issue</em> event types</li>
     <li>Repository management capabilities, such as labels creation and settings syncing</li>
   </ul>

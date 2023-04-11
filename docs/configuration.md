@@ -4,6 +4,9 @@ If I can't find my configuration file in the repo I'm working with, I'll look fo
 ```yaml title=".github/auto-me-bot.yml"
 ---
 pr:
+  autoApprove: # (13)
+    allBots: false
+    users: ["dependabot"]
   conventionalCommits: # (1)
     rules: # (2)
   conventionalTitle: # (11)
@@ -36,3 +39,4 @@ pr:
 10. you don't have to specify all of the lifecycle's stages, just the ones you want.<br/>and I don't create the labels yet, so you'll have to create them.
 11. this means I'll enforce conventional titles for PRs.
 12. you can optionally configure some rules for me.<br/>[see commitlint options](https://commitlint.js.org/#/reference-rules)
+13. you can tell about users or bots you trust, and I'll automatically approve their PRs.
