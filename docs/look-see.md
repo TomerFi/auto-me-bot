@@ -8,6 +8,8 @@
   <figcaption>all handlers failed</figcaption>
 </figure>
 
+--8<-- "docs/handlers/auto-approve.md"
+
 --8<-- "docs/handlers/conventional-commits.md"
 
 --8<-- "docs/handlers/conventional-title.md"
