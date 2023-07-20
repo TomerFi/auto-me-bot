@@ -31,7 +31,7 @@
   "dependencies": {
     "@commitlint/config-conventional": "^17.6.6",
     "@commitlint/lint": "^17.6.6",
-    "@commitlint/load": "^17.5.0",
+    "@commitlint/load": "^17.6.7",
     "@digitalroute/email-verify": "^0.3.2",
     "js-yaml": "^4.1.0",
     "lodash": "^4.17.21",
