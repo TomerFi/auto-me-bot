@@ -23,7 +23,17 @@
         "ideas",
         "promotion"
       ]
+    },
+    {
+      "login": "altmas5",
+      "name": "Jorge Vallecillo",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1054618?v=4",
+      "profile": "http://altmascinco.wordpress.com",
+      "contributions": [
+        "infra"
+      ]
     }
   ],
-  "commitConvention": "none"
+  "commitConvention": "none",
+  "commitType": "docs"
 }
