@@ -44,7 +44,7 @@
     "eslint-plugin-editorconfig": "^4.0.3",
     "mocha": "^10.2.0",
     "nyc": "^15.1.0",
-    "rewire": "^6.0.0",
+    "rewire": "^7.0.0",
     "sinon": "^15.2.0",
     "sinon-chai": "^3.7.0"
   },
