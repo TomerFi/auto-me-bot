@@ -18,10 +18,10 @@ jobs:
       - name: Checkout sources
         uses: actions/checkout@v4
 
-      - name: Install node 16
+      - name: Install node 18
         uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version: '18'
           cache: npm
 
       - name: Install project modules
