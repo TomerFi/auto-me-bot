@@ -60,7 +60,7 @@ jobs:
 
       - name: Verify function is in active state
         if: steps.function_state.outputs.state != 'Active'
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         with:
           script: core.setFailed('the function is being updated, please try again later')
 
@@ -101,7 +101,7 @@ jobs:
 
       - name: Create a release name
         id: release_name
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         with:
           script: |
             var retval = '${{ steps.bumper.outputs.new_version }}'
@@ -112,7 +112,7 @@ jobs:
 
       - name: Create a release
         id: gh_release
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.RELEASE_PAT }}
           script: |
