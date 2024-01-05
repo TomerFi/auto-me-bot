@@ -30,7 +30,7 @@
   },
   "dependencies": {
     "@commitlint/config-conventional": "^18.4.4",
-    "@commitlint/lint": "^18.4.3",
+    "@commitlint/lint": "^18.4.4",
     "@commitlint/load": "^18.4.3",
     "@digitalroute/email-verify": "^0.3.2",
     "js-yaml": "^4.1.0",
