@@ -39,7 +39,7 @@
     "probot": "^12.3.3"
   },
   "devDependencies": {
-    "chai": "^4.3.10",
+    "chai": "^4.4.0",
     "eslint": "^8.56.0",
     "eslint-plugin-editorconfig": "^4.0.3",
     "mocha": "^10.2.0",
