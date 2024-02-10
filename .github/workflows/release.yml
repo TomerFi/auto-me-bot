@@ -40,11 +40,11 @@ jobs:
 
       - name: Determine next SemVer
         id: bumper
-        uses: tomerfi/version-bumper-action@1.2.2
+        uses: tomerfi/version-bumper-action@2.0.0
 
       - name: Update package with new version
         run: |
-          npm version ${{ steps.bumper.outputs.new_version }} --no-git-tag-version
+          npm version ${{ steps.bumper.outputs.next }} --no-git-tag-version
 
       - name: Install project modules
         run: npm ci --production
@@ -91,20 +91,20 @@ jobs:
         run: |
           git add package.json
           git add package-lock.json
-          git commit -m "docs: updated package with ${{ steps.bumper.outputs.new_version }} [skip ci]"
+          git commit -m "docs: updated package with ${{ steps.bumper.outputs.next }} [skip ci]"
           git push
 
       - name: Create and push new tag
         run: |
-          git tag ${{ steps.bumper.outputs.new_version }} -m "Function v${{ steps.publish_lambda.outputs.function_version }}"
-          git push origin ${{ steps.bumper.outputs.new_version }}
+          git tag ${{ steps.bumper.outputs.next }} -m "Function v${{ steps.publish_lambda.outputs.function_version }}"
+          git push origin ${{ steps.bumper.outputs.next }}
 
       - name: Create a release name
         id: release_name
         uses: actions/github-script@v7
         with:
           script: |
-            var retval = '${{ steps.bumper.outputs.new_version }}'
+            var retval = '${{ steps.bumper.outputs.next }}'
             if ('${{ github.event.inputs.title }}') {
               retval = retval.concat(' - ${{ github.event.inputs.title }}')
             }
@@ -118,7 +118,7 @@ jobs:
           script: |
             const repo_name = context.payload.repository.full_name
             const response = await github.request('POST /repos/' + repo_name + '/releases', {
-              tag_name: '${{ steps.bumper.outputs.new_version }}',
+              tag_name: '${{ steps.bumper.outputs.next }}',
               name: '${{ steps.release_name.outputs.value }}',
               generate_release_notes: true
             })
@@ -126,10 +126,10 @@ jobs:
 
       - name: Update documentation with new version
         run: |
-          sed -i 's/  version: .*/  version: "${{ steps.bumper.outputs.new_version }}"/g' mkdocs.yml
+          sed -i 's/  version: .*/  version: "${{ steps.bumper.outputs.next }}"/g' mkdocs.yml
 
       - name: Commit and push docs modifications
         run: |
           git add mkdocs.yml
-          git commit -m "docs: updated docs with ${{ steps.bumper.outputs.new_version }} [skip ci]"
+          git commit -m "docs: updated docs with ${{ steps.bumper.outputs.next }} [skip ci]"
           git push
