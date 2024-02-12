@@ -17,6 +17,6 @@ exports.handler = async (event) => {
         id: event.headers['x-github-delivery'],
         name: event.headers['x-github-event'],
         signature: event.headers['x-hub-signature'],
-        payload: JSON.parse(event.body)
+        payload: event.body
     });
 };
