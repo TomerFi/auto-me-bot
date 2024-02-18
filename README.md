@@ -10,24 +10,23 @@
   </strong>
 </p>
 
-<p align="center">
+<div align="center">
   <table align="center">
     <td align="left"><a href=https://github.com/apps/auto-me-bot target="_blank">Install App</a></td>
     <td align="left"><a href="https://auto-me-bot.tomfi.info/" target="_blank">Read Docs</a></td>
     <td align="left"><a href="https://github.com/TomerFi/auto-me-bot/blob/main/.github/auto-me-bot.yml" target="_blank">Example Config</a></td>
   </table>
-</p>
+</div>
 
 <a href="https://auto-me-bot.tomfi.info/">
   <img align="center" src="https://raw.githubusercontent.com/TomerFi/auto-me-bot/main/docs/img/all-handlers-success.png" alt="all-handlers-success"/>
-<a/>
+</a>
 
 <details>
   <summary><strong>Failed Checks</strong></summary>
   <a href="https://auto-me-bot.tomfi.info/">
     <img align="center" src="https://raw.githubusercontent.com/TomerFi/auto-me-bot/main/docs/img/all-handlers-fail.png" alt="all-handlers-fail"/>
-  <a/>
-  </summary>
+  </a>
 </details>
 
 <details>
@@ -52,7 +51,6 @@ pr:
   > Otherwise, the GitHub's approve event might not make its way to the lifecycle handler, and we might miss a label.
 
   </p>
-  </summary>
 </details>
 
 <details>
@@ -84,11 +82,7 @@ pr:
   </p>
 </details>
 
-<p align="left">
-<strong>Our contributors </strong><a href="https://allcontributors.org/docs/en/emoji-key"><em>emoji keys</em></a><br/>
-<img alt="all-contributors" src="https://img.shields.io/github/all-contributors/tomerfi/auto-me-bot?color=ee8449&style=flat-square">
-<br/>
-<div align="left">
+## Contributors [![all-contributors-badge]][all-contributors]
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
@@ -107,6 +101,12 @@ pr:
 <!-- prettier-ignore-end -->
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
-<!-- ALL-CONTRIBUTORS-LIST:END -->
-</div>
-</p>
+
+Contributing guidelines are [here][contributing_md].
+
+<!-- Real Links -->
+[contributing_md]: https://github.com/TomerFi/auto-me-bot/blob/main/CONTRIBUTING.md
+[all-contributors]: https://allcontributors.org/
+<!-- Badges Links -->
+[all-contributors-badge]: https://img.shields.io/github/all-contributors/tomerfi/version-bumper?style=plastic&label=%20&color=b7b1e3
+
