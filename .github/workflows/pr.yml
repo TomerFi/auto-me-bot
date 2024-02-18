@@ -10,10 +10,6 @@ jobs:
   test:
     runs-on: ubuntu-latest
     name: Lint and test project
-    permissions:
-      checks: write
-      contents: write
-      pull-requests: write
     steps:
       - name: Checkout sources
         uses: actions/checkout@v4
@@ -30,13 +26,5 @@ jobs:
       - name: Lint source files
         run: npm run lint
 
-      - name: Run unit tests and create coverage report
-        run: npm run tests:rep
-
-      - name: Report tests results
-        if: always()
-        uses: dorny/test-reporter@v1.8.0
-        with:
-          name: Unit Tests Run
-          path: unit-tests-result.json
-          reporter: mocha-json
+      - name: Run unit tests
+        run: npm test
