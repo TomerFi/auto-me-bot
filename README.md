@@ -96,6 +96,7 @@ pr:
 <table>
   <tbody>
     <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://aaron-de.nirvati.org"><img src="https://avatars.githubusercontent.com/u/67546953?v=4?s=100" width="100px;" alt="Aaron Dewes"/><br /><sub><b>Aaron Dewes</b></sub></a><br /><a href="https://github.com/TomerFi/auto-me-bot/commits?author=AaronDewes" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/dolby360"><img src="https://avatars.githubusercontent.com/u/22151399?v=4?s=100" width="100px;" alt="Dolev Ben Aharon"/><br /><sub><b>Dolev Ben Aharon</b></sub></a><br /><a href="https://github.com/TomerFi/auto-me-bot/commits?author=dolby360" title="Code">💻</a> <a href="https://github.com/TomerFi/auto-me-bot/commits?author=dolby360" title="Documentation">📖</a> <a href="https://github.com/TomerFi/auto-me-bot/issues?q=author%3Adolby360" title="Bug reports">🐛</a> <a href="#ideas-dolby360" title="Ideas, Planning, & Feedback">🤔</a> <a href="#promotion-dolby360" title="Promotion">📣</a></td>
       <td align="center" valign="top" width="14.28%"><a href="http://altmascinco.wordpress.com"><img src="https://avatars.githubusercontent.com/u/1054618?v=4?s=100" width="100px;" alt="Jorge Vallecillo"/><br /><sub><b>Jorge Vallecillo</b></sub></a><br /><a href="#infra-altmas5" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a></td>
     </tr>
