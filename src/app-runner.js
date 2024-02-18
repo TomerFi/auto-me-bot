@@ -16,7 +16,7 @@ exports.handler = async (event) => {
     return probot.webhooks.verifyAndReceive({
         id: event.headers['x-github-delivery'],
         name: event.headers['x-github-event'],
-        signature: event.headers['x-hub-signature'],
+        signature: event.headers['x-hub-signature-256'],
         payload: event.body
     });
 };
