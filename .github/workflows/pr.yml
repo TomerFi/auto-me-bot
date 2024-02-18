@@ -11,6 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Lint and test project
     permissions:
+      actions: write
       checks: write
       contents: write
       pull-requests: write
