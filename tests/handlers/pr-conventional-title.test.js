@@ -1,7 +1,7 @@
 const chai = require('chai');
 const rewire = require('rewire');
 const sinon = require('sinon');
-const { beforeEach } = require('mocha');
+const { beforeEach } = require('mocha'); /* eslint-disable-line no-redeclare */
 const { EOL } = require('os');
 
 chai.use(require('sinon-chai'));

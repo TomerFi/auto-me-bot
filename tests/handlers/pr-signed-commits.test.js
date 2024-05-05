@@ -2,7 +2,7 @@ const chai = require('chai');
 const emailVerifier = require('@digitalroute/email-verify');
 const rewire = require('rewire');
 const sinon = require('sinon');
-const { beforeEach } = require('mocha');
+const { beforeEach } = require('mocha'); /* eslint-disable-line no-redeclare */
 const { cloneDeep } = require('lodash');
 const { EOL } = require('os');
 

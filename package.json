@@ -23,7 +23,7 @@
   ],
   "scripts": {
     "start": "probot run ./src/auto-me-bot.js",
-    "lint": "eslint src tests --ext js",
+    "lint": "eslint src tests",
     "test": "nyc npm run tests",
     "tests": "mocha --check-leaks --fail-zero --color --ui tdd --recursive ./tests/",
     "tests:rep": "mocha --check-leaks --fail-zero --ui tdd --recursive --reporter json ./tests/ > unit-tests-result.json"
@@ -39,9 +39,11 @@
     "probot": "^13.2.1"
   },
   "devDependencies": {
+    "@eslint/js": "^9.2.0",
     "chai": "^4.4.1",
-    "eslint": "^9.1.1",
-    "eslint-plugin-editorconfig": "^4.0.3",
+    "eslint": "^9.2.0",
+    "eslint-plugin-mocha": "^10.4.3",
+    "globals": "^15.1.0",
     "mocha": "^10.4.0",
     "nyc": "^15.1.0",
     "rewire": "^7.0.0",
