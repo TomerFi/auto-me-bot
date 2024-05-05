@@ -1,6 +1,6 @@
 const chai = require('chai');
 const sinon = require('sinon');
-const { beforeEach } = require('mocha');
+const { beforeEach } = require('mocha'); /* eslint-disable-line no-redeclare */
 
 chai.use(require('sinon-chai'));
 
