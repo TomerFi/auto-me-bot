@@ -43,7 +43,7 @@
     "chai": "^4.4.1",
     "eslint": "^9.4.0",
     "eslint-plugin-mocha": "^10.4.3",
-    "globals": "^15.3.0",
+    "globals": "^15.4.0",
     "mocha": "^10.4.0",
     "nyc": "^15.1.0",
     "rewire": "^7.0.0",
