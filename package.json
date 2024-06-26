@@ -44,7 +44,7 @@
     "eslint": "^9.5.0",
     "eslint-plugin-mocha": "^10.4.3",
     "globals": "^15.6.0",
-    "mocha": "^10.4.0",
+    "mocha": "^10.5.1",
     "nyc": "^17.0.0",
     "rewire": "^7.0.0",
     "sinon": "^18.0.0",
