@@ -1,5 +1,3 @@
-const lint = require('@commitlint/lint').default;
-const load = require('@commitlint/load').default;
 const { EOL } = require('os');
 
 /* example configuration (for reference):
@@ -20,6 +18,8 @@ module.exports.match = function(context) {
 
 // handler for verifying pr titles as conventional
 module.exports.run =  async function(context, config, startedAt) {
+    const lint = await import('@commitlint/lint').default;
+
     // create the initial check run and mark it as in_progress
     let checkRun = await context.octokit.checks.create(context.repo({
         head_sha: context.payload.pull_request.head.sha,
@@ -94,6 +94,7 @@ function lintReportToMdReport(lintReport) {
 
 // load default and custom commitlint options
 async function loadOptions (config) {
+    const load = await import('@commitlint/load').default;
     if(config && config.rules) {
         return load({...DEFAULT_CONFIG, ...config});
     } else {

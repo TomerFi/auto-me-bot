@@ -1,5 +1,3 @@
-const lint = require('@commitlint/lint').default;
-const load = require('@commitlint/load').default;
 const { EOL } = require('os');
 
 /* example configuration (for reference):
@@ -143,6 +141,7 @@ function parseLintStatus(lintStatus) {
 
 // load default and custom commitlint options
 async function loadOptions (config) {
+    const load = await import('@commitlint/load').default;
     if(config && config.rules) {
         return load({...DEFAULT_CONFIG, ...config});
     } else {
@@ -152,6 +151,7 @@ async function loadOptions (config) {
 
 // lint commit and return url and report
 async function lintCommit(commitObj, opts) {
+    const lint = await import('@commitlint/lint').default;
     return {
         commits_url: commitObj.html_url,
         report: await lint(commitObj.commit.message, opts.rules, opts.parserPreset.parserOpts)
