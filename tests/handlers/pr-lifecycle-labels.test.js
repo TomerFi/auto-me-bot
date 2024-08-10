@@ -1,11 +1,12 @@
-const chai = require('chai');
-const sinon = require('sinon');
-const { beforeEach } = require('mocha'); /* eslint-disable-line no-redeclare */
+import chai, { expect } from 'chai'
+import sinonChai from 'sinon-chai'
+import sinon from 'sinon'
+import { beforeEach } from 'mocha'
 
-chai.use(require('sinon-chai'));
+chai.use(sinonChai)
 
-const expect = chai.expect;
-const sut = require('../../src/handlers/pr-lifecycle-labels');
+import sut from '../../src/handlers/pr-lifecycle-labels.js'
+
 
 suite('Testing the pr-lifecycle-labels', () => {
     suite('Test handler matching', () => {

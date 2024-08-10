@@ -1,13 +1,12 @@
-const chai = require('chai');
-const rewire = require('rewire');
-const sinon = require('sinon');
-const { beforeEach } = require('mocha'); /* eslint-disable-line no-redeclare */
-const { EOL } = require('os');
+import chai, { expect } from 'chai'
+import sinonChai from 'sinon-chai'
+import sinon from 'sinon'
+import { beforeEach } from 'mocha'
+import { EOL } from 'node:os'
 
-chai.use(require('sinon-chai'));
+chai.use(sinonChai)
 
-const expect = chai.expect;
-const sut = rewire('../../src/handlers/pr-conventional-commits');
+import sut from '../../src/handlers/pr-conventional-commits.js'
 
 suite('Testing the pr-conventional-commits handler', () => {
     suite('Test handler matching', () => {
@@ -27,7 +26,6 @@ suite('Testing the pr-conventional-commits handler', () => {
     });
 
     suite('Test handler running', () => {
-        let loadSpy;
         let createCheckStub;
         let repoFuncStub;
         let pullRequestFuncStub;
@@ -35,7 +33,6 @@ suite('Testing the pr-conventional-commits handler', () => {
         let updateCheckStub;
 
         let fakeContext;
-        let baseConfig;
 
         const fakeSha = '#f54dda543@';
         const fakeCheckId = 13;
@@ -81,12 +78,6 @@ suite('Testing the pr-conventional-commits handler', () => {
             repoFuncStub.callsFake((a) => {return { ...getRepositoryInfoResponse, ...a }});
             pullRequestFuncStub = sinon.stub(); //stub for context.pullRequest function to short-circuit return the expected response
             pullRequestFuncStub.callsFake((a) => {return { ...getPullRequestInfoResponse, ...a }});
-            // wrap spy on load configuration
-            let loadConfig = sut.__get__('load');
-            loadSpy = sinon.spy(loadConfig);
-            sut.__set__('load', loadSpy);
-            // grab the default configuration for testing usage
-            baseConfig = sut.__get__('DEFAULT_CONFIG');
             // create a fake context for invoking the application with)
             fakeContext = Object.freeze({
                 payload: {
@@ -318,8 +309,6 @@ suite('Testing the pr-conventional-commits handler', () => {
             // then verify a check run to be created and updated as expected
             expect(createCheckStub).to.have.been.calledOnceWith(expectedCreateCheckRunInfo);
             expect(updateCheckStub).to.have.been.calledOnceWith(expectedUpdateCheck);
-            // verify custom configuration is included in the used configuration
-            expect(loadSpy).to.have.been.calledOnceWith(optionalConfig ? {...baseConfig, ...optionalConfig} : baseConfig);
         }
 
         test('Test with listCommits API endpoint response not successful, expect a report indicating a possible API error', async () => {

@@ -1,12 +1,12 @@
-const yaml = require('js-yaml');
+import yaml from 'js-yaml'
 
 // import handlers
-const prAutoApproveHandler = require('./handlers/pr-auto-approve');
-const prConventionalCommitsHandler = require('./handlers/pr-conventional-commits');
-const prConventionalTitleHandler = require('./handlers/pr-conventional-title');
-const prLifecycleLabelsHandler = require('./handlers/pr-lifecycle-labels');
-const prSignedCommitsHandler = require('./handlers/pr-signed-commits');
-const prTasksListHandler = require('./handlers/pr-tasks-list');
+import prAutoApproveHandler from './handlers/pr-auto-approve.js'
+import prConventionalCommitsHandler from './handlers/pr-conventional-commits.js'
+import prConventionalTitleHandler from './handlers/pr-conventional-title.js'
+import prLifecycleLabelsHandler from './handlers/pr-lifecycle-labels.js'
+import prSignedCommitsHandler from './handlers/pr-signed-commits.js'
+import prTasksListHandler from './handlers/pr-tasks-list.js'
 
 /* example configuration (for reference):
 pr:
@@ -52,12 +52,12 @@ const CONFIG_SPEC = Object.freeze({
 });
 
 // main entrance point for probot
-module.exports = function (probot) {
+export default function (probot) {
     probot.on(ON_EVENTS, handlersController(CONFIG_SPEC));
 };
 
 // distributes handler invocations based on user config and config spec
-function handlersController(configSpec) {
+export function handlersController(configSpec) {
     return async context => {
         // get config from current repo .github folder or from the .github repo's .github folder
         let config = await context.config('auto-me-bot.yml');

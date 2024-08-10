@@ -1,13 +1,12 @@
-const chai = require('chai');
-const sinon = require('sinon');
-const { beforeEach } = require('mocha'); /* eslint-disable-line no-redeclare */
+import chai, { expect } from 'chai'
+import sinonChai from 'sinon-chai'
+import sinon from 'sinon'
+import { beforeEach } from 'mocha'
+import { EOL } from 'node:os'
 
-chai.use(require('sinon-chai'));
+chai.use(sinonChai)
 
-const expect = chai.expect;
-const sut = require('../../src/handlers/pr-tasks-list');
-
-const EOL = require('os').EOL;
+import sut from '../../src/handlers/pr-tasks-list.js'
 
 suite('Testing the pr-tasks-list handler', () => {
     suite('Test handler matching', () => {

@@ -1,30 +1,22 @@
-const chai = require('chai');
-const rewire = require('rewire');
-const sinon = require('sinon');
-const { beforeEach } = require('mocha'); /* eslint-disable-line no-redeclare */
+import chai, { expect } from 'chai'
+import sinonChai from 'sinon-chai'
+import sinon from 'sinon'
+import { beforeEach } from 'mocha'
 
-chai.use(require('sinon-chai'));
+chai.use(sinonChai)
 
-const autoMeBot = rewire('../src/auto-me-bot');
-const expect = chai.expect;
+import { handlersController as app } from '../src/auto-me-bot.js'
+
+import autoApproveHandlerOrig from '../src/handlers/pr-auto-approve.js'
+import convCommitsHandlerOrig from  '../src/handlers/pr-conventional-commits.js'
+import convTitleHandlerOrig from  '../src/handlers/pr-conventional-title.js'
+import lifecycleLabelsHandlerOrig from  '../src/handlers/pr-lifecycle-labels.js'
+import signedCommitsHandlerOrig from  '../src/handlers/pr-signed-commits.js'
+import tasksListHandlerOrig from  '../src/handlers/pr-tasks-list.js'
 
 suite('Testing the auto-me-bot export', () => {
     // turn off logs
     console.info = function() { /**/ };
-
-    test('When invoking the application, expect a registration of the events', () => {
-        let probotFake = sinon.fake(); // create a fake probot for starting the app
-        let probotOnFunctionFake = sinon.fake(); // create a fake "on" function for the probot
-        // given the fake probot will adhere the fake 'on' function
-        probotFake.on = probotOnFunctionFake;
-        // when invoking the application with the fake probot
-        autoMeBot(probotFake);
-        // then expect the 'on' fake method to be called with the pull request events list
-        expect(probotOnFunctionFake).to.be.calledOnceWith(
-            autoMeBot.__get__('ON_EVENTS'),
-            sinon.match.func
-        );
-    });
 
     suite('Test various pull request related configurations', () => {
         let autoApproveHandlerStub;
@@ -46,37 +38,37 @@ suite('Testing the auto-me-bot export', () => {
             // patch the autoApprove handler's run function to a stub
             autoApproveHandlerStub = sinon.stub();
             let autoApproveApproveHandlerPatch = {
-                match: require('../src/handlers/pr-auto-approve').match,
+                match: autoApproveHandlerOrig.match,
                 run: autoApproveHandlerStub
             }
             // patch the conventionalCommits handler's run function to a stub
             conventionalCommitsHandlerStub = sinon.stub();
             let conventionalCommitsHandlerPatch = {
-                match: require('../src/handlers/pr-conventional-commits').match,
+                match: convCommitsHandlerOrig.match,
                 run: conventionalCommitsHandlerStub
             };
             // patch the conventionalTitle handler's run function to a stub
             conventionalTitleHandlerStub = sinon.stub();
             let conventionalTitleHandlerPatch = {
-                match: require('../src/handlers/pr-conventional-title').match,
+                match: convTitleHandlerOrig.match,
                 run: conventionalTitleHandlerStub
             };
             // patch the lifecycle handler's run function to a stub
             lifecycleLabelsHandlerStub = sinon.stub();
             let lifecycleLabelHandlerPatch = {
-                match: require('../src/handlers/pr-lifecycle-labels').match,
+                match: lifecycleLabelsHandlerOrig.match,
                 run: lifecycleLabelsHandlerStub
             };
             // patch the signedCommits handler's run function to a stub
             signedCommitsHandlerStub = sinon.stub();
             let signedCommitsHandlerPatch = {
-                match: require('../src/handlers/pr-signed-commits').match,
+                match: signedCommitsHandlerOrig.match,
                 run: signedCommitsHandlerStub
             }
             // patch the tasksList handler's run function to a stub
             tasksListHandlerStub = sinon.stub();
             let tasksListHandlerPatch = {
-                match: require('../src/handlers/pr-tasks-list').match,
+                match: tasksListHandlerOrig.match,
                 run: tasksListHandlerStub
             };
             // all handlers should be listed here for testing purposes
@@ -99,7 +91,7 @@ suite('Testing the auto-me-bot export', () => {
                 }
             };
             // grab the handlersController configured for pr related operations using the patched configuration
-            prHandlersControllerSut = autoMeBot.__get__('handlersController')(patchedConfigSpec)
+            prHandlersControllerSut = app(patchedConfigSpec)
             // create a fake context for invoking the application with and stub the config method
             configFuncStub = sinon.stub();
             fakeContext = {

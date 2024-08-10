@@ -1,12 +1,11 @@
-const chai = require('chai');
-const rewire = require('rewire');
-const sinon = require('sinon');
-const { beforeEach } = require('mocha'); /* eslint-disable-line no-redeclare */
+import chai, { expect } from 'chai'
+import sinonChai from 'sinon-chai'
+import sinon from 'sinon'
+import { beforeEach } from 'mocha'
 
-chai.use(require('sinon-chai'));
+chai.use(sinonChai)
 
-const expect = chai.expect;
-const sut = rewire('../../src/handlers/pr-auto-approve');
+import sut from '../../src/handlers/pr-auto-approve.js'
 
 suite('Testing the pr-auto-approve handler', () => {
     suite('Test handler matching', () => {

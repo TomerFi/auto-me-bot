@@ -1,9 +1,9 @@
-const { Probot } = require('probot');
-const autoMeBot = require('./auto-me-bot');
+import { Probot } from 'probot'
+import autoMeBot from './auto-me-bot'
 
 
 // handler function for aws lambda >> 'Handler:src/app-runner.handler'
-exports.handler = async (event) => {
+export async function handler (event) {
     let probot = new Probot({
         appId: process.env.APP_ID,
         privateKey: Buffer.from(process.env.PRIVATE_KEY, 'base64').toString('utf-8'),

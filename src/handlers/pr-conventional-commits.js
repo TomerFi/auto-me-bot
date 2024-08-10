@@ -1,6 +1,6 @@
-const lint = require('@commitlint/lint').default;
-const load = require('@commitlint/load').default;
-const { EOL } = require('os');
+import lint from '@commitlint/lint'
+import load from '@commitlint/load'
+import { EOL } from 'node:os'
 
 /* example configuration (for reference):
 rules:
@@ -11,15 +11,20 @@ const BOT_CHECK_URL = 'https://auto-me-bot.tomfi.info';
 const CHECK_NAME = 'Auto-Me-Bot Conventional Commits';
 const DEFAULT_CONFIG = {extends: ['@commitlint/config-conventional']};
 
+export default {
+    match: match,
+    run: run
+}
+
 // matcher for picking up events
-module.exports.match = function(context) {
+function match(context) {
     let event = 'pull_request';
     let actions = ['opened', 'edited', 'synchronize'];
     return event in context.payload ? actions.includes(context.payload.action) : false;
 }
 
 // handler for verifying commit messages as conventional
-module.exports.run =  async function(context, config, startedAt) {
+async function run(context, config, startedAt) {
     // create the initial check run and mark it as in_progress
     let checkRun = await context.octokit.checks.create(context.repo({
         head_sha: context.payload.pull_request.head.sha,
