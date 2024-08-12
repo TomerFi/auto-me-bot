@@ -3,18 +3,23 @@ allBots: true
 users: ['myUserName']
 */
 
-const BOT_CHECK_URL = 'https://auto-me-bot.tomfi.info';
-const CHECK_NAME = 'Auto-Me-Bot PR Automatic Approval';
+const BOT_CHECK_URL = 'https://auto-me-bot.tomfi.info'
+const CHECK_NAME = 'Auto-Me-Bot PR Automatic Approval'
+
+export default {
+    match: match,
+    run: run
+}
 
 // matcher for picking up events
-module.exports.match = function(context) {
+function match(context) {
     let event = 'pull_request';
     let actions = ['opened', 'synchronize'];
     return event in context.payload ? actions.includes(context.payload.action) : false;
 }
 
 // handler for automatic approvals of PRs based on sender login and type
-module.exports.run = async function(context, config, startedAt) {
+async function run(context, config, startedAt) {
     // create the initial check run and mark it as in_progress
     let checkRun = await context.octokit.checks.create(context.repo({
         head_sha: context.payload.pull_request.head.sha,

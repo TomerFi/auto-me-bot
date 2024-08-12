@@ -1,4 +1,4 @@
-const { isEmpty } = require('lodash');
+import { isEmpty } from 'lodash-es'
 
 /* example configuration (for reference):
 ignoreDrafts: true
@@ -25,8 +25,13 @@ const LABEL_KEYS = Object.freeze({
 
 const KNOWN_LABELS = Object.freeze(Object.values(LABEL_KEYS));
 
+export default {
+    match: match,
+    run: run
+}
+
 // matcher for picking up events
-module.exports.match = function(context) {
+function match(context) {
     let eventPr = 'pull_request';
     let actionsPr = ['opened', 'edited', 'synchronize', 'closed', 'ready_for_review', 'reopened'];
 
@@ -45,7 +50,7 @@ module.exports.match = function(context) {
 }
 
 // handler for labeling pull requests based on lifecycle
-module.exports.run = async function(context, config, startedAt) {
+async function run(context, config, startedAt) {
     // create the initial check run and mark it as in_progress
     let checkRun = await context.octokit.checks.create(context.repo({
         head_sha: context.payload.pull_request.head.sha,

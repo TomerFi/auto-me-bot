@@ -7,9 +7,9 @@ export default [
         name: "default",
         files: ["**/*.js"],
         languageOptions: {
-            sourceType: "script",
+            sourceType: "module",
             globals: {
-                ...globals.node,
+                ...globals.nodeBuiltin,
                 ...globals.mocha,
             }
         },

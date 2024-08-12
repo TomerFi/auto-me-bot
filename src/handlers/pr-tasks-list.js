@@ -1,11 +1,16 @@
-const marked = require('marked');
-const { EOL } = require('os');
+import { marked } from 'marked'
+import { EOL } from 'node:os'
 
 const BOT_CHECK_URL = 'https://auto-me-bot.tomfi.info';
 const CHECK_NAME = 'Auto-Me-Bot Tasks List';
 
+export default {
+    match: match,
+    run: run
+}
+
 // matcher for picking up events
-module.exports.match = function(context) {
+function match(context) {
     let event = 'pull_request';
     let actions = ['opened', 'edited', 'synchronize'];
 
@@ -17,7 +22,7 @@ module.exports.match = function(context) {
 }
 
 // handler for verifying PR tasks' list is completed
-module.exports.run = async function(context, _config, startedAt) {
+async function run(context, _config, startedAt) {
     // create the initial check run and mark it as in_progress
     let checkRun = await context.octokit.checks.create(context.repo({
         head_sha: context.payload.pull_request.head.sha,

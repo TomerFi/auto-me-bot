@@ -2,6 +2,7 @@
   "name": "auto-me-bot",
   "version": "2.0.1",
   "private": true,
+  "type": "module",
   "description": "A Probot app that takes care of your GitHub repos for you",
   "author": {
     "name": "Tomer Figenblat",
@@ -24,17 +25,17 @@
   "scripts": {
     "start": "probot run ./src/auto-me-bot.js",
     "lint": "eslint src tests",
-    "test": "nyc npm run tests",
+    "test": "c8 npm run tests",
     "tests": "mocha --check-leaks --fail-zero --color --ui tdd --recursive ./tests/",
     "tests:rep": "mocha --check-leaks --fail-zero --ui tdd --recursive --reporter json ./tests/ > unit-tests-result.json"
   },
   "dependencies": {
-    "@commitlint/config-conventional": "^18.6.0",
-    "@commitlint/lint": "^18.6.1",
-    "@commitlint/load": "^18.6.1",
-    "@digitalroute/email-verify": "^0.3.2",
+    "@commitlint/config-conventional": "^19.2.2",
+    "@commitlint/lint": "^19.2.2",
+    "@commitlint/load": "^19.4.0",
+    "deep-email-validator": "^0.1.21",
     "js-yaml": "^4.1.0",
-    "lodash": "^4.17.21",
+    "lodash-es": "^4.17.21",
     "marked": "^14.0.0",
     "probot": "^13.3.7"
   },
@@ -45,8 +46,7 @@
     "eslint-plugin-mocha": "^10.5.0",
     "globals": "^15.9.0",
     "mocha": "^10.7.3",
-    "nyc": "^17.0.0",
-    "rewire": "^7.0.0",
+    "c8": "^10.1.2",
     "sinon": "^18.0.0",
     "sinon-chai": "^3.7.0"
   },
@@ -54,7 +54,7 @@
     "node": ">= 20.0.0",
     "npm": ">= 10.0.0"
   },
-  "nyc": {
+  "c8": {
     "all": true,
     "check-coverage": true,
     "clean": true,
