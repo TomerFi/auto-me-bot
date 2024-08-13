@@ -6,10 +6,7 @@ users: ['myUserName']
 const BOT_CHECK_URL = 'https://auto-me-bot.tomfi.info'
 const CHECK_NAME = 'Auto-Me-Bot PR Automatic Approval'
 
-export default {
-    match: match,
-    run: run
-}
+export default {match, run}
 
 // matcher for picking up events
 function match(context) {

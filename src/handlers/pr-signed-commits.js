@@ -12,10 +12,7 @@ const CHECK_NAME = 'Auto-Me-Bot Signed Commits';
 
 const SIGN_OFF_TRAILER_REGEX = /^Signed-off-by: (.*) <(.*)@(.*)>$/;
 
-export default {
-    match: match,
-    run: runWrapper({})
-}
+export default {match, run: runWrapper({})}
 
 // matcher for picking up events
 function match(context) {
@@ -24,9 +21,9 @@ function match(context) {
     return event in context.payload ? actions.includes(context.payload.action) : false;
 }
 
-
+// wrapper for the standard run command, used for injecting email verifying options
 export function runWrapper(emailOpts) {
-// handler for verifying all commits are sign with the Signed-off-by trailer and a legit email
+    // handler for verifying all commits are sign with the Signed-off-by trailer and a legit email
     return async function run(context, config, startedAt) {
         // create the initial check run and mark it as in_progress
         let checkRun = await context.octokit.checks.create(context.repo({

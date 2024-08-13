@@ -25,10 +25,7 @@ const LABEL_KEYS = Object.freeze({
 
 const KNOWN_LABELS = Object.freeze(Object.values(LABEL_KEYS));
 
-export default {
-    match: match,
-    run: run
-}
+export default {match, run}
 
 // matcher for picking up events
 function match(context) {
