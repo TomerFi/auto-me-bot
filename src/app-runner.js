@@ -1,5 +1,5 @@
 import { Probot } from 'probot'
-import autoMeBot from './auto-me-bot'
+import autoMeBot from './auto-me-bot.js'
 
 
 // handler function for aws lambda >> 'Handler:src/app-runner.handler'
