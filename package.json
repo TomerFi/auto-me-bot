@@ -31,7 +31,7 @@
   },
   "dependencies": {
     "@commitlint/config-conventional": "^19.4.1",
-    "@commitlint/lint": "^19.4.1",
+    "@commitlint/lint": "^19.5.0",
     "@commitlint/load": "^19.4.0",
     "deep-email-validator": "^0.1.21",
     "js-yaml": "^4.1.0",
