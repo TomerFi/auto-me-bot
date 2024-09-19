@@ -37,7 +37,7 @@
     "js-yaml": "^4.1.0",
     "lodash-es": "^4.17.21",
     "marked": "^14.1.2",
-    "probot": "^13.3.7"
+    "probot": "^13.3.8"
   },
   "devDependencies": {
     "@eslint/js": "^9.10.0",
