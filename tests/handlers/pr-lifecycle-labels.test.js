@@ -1,9 +1,9 @@
-import chai, { expect } from 'chai'
+import { expect, use as chaiUse  } from 'chai'
 import sinonChai from 'sinon-chai'
 import sinon from 'sinon'
 import { beforeEach } from 'mocha'
 
-chai.use(sinonChai)
+chaiUse(sinonChai)
 
 import sut from '../../src/handlers/pr-lifecycle-labels.js'
 
