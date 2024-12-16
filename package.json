@@ -36,7 +36,7 @@
     "deep-email-validator": "^0.1.21",
     "js-yaml": "^4.1.0",
     "lodash-es": "^4.17.21",
-    "marked": "^15.0.3",
+    "marked": "^15.0.4",
     "probot": "^13.4.1"
   },
   "devDependencies": {
