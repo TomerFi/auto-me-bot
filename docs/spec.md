@@ -1,6 +1,0 @@
-- I was built with [Probot](https://probot.github.io/).
-- I was documented with [Material](https://squidfunk.github.io/mkdocs-material/) for [MkDocs](https://www.mkdocs.org/).
-- My art, i.e. my logo, was created with [DiceBear](https://avatars.dicebear.com/).
-- I'm deployed to [AWS Lambda](https://aws.amazon.com/lambda/).
-- My docs are deployed to [GitHub Pages](https://pages.github.com/).
-- My source code, of course, is stored on [GitHub](https://github.com/TomerFi/auto-me-bot).

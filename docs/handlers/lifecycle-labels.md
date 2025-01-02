@@ -1,34 +1,20 @@
-<figure markdown>
-  ![](https://raw.githubusercontent.com/TomerFi/auto-me-bot/main/docs/img/lifecycle-labels-reviewRequired.png){ width="800" }
-  <figcaption>lifecycle labels - review required</figcaption>
-</figure>
+=== "Review required"
+    ![](https://raw.githubusercontent.com/TomerFi/auto-me-bot/main/docs/img/lifecycle-labels-reviewRequired.png){ width="800" }
 
-<figure markdown>
-  ![](https://raw.githubusercontent.com/TomerFi/auto-me-bot/main/docs/img/lifecycle-labels-reviewStarted.png){ width="800" }
-  <figcaption>lifecycle labels - review required</figcaption>
-</figure>
+=== "Review started"
+    ![](https://raw.githubusercontent.com/TomerFi/auto-me-bot/main/docs/img/lifecycle-labels-reviewStarted.png){ width="800" }
 
-<figure markdown>
-  ![](https://raw.githubusercontent.com/TomerFi/auto-me-bot/main/docs/img/lifecycle-labels-changesRequested.png){ width="800" }
-  <figcaption>lifecycle labels - changes requested</figcaption>
-</figure>
+=== "Changed requested"
+    ![](https://raw.githubusercontent.com/TomerFi/auto-me-bot/main/docs/img/lifecycle-labels-changesRequested.png){ width="800" }
 
-<figure markdown>
-  ![](https://raw.githubusercontent.com/TomerFi/auto-me-bot/main/docs/img/lifecycle-labels-moreReviewsRequired.png){ width="800" }
-  <figcaption>lifecycle labels - more reviews required</figcaption>
-</figure>
+=== "More reviews required"
+    ![](https://raw.githubusercontent.com/TomerFi/auto-me-bot/main/docs/img/lifecycle-labels-moreReviewsRequired.png){ width="800" }
 
-<figure markdown>
-  ![](https://raw.githubusercontent.com/TomerFi/auto-me-bot/main/docs/img/lifecycle-labels-approved.png){ width="800" }
-  <figcaption>lifecycle labels - approved</figcaption>
-</figure>
+=== "Approved"
+    ![](https://raw.githubusercontent.com/TomerFi/auto-me-bot/main/docs/img/lifecycle-labels-approved.png){ width="800" }
 
-<figure markdown>
-  ![](https://raw.githubusercontent.com/TomerFi/auto-me-bot/main/docs/img/lifecycle-labels-merged.png){ width="800" }
-  <figcaption>lifecycle labels - merged</figcaption>
-</figure>
+=== "Merged"
+    ![](https://raw.githubusercontent.com/TomerFi/auto-me-bot/main/docs/img/lifecycle-labels-merged.png){ width="800" }
 
-<figure markdown>
-  ![](https://raw.githubusercontent.com/TomerFi/auto-me-bot/main/docs/img/lifecycle-labels-check.png){ width="800" }
-  <figcaption>lifecycle labels - check report</figcaption>
-</figure>
+=== "Check status"
+    ![](https://raw.githubusercontent.com/TomerFi/auto-me-bot/main/docs/img/lifecycle-labels-check.png){ width="800" }
