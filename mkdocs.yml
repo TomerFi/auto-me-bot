@@ -9,22 +9,11 @@ repo_url: https://github.com/TomerFi/auto-me-bot
 #edit_uri: "edit/main/docs"
 edit_uri: ""
 
-copyright: Copyright &copy; 2022 Tomer Figenblat
-
 nav:
   - Home: index.md
-  - Installation: installation.md
-  - Configuration: configuration.md
-  - Look-See:
-    - look-see.md
-    - Lifecycle Labels: handlers/lifecycle-labels.md
-    - Conventional Commits: handlers/conventional-commits.md
-    - Conventional Title: handlers/conventional-title.md
-    - Signed Commits: handlers/signed-commits.md
-    - Tasks List: handlers/tasks-list.md
-    - Auto Approve: handlers/auto-approve.md
-  - Spec: spec.md
-  - License: license.md
+  - Install: install.md
+  - Config: config.md
+  - Examples: examples.md
 
 markdown_extensions:
   - admonition
@@ -32,14 +21,20 @@ markdown_extensions:
   - def_list
   - md_in_html
   - pymdownx.betterem
+  - pymdownx.blocks.caption
+  - pymdownx.caret
+  - pymdownx.critic
   - pymdownx.details
+  - pymdownx.mark
   - pymdownx.emoji:
-      emoji_index: !!python/name:materialx.emoji.twemoji
-      emoji_generator: !!python/name:materialx.emoji.to_svg
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
   - pymdownx.highlight
   - pymdownx.inlinehilite
+  - pymdownx.magiclink
   - pymdownx.smartsymbols
-  - pymdownx.snippets
+  - pymdownx.snippets:
+      base_path: [ "docs" ]
   - pymdownx.superfences
   - pymdownx.tabbed:
       alternate_style: true
@@ -50,9 +45,6 @@ markdown_extensions:
 extra:
   version: "3.0.2"
   social:
-    - icon: fontawesome/brands/twitter
-      link: https://twitter.com/realTomFi
-      name: realTomfi on Twitter
     - icon: fontawesome/brands/github
       link: https://github.com/TomerFi
       name: TomerFi on GitHub
@@ -72,6 +64,7 @@ extra:
 plugins:
   - search
   - git-revision-date
+  - autorefs
 
 theme:
   name: material
@@ -81,20 +74,28 @@ theme:
     code: Fira Code
     text: Open Sans
   palette:
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to system preference
     - media: "(prefers-color-scheme: light)"
       scheme: default
       toggle:
-        icon: material/toggle-switch-off-outline
+        icon: material/brightness-7
         name: Switch to dark mode
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
       toggle:
-        icon: material/toggle-switch
+        icon: material/brightness-4
         name: Switch to light mode
+
   features:
     - content.code.annotate
     - header.autohide
     - navigation.indexes
+    - navigation.instant
+    - navigation.instant.progress
+    - navigation.instant.preview
     - navigation.tabs
     - navigation.tabs.sticky
     - navigation.top
@@ -103,3 +104,4 @@ theme:
     - search.share
     - search.suggest
     - toc.integrate
+    - content.code.copy

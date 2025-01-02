@@ -1,25 +1,19 @@
-Managing a repository can be cumbersome :construction_worker: and tiresome :tired_face:.</br>
-Let alone managing multiple repositories used by multiple contributors and bots :anguished:.</br>
+🚧 Managing a repository can be cumbersome and tiresome.<br/>
+🤖 **auto-me-bot** is here to take some of the load off your shoulders!
 
-My name is **auto-me-bot** :robot:!</br>
-I'm here to take some of the load off your shoulders, just tell me what you want me to do...</br>
+## Install
 
-## Installation
+--8<-- "install.md"
 
---8<-- "docs/installation.md"
+## Config
 
-## Configuration
+--8<-- "config.md"
 
---8<-- "docs/configuration.md"
+=== "Successful"
+    ![](https://raw.githubusercontent.com/TomerFi/auto-me-bot/main/docs/img/all-handlers-success.png){ width="800" }
 
-## Look-See
+=== "Failed"
+    ![](https://raw.githubusercontent.com/TomerFi/auto-me-bot/main/docs/img/all-handlers-fail.png){ width="800" }
 
---8<-- "docs/look-see.md"
-
-## Spec
-
---8<-- "docs/spec.md"
-
-## License
-
---8<-- "docs/license.md"
+???+ info
+    Click [here](examples.md) for more examples.

@@ -1,11 +1,10 @@
-Install me from [here](https://github.com/apps/auto-me-bot)
-and select the repos you want me to keep an eye out for.</br>
+Install **auto-me-bot** for GitHub [here](https://github.com/apps/auto-me-bot).
 
-???- note "Events I work with"
+???- note "Triggering events"
     - pull_request
     - pull_request_review
 
-???- note "Permissions I require"
+???- note "Required permissions"
     | scope                   | permission |
     | ----------------------- | ---------- |
     | .github/auto-me-bot.yml | read       |
