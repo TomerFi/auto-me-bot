@@ -1,5 +1,3 @@
-import yaml from 'js-yaml'
-
 // import handlers
 import prAutoApproveHandler from './handlers/pr-auto-approve.js'
 import prConventionalCommitsHandler from './handlers/pr-conventional-commits.js'
@@ -54,6 +52,9 @@ const CONFIG_SPEC = Object.freeze({
 // main entrance point for probot
 export default function (probot) {
     probot.on(ON_EVENTS, handlersController(CONFIG_SPEC));
+    probot.onError(async err => {
+        probot.log.error(err)
+    })
 };
 
 // distributes handler invocations based on user config and config spec
@@ -61,8 +62,8 @@ export function handlersController(configSpec) {
     return async context => {
         // get config from current repo .github folder or from the .github repo's .github folder
         let config = await context.config('auto-me-bot.yml');
-        console.info('CONTEXT\n' + JSON.stringify(context, null, 2));
-        console.info('CONFIG\n' + yaml.dump(config));
+        context.log.info({event: context.event})
+        context.log.debug({payload: context.payload, config: config})
         let invocations = []
         let startedAt = new Date().toISOString();
         // iterate over user config keys, i.e. "pr"

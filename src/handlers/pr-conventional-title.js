@@ -11,6 +11,8 @@ const BOT_CHECK_URL = 'https://auto-me-bot.tomfi.info';
 const CHECK_NAME = 'Auto-Me-Bot Conventional PR Title';
 const DEFAULT_CONFIG = {extends: ['@commitlint/config-conventional']};
 
+const running_handler = 'pr-conventional-title'
+
 export default {match, run}
 
 // matcher for picking up events
@@ -22,6 +24,8 @@ function match(context) {
 
 // handler for verifying pr titles as conventional
 async function run(context, config, startedAt) {
+    context.log.info({running_handler, event_id: context.event.id, status: "started"});
+
     // create the initial check run and mark it as in_progress
     let checkRun = await context.octokit.checks.create(context.repo({
         head_sha: context.payload.pull_request.head.sha,
@@ -52,6 +56,9 @@ async function run(context, config, startedAt) {
         report.output.summary = 'The PR title is conventional, with warnings';
         report.output.text = lintReportToMdReport(lintReport);
     }
+
+    context.log.debug({running_handler, event_id: context.event.id, status: "finalizing"});
+
     // update check run and mark it as completed
     await context.octokit.checks.update(context.repo({
         check_run_id: checkRun.data.id,
@@ -62,6 +69,8 @@ async function run(context, config, startedAt) {
         completed_at: new Date().toISOString(),
         ...report
     }));
+
+    context.log.info({running_handler, event_id: context.event.id, status: "completed", conclusion: report.conclusion});
 }
 
 // create markdown report from the lint report

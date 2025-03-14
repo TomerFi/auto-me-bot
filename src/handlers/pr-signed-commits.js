@@ -10,6 +10,8 @@ ignore:
 const BOT_CHECK_URL = 'https://auto-me-bot.tomfi.info';
 const CHECK_NAME = 'Auto-Me-Bot Signed Commits';
 
+const running_handler = 'pr-signed-commits'
+
 const SIGN_OFF_TRAILER_REGEX = /^Signed-off-by: (.*) <(.*)@(.*)>$/;
 
 export default {match, run: runWrapper({})}
@@ -25,6 +27,8 @@ function match(context) {
 export function runWrapper(emailOpts) {
     // handler for verifying all commits are sign with the Signed-off-by trailer and a legit email
     return async function run(context, config, startedAt) {
+        context.log.info({running_handler, event_id: context.event.id, status: "started"});
+
         // create the initial check run and mark it as in_progress
         let checkRun = await context.octokit.checks.create(context.repo({
             head_sha: context.payload.pull_request.head.sha,
@@ -49,10 +53,10 @@ export function runWrapper(emailOpts) {
                     allCommits = response.data;
                 } else {
                     let {status, message} = response;
-                    console.error({status,  message});
+                    context.log.error({running_handler, event_id: context.event.id, status,  message});
                 }
             })
-            .catch(error => console.error(error));
+            .catch(error => context.log.error({running_handler, event_id: context.event.id, status: 'error', error}));
         if (allCommits.length === 0) {
             report.conclusion = 'failure'
             report.output.title = 'No commits found'
@@ -72,6 +76,9 @@ export function runWrapper(emailOpts) {
                 report.output.text = unsignedCommits.map(commit => `- ${commit.html_url}`).join(EOL);
             }
         }
+
+        context.log.debug({running_handler, event_id: context.event.id, status: "finalizing"});
+
         // update check run and mark it as completed
         await context.octokit.checks.update(context.repo({
             check_run_id: checkRun.data.id,
@@ -82,6 +89,8 @@ export function runWrapper(emailOpts) {
             completed_at: new Date().toISOString(),
             ...report
         }));
+
+        context.log.info({running_handler, event_id: context.event.id, status: "completed", conclusion: report.conclusion});
     }
 }
 

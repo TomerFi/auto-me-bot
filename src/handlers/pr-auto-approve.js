@@ -6,6 +6,8 @@ users: ['myUserName']
 const BOT_CHECK_URL = 'https://auto-me-bot.tomfi.info'
 const CHECK_NAME = 'Auto-Me-Bot PR Automatic Approval'
 
+const running_handler = 'pr-auto-approve'
+
 export default {match, run}
 
 // matcher for picking up events
@@ -17,6 +19,8 @@ function match(context) {
 
 // handler for automatic approvals of PRs based on sender login and type
 async function run(context, config, startedAt) {
+    context.log.info({running_handler, event_id: context.event.id, status: "started"});
+
     // create the initial check run and mark it as in_progress
     let checkRun = await context.octokit.checks.create(context.repo({
         head_sha: context.payload.pull_request.head.sha,
@@ -51,7 +55,7 @@ async function run(context, config, startedAt) {
                         report.output.summary = `${context.payload.sender.type} was automatically approved`;
                     } else {
                         let {status, message} = response;
-                        console.error({status,  message});
+                        context.log.error({running_handler, event_id: context.event.id, status,  message});
                         report.conclusion = 'failure';
                         report.output.title = 'Failed to approve the PR';
                         report.output.summary = 'Automatically approval failed';
@@ -59,7 +63,7 @@ async function run(context, config, startedAt) {
                     }
                 })
                 .catch(error => {
-                    console.error(error);
+                    context.log.error({running_handler, event_id: context.event.id, status: 'error', error});
                     report.conclusion = 'failure';
                     report.output.title = 'Failed to approve the PR';
                     report.output.summary = 'Automatically approval failed';
@@ -67,6 +71,8 @@ async function run(context, config, startedAt) {
                 });
         }
     }
+
+    context.log.debug({running_handler, event_id: context.event.id, status: "finalizing"});
 
     // update check run and mark it as completed
     await context.octokit.checks.update(context.repo({
@@ -78,4 +84,6 @@ async function run(context, config, startedAt) {
         completed_at: new Date().toISOString(),
         ...report
     }));
+
+    context.log.info({running_handler, event_id: context.event.id, status: "completed", conclusion: report.conclusion});
 }

@@ -88,7 +88,15 @@ suite('Testing the pr-auto-approve handler', () => {
                     }
                 },
                 repo: repoFuncStub,
-                pullRequest: pullRequestFuncStub
+                pullRequest: pullRequestFuncStub,
+                log: {
+                    info: sinon.stub(),
+                    error: sinon.stub(),
+                    debug: sinon.stub()
+                },
+                event: {
+                    id: "fake-id"
+                }
             });
         });
 
