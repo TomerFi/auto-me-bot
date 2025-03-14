@@ -85,7 +85,15 @@ suite('Testing the pr-tasks-list handler', () => {
                         update: updateCheckStub
                     },
                 },
-                repo: repoFuncStub
+                repo: repoFuncStub,
+                log: {
+                    info: sinon.stub(),
+                    error: sinon.stub(),
+                    debug: sinon.stub()
+                },
+                event: {
+                    id: "fake-id"
+                }
             });
         });
 

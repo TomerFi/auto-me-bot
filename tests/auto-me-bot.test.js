@@ -99,7 +99,15 @@ suite('Testing the auto-me-bot export', () => {
                     pull_request: {},
                     action: 'opened'
                 },
-                config: configFuncStub
+                config: configFuncStub,
+                log: {
+                    info: sinon.stub(),
+                    error: sinon.stub(),
+                    debug: sinon.stub()
+                },
+                event: {
+                    id: "fake-id"
+                }
             };
 
         });
@@ -222,7 +230,15 @@ suite('Testing the auto-me-bot export', () => {
                     unknown_event_type: {},
                     action: 'opened'
                 },
-                config: configFuncStub
+                config: configFuncStub,
+                log: {
+                    info: sinon.stub(),
+                    error: sinon.stub(),
+                    debug: sinon.stub()
+                },
+                event: {
+                    id: "fake-id"
+                }
             };
             await prHandlersControllerSut(patchedContext);
             // then expect no handlers to be invoked
@@ -239,7 +255,15 @@ suite('Testing the auto-me-bot export', () => {
                     pull_request: {},
                     action: 'closed_shades'
                 },
-                config: configFuncStub
+                config: configFuncStub,
+                log: {
+                    info: sinon.stub(),
+                    error: sinon.stub(),
+                    debug: sinon.stub()
+                },
+                event: {
+                    id: "fake-id"
+                }
             };
             await prHandlersControllerSut(patchedContext);
             // then expect no handlers to be invoked

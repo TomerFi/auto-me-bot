@@ -79,7 +79,15 @@ suite('Testing the pr-conventional-title handler', () => {
                         update: updateCheckStub
                     }
                 },
-                repo: repoFuncStub
+                repo: repoFuncStub,
+                log: {
+                    info: sinon.stub(),
+                    error: sinon.stub(),
+                    debug: sinon.stub()
+                },
+                event: {
+                    id: "fake-id"
+                }
             });
         });
 

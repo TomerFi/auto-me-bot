@@ -11,6 +11,8 @@ const BOT_CHECK_URL = 'https://auto-me-bot.tomfi.info';
 const CHECK_NAME = 'Auto-Me-Bot Conventional Commits';
 const DEFAULT_CONFIG = {extends: ['@commitlint/config-conventional']};
 
+const running_handler = 'pr-conventional-commits'
+
 export default {match, run}
 
 // matcher for picking up events
@@ -22,6 +24,8 @@ function match(context) {
 
 // handler for verifying commit messages as conventional
 async function run(context, config, startedAt) {
+    context.log.info({running_handler, event_id: context.event.id, status: "started"});
+
     // create the initial check run and mark it as in_progress
     let checkRun = await context.octokit.checks.create(context.repo({
         head_sha: context.payload.pull_request.head.sha,
@@ -46,10 +50,10 @@ async function run(context, config, startedAt) {
                 commitObjs = response.data;
             } else {
                 let {status, message} = response;
-                console.error({status,  message});
+                context.log.error({running_handler, event_id: context.event.id, status,  message});
             }
         })
-        .catch(error => console.error(error));
+        .catch(error => context.log.error({running_handler, event_id: context.event.id, status: 'error', error}));
     if (commitObjs.length === 0) {
         report.conclusion = 'failure'
         report.output.title = 'No commits found'
@@ -96,6 +100,9 @@ async function run(context, config, startedAt) {
             report.output.text = warningStatuses.map(lintSts => parseLintStatus(lintSts)).join(EOL);
         }
     }
+
+    context.log.debug({running_handler, event_id: context.event.id, status: "finalizing"});
+
     // update check run and mark it as completed
     await context.octokit.checks.update(context.repo({
         check_run_id: checkRun.data.id,
@@ -106,6 +113,8 @@ async function run(context, config, startedAt) {
         completed_at: new Date().toISOString(),
         ...report
     }));
+
+    context.log.info({running_handler, event_id: context.event.id, status: "completed", conclusion: report.conclusion});
 }
 
 // create markdown segments for aggregating the lint status report
