@@ -19,7 +19,7 @@ function match(context) {
 
 // handler for automatic approvals of PRs based on sender login and type
 async function run(context, config, startedAt) {
-    context.log.info({running_handler, event_id: context.event.id, status: "started"});
+    context.log.info(`${running_handler} started`)
 
     // create the initial check run and mark it as in_progress
     let checkRun = await context.octokit.checks.create(context.repo({
@@ -55,7 +55,7 @@ async function run(context, config, startedAt) {
                         report.output.summary = `${context.payload.sender.type} was automatically approved`;
                     } else {
                         let {status, message} = response;
-                        context.log.error({running_handler, event_id: context.event.id, status,  message});
+                        context.log.error(`${running_handler} got status ${status} with message ${message}`);
                         report.conclusion = 'failure';
                         report.output.title = 'Failed to approve the PR';
                         report.output.summary = 'Automatically approval failed';
@@ -63,7 +63,7 @@ async function run(context, config, startedAt) {
                     }
                 })
                 .catch(error => {
-                    context.log.error({running_handler, event_id: context.event.id, status: 'error', error});
+                    context.log.error(`${running_handler} got error ${error}`);
                     report.conclusion = 'failure';
                     report.output.title = 'Failed to approve the PR';
                     report.output.summary = 'Automatically approval failed';
@@ -72,7 +72,7 @@ async function run(context, config, startedAt) {
         }
     }
 
-    context.log.debug({running_handler, event_id: context.event.id, status: "finalizing"});
+    context.log.debug(`${running_handler} finalizing`);
 
     // update check run and mark it as completed
     await context.octokit.checks.update(context.repo({
@@ -85,5 +85,5 @@ async function run(context, config, startedAt) {
         ...report
     }));
 
-    context.log.info({running_handler, event_id: context.event.id, status: "completed", conclusion: report.conclusion});
+    context.log.info(`${running_handler} completed with conclusion ${report.conclusion}`)
 }

@@ -62,8 +62,8 @@ export function handlersController(configSpec) {
     return async context => {
         // get config from current repo .github folder or from the .github repo's .github folder
         let config = await context.config('auto-me-bot.yml');
-        context.log.info({event: context.event})
-        context.log.debug({payload: context.payload, config: config})
+        context.log.debug(`Payload: ${JSON.stringify(context.payload)}`)
+        context.log.debug(`Config: ${JSON.stringify(config)}`)
         let invocations = []
         let startedAt = new Date().toISOString();
         // iterate over user config keys, i.e. "pr"
@@ -87,6 +87,8 @@ export function handlersController(configSpec) {
         if (invocations) {
             // wait for all handlers to be settled
             await Promise.allSettled(invocations);
+        } else {
+            context.log.info("no handlers matched")
         }
     }
 }

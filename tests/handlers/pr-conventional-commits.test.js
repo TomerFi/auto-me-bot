@@ -105,9 +105,6 @@ suite('Testing the pr-conventional-commits handler', () => {
                     info: sinon.stub(),
                     error: sinon.stub(),
                     debug: sinon.stub()
-                },
-                event: {
-                    id: "fake-id"
                 }
             });
         });

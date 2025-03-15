@@ -24,7 +24,7 @@ function match(context) {
 
 // handler for verifying pr titles as conventional
 async function run(context, config, startedAt) {
-    context.log.info({running_handler, event_id: context.event.id, status: "started"});
+    context.log.info(`${running_handler} started`)
 
     // create the initial check run and mark it as in_progress
     let checkRun = await context.octokit.checks.create(context.repo({
@@ -57,7 +57,7 @@ async function run(context, config, startedAt) {
         report.output.text = lintReportToMdReport(lintReport);
     }
 
-    context.log.debug({running_handler, event_id: context.event.id, status: "finalizing"});
+    context.log.debug(`${running_handler} finalizing`);
 
     // update check run and mark it as completed
     await context.octokit.checks.update(context.repo({
@@ -70,7 +70,7 @@ async function run(context, config, startedAt) {
         ...report
     }));
 
-    context.log.info({running_handler, event_id: context.event.id, status: "completed", conclusion: report.conclusion});
+    context.log.info(`${running_handler} completed with conclusion ${report.conclusion}`)
 }
 
 // create markdown report from the lint report

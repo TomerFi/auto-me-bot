@@ -104,9 +104,6 @@ suite('Testing the auto-me-bot export', () => {
                     info: sinon.stub(),
                     error: sinon.stub(),
                     debug: sinon.stub()
-                },
-                event: {
-                    id: "fake-id"
                 }
             };
 
@@ -235,9 +232,6 @@ suite('Testing the auto-me-bot export', () => {
                     info: sinon.stub(),
                     error: sinon.stub(),
                     debug: sinon.stub()
-                },
-                event: {
-                    id: "fake-id"
                 }
             };
             await prHandlersControllerSut(patchedContext);
@@ -260,9 +254,6 @@ suite('Testing the auto-me-bot export', () => {
                     info: sinon.stub(),
                     error: sinon.stub(),
                     debug: sinon.stub()
-                },
-                event: {
-                    id: "fake-id"
                 }
             };
             await prHandlersControllerSut(patchedContext);

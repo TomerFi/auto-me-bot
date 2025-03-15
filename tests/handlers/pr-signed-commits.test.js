@@ -7,7 +7,7 @@ import { cloneDeep } from 'lodash-es'
 
 chaiUse(sinonChai)
 
-import sut, { runWrapper } from '../../src/handlers/pr-signed-commits.js'
+import sut from '../../src/handlers/pr-signed-commits.js'
 
 suite('Testing the pr-signed-commits handler', () => {
     suite('Test handler matching', () => {
@@ -49,10 +49,6 @@ suite('Testing the pr-signed-commits handler', () => {
         const fakeUnknownEmail = 'some.other@email.address';
         const fakeBotName = 'dependabot[bot]';
         const fakeBotEmail = '49699333+dependabot[bot]@users.noreply.github.com';
-
-        // the email addresses we use for testing fail (and rightfully so) mx and smtp tests
-        // so for testing purposes, we turn these off (except in one test specifically)
-        const emailTestOpts = {validateMx: false, validateSMTP: false}
 
         // expected objects
         const expectedCreateCheckRunInfo = {
@@ -189,9 +185,6 @@ suite('Testing the pr-signed-commits handler', () => {
                     info: sinon.stub(),
                     error: sinon.stub(),
                     debug: sinon.stub()
-                },
-                event: {
-                    id: "fake-id"
                 }
             };
         });
@@ -217,7 +210,7 @@ suite('Testing the pr-signed-commits handler', () => {
                 // given the list commits service will resolve to the stubbed response
                 listCommitsStub.resolves(testCase.stubCommitsList);
                 // when invoking the handler with the fake context, no config, and an iso timestamp
-                await runWrapper(emailTestOpts)(fakeContext, undefined, new Date().toISOString());
+                await sut.run(fakeContext, undefined, new Date().toISOString());
                 // then verify a check run to be created and updated as expected
                 expect(createCheckStub).to.have.been.calledOnceWith(expectedCreateCheckRunInfo);
                 expect(updateCheckStub).to.have.been.calledOnceWith(successExpectedUpdateCheck);
@@ -238,7 +231,7 @@ suite('Testing the pr-signed-commits handler', () => {
                 // given the list commits service will resolve to the stubbed response
                 listCommitsStub.resolves(testCase.stubCommitsList);
                 // when invoking the handler with the fake context, no config, and an iso timestamp
-                await runWrapper(emailTestOpts)(fakeContext, undefined, new Date().toISOString());
+                await sut.run(fakeContext, undefined, new Date().toISOString());
                 // then verify a check run to be created and updated as expected
                 expect(createCheckStub).to.have.been.calledOnceWith(expectedCreateCheckRunInfo);
                 expect(updateCheckStub).to.have.been.calledOnceWith(failureExpectedUpdateCheck);
@@ -249,28 +242,17 @@ suite('Testing the pr-signed-commits handler', () => {
             // given the list commits service will resolve to the stubbed response
             listCommitsStub.resolves({status: 200, data: [commitUnsigned, commitSignedByAuthor]});
             // when invoking the handler with the fake context, no config, and an iso timestamp
-            await runWrapper(emailTestOpts)(fakeContext, undefined, new Date().toISOString());
+            await sut.run(fakeContext, undefined, new Date().toISOString());
             // then verify a check run to be created and updated as expected
             expect(createCheckStub).to.have.been.calledOnceWith(expectedCreateCheckRunInfo);
             expect(updateCheckStub).to.have.been.calledOnceWith(failureExpectedUpdateCheck);
         });
 
-        test(`Test a faulty email address, expect a failed check run`, async () => {
-            // given the list commits service will resolve to the stubbed response
-            listCommitsStub.resolves({status: 200, data: [commitSignedByAuthor]});
-            // when invoking the handler with the fake context, no config, and an iso timestamp
-            // without our testing email options, our tests are expected to fail mx and smtp tests
-            await runWrapper({})(fakeContext, undefined, new Date().toISOString());
-            // then verify a check run to be created and updated as expected
-            expect(createCheckStub).to.have.been.calledOnceWith(expectedCreateCheckRunInfo);
-            expect(updateCheckStub).to.have.been.calledOnceWith(failureExpectedUpdateCheck);
-        })
-
         test('Test with one commit signed by a Bot, not author or committer, expect a successful check run', async () => {
             // given the list commits service will resolve to one commit signed by an unknown user
             listCommitsStub.resolves({status: 200, data: [commitUnsignedBot]});
             // when invoking the handler with the fake context, no config, and an iso timestamp
-            await runWrapper(emailTestOpts)(fakeContext, undefined, new Date().toISOString());
+            await sut.run(fakeContext, undefined, new Date().toISOString());
             // then verify a check run to be created and updated as expected
             expect(createCheckStub).to.have.been.calledOnceWith(expectedCreateCheckRunInfo);
             expect(updateCheckStub).to.have.been.calledOnceWith(successExpectedUpdateCheck);
@@ -280,7 +262,7 @@ suite('Testing the pr-signed-commits handler', () => {
             // given the list commits service will resolve to one commit signed by an unknown user
             listCommitsStub.resolves({status: 200, data: [commitUnsignedBot, commitSignedByAuthor]});
             // when invoking the handler with the fake context, no config, and an iso timestamp
-            await runWrapper(emailTestOpts)(fakeContext, undefined, new Date().toISOString());
+            await sut.run(fakeContext, undefined, new Date().toISOString());
             // then verify a check run to be created and updated as expected
             expect(createCheckStub).to.have.been.calledOnceWith(expectedCreateCheckRunInfo);
             expect(updateCheckStub).to.have.been.calledOnceWith(successExpectedUpdateCheck);
@@ -300,7 +282,7 @@ suite('Testing the pr-signed-commits handler', () => {
                 // given the list commits service will resolve to one commit signed by an unknown user
                 listCommitsStub.resolves({status: 200, data: [commitSignedByAuthor]});
                 // when invoking the handler with the fake context, a fake config, and an iso timestamp
-                await runWrapper(emailTestOpts)(fakeContext, testCase.conf, new Date().toISOString());
+                await sut.run(fakeContext, testCase.conf, new Date().toISOString());
                 // then verify a check run to be created and updated as expected
                 expect(createCheckStub).to.have.been.calledOnceWith(expectedCreateCheckRunInfo);
                 expect(updateCheckStub).to.have.been.calledOnceWith(successExpectedUpdateCheck);
@@ -311,7 +293,7 @@ suite('Testing the pr-signed-commits handler', () => {
             // given the list commits service will resolve to one commit signed by an unknown user
             listCommitsStub.resolves({status: 300, message: 'this is my message'});
             // when invoking the handler with the fake context, no config, and an iso timestamp
-            await runWrapper(emailTestOpts)(fakeContext, undefined, new Date().toISOString());
+            await sut.run(fakeContext, undefined, new Date().toISOString());
             // then verify a check run to be created and updated as expected
             expect(createCheckStub).to.have.been.calledOnceWith(expectedCreateCheckRunInfo);
             expect(updateCheckStub).to.have.been.calledOnceWith(apiFailExpectedUpdateCheck);
@@ -321,7 +303,7 @@ suite('Testing the pr-signed-commits handler', () => {
             // given the list commits service will resolve to one commit signed by an unknown user
             listCommitsStub.rejects('because I said so');
             // when invoking the handler with the fake context, no config, and an iso timestamp
-            await runWrapper(emailTestOpts)(fakeContext, undefined, new Date().toISOString());
+            await sut.run(fakeContext, undefined, new Date().toISOString());
             // then verify a check run to be created and updated as expected
             expect(createCheckStub).to.have.been.calledOnceWith(expectedCreateCheckRunInfo);
             expect(updateCheckStub).to.have.been.calledOnceWith(apiFailExpectedUpdateCheck);
