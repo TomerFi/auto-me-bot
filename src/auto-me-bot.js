@@ -61,8 +61,12 @@ export default function (probot) {
 export function handlersController(configSpec) {
     return async context => {
         // get config from current repo .github folder or from the .github repo's .github folder
-        let config = await context.config('auto-me-bot.yml');
         context.log.debug(`Payload: ${JSON.stringify(context.payload)}`)
+        let config = await context.config('auto-me-bot.yml');
+        if (config == null) {
+            context.log.info("no config found")
+            return
+        }
         context.log.debug(`Config: ${JSON.stringify(config)}`)
         let invocations = []
         let startedAt = new Date().toISOString();
