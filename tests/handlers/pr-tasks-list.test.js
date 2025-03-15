@@ -90,9 +90,6 @@ suite('Testing the pr-tasks-list handler', () => {
                     info: sinon.stub(),
                     error: sinon.stub(),
                     debug: sinon.stub()
-                },
-                event: {
-                    id: "fake-id"
                 }
             });
         });

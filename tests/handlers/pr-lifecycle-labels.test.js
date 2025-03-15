@@ -135,9 +135,6 @@ suite('Testing the pr-lifecycle-labels', () => {
                     info: sinon.stub(),
                     error: sinon.stub(),
                     debug: sinon.stub()
-                },
-                event: {
-                    id: "fake-id"
                 }
             });
         });

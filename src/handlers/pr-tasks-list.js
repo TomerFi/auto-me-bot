@@ -22,7 +22,7 @@ function match(context) {
 
 // handler for verifying PR tasks' list is completed
 async function run(context, _config, startedAt) {
-    context.log.info({running_handler, event_id: context.event.id, status: "started"});
+    context.log.info(`${running_handler} started`)
 
     // create the initial check run and mark it as in_progress
     let checkRun = await context.octokit.checks.create(context.repo({
@@ -67,7 +67,7 @@ async function run(context, _config, startedAt) {
         report.output.text = parseTasks(checkedTasks, 'Here\'s a list of your accomplishments');
     }
 
-    context.log.debug({running_handler, event_id: context.event.id, status: "finalizing"});
+    context.log.debug(`${running_handler} finalizing`);
 
     // update check run and mark it as completed
     await context.octokit.checks.update(context.repo({
@@ -80,7 +80,7 @@ async function run(context, _config, startedAt) {
         ...report
     }));
 
-    context.log.info({running_handler, event_id: context.event.id, status: "completed", conclusion: report.conclusion});
+    context.log.info(`${running_handler} completed with conclusion ${report.conclusion}`);
 }
 
 // create markdown list of tasks

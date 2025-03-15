@@ -1,5 +1,5 @@
-import { validate } from 'deep-email-validator'
 import { EOL } from 'node:os'
+import validator from 'validator';
 
 /* example configuration (for reference):
 ignore:
@@ -14,7 +14,7 @@ const running_handler = 'pr-signed-commits'
 
 const SIGN_OFF_TRAILER_REGEX = /^Signed-off-by: (.*) <(.*)@(.*)>$/;
 
-export default {match, run: runWrapper({})}
+export default {match, run}
 
 // matcher for picking up events
 function match(context) {
@@ -23,75 +23,75 @@ function match(context) {
     return event in context.payload ? actions.includes(context.payload.action) : false;
 }
 
-// wrapper for the standard run command, used for injecting email verifying options
-export function runWrapper(emailOpts) {
-    // handler for verifying all commits are sign with the Signed-off-by trailer and a legit email
-    return async function run(context, config, startedAt) {
-        context.log.info({running_handler, event_id: context.event.id, status: "started"});
+// handler for verifying all commits are sign with the Signed-off-by trailer and a legit email
+async function run(context, config, startedAt) {
+    context.log.info(`${running_handler} started`)
 
-        // create the initial check run and mark it as in_progress
-        let checkRun = await context.octokit.checks.create(context.repo({
-            head_sha: context.payload.pull_request.head.sha,
-            name: CHECK_NAME,
-            details_url: BOT_CHECK_URL,
-            started_at: startedAt,
-            status: 'in_progress'
-        }));
-        // default output when all commits are signed
-        let report = {
-            conclusion: 'success',
-            output: {
-                title: 'Well Done!',
-                summary: 'All commits are signed'
-            }
-        };
-        // grab all commits related the pr
-        let allCommits = [];
-        await context.octokit.rest.pulls.listCommits(context.pullRequest()) // TODO: do we need "rest" here?
-            .then(response => {
-                if (response.status === 200) {
-                    allCommits = response.data;
-                } else {
-                    let {status, message} = response;
-                    context.log.error({running_handler, event_id: context.event.id, status,  message});
-                }
-            })
-            .catch(error => context.log.error({running_handler, event_id: context.event.id, status: 'error', error}));
-        if (allCommits.length === 0) {
-            report.conclusion = 'failure'
-            report.output.title = 'No commits found'
-            report.output.summary = 'Unable to fetch commits from GH API'
-        } else {
-            // list all unsigned commits
-            let unsignedCommits = [];
-            await Promise.all(allCommits.map(async commit =>
-                await verifyCommitTrailer(commit.commit, config, emailOpts).catch(() => unsignedCommits.push(commit))))
-            // check if found unsigned commits
-            let numUnsignedCommits = unsignedCommits.length;
-            if (numUnsignedCommits > 0) {
-                // if found unsigned commit/s update output
-                report.conclusion = 'failure';
-                report.output.title = `Found ${numUnsignedCommits} unsigned commits`;
-                report.output.summary = 'We need to get the these commits signed';
-                report.output.text = unsignedCommits.map(commit => `- ${commit.html_url}`).join(EOL);
-            }
+    // create the initial check run and mark it as in_progress
+    let checkRun = await context.octokit.checks.create(context.repo({
+        head_sha: context.payload.pull_request.head.sha,
+        name: CHECK_NAME,
+        details_url: BOT_CHECK_URL,
+        started_at: startedAt,
+        status: 'in_progress'
+    }));
+    // default output when all commits are signed
+    let report = {
+        conclusion: 'success',
+        output: {
+            title: 'Well Done!',
+            summary: 'All commits are signed'
         }
-
-        context.log.debug({running_handler, event_id: context.event.id, status: "finalizing"});
-
-        // update check run and mark it as completed
-        await context.octokit.checks.update(context.repo({
-            check_run_id: checkRun.data.id,
-            name: CHECK_NAME,
-            details_url: BOT_CHECK_URL,
-            started_at: startedAt,
-            status: 'completed',
-            completed_at: new Date().toISOString(),
-            ...report
-        }));
-
-        context.log.info({running_handler, event_id: context.event.id, status: "completed", conclusion: report.conclusion});
+    };
+    // grab all commits related the pr
+    let allCommits = [];
+    await context.octokit.rest.pulls.listCommits(context.pullRequest()) // TODO: do we need "rest" here?
+        .then(response => {
+            if (response.status === 200) {
+                allCommits = response.data;
+            } else {
+                let {status, message} = response;
+                context.log.error(`${running_handler} got status ${status} with message ${message}`);
+            }
+        })
+        .catch(error => context.log.error(`${running_handler} got error ${error}`));
+    if (allCommits.length === 0) {
+        report.conclusion = 'failure'
+        report.output.title = 'No commits found'
+        report.output.summary = 'Unable to fetch commits from GH API'
+    } else {
+        // list all unsigned commits
+        let unsignedCommits = [];
+        allCommits.map(commit => {
+            if (!verifyCommitTrailer(commit.commit, config)) {
+                unsignedCommits.push(commit)
+            }
+        });
+        // check if found unsigned commits
+        let numUnsignedCommits = unsignedCommits.length;
+        if (numUnsignedCommits > 0) {
+            // if found unsigned commit/s update output
+            report.conclusion = 'failure';
+            report.output.title = `Found ${numUnsignedCommits} unsigned commits`;
+            report.output.summary = 'We need to get the these commits signed';
+            report.output.text = unsignedCommits.map(commit => `- ${commit.html_url}`).join(EOL);
+        }
     }
+
+    context.log.debug(`${running_handler} finalizing`);
+
+    // update check run and mark it as completed
+    await context.octokit.checks.update(context.repo({
+        check_run_id: checkRun.data.id,
+        name: CHECK_NAME,
+        details_url: BOT_CHECK_URL,
+        started_at: startedAt,
+        status: 'completed',
+        completed_at: new Date().toISOString(),
+        ...report
+    }));
+
+    context.log.info(`${running_handler} completed with conclusion ${report.conclusion}`)
 }
 
 /*
@@ -123,12 +123,12 @@ function shouldSkipCommit(commit, config) {
 }
 
 // verify a commit message have a 'Signed-off-by' trailer correlating with the commits' author/committer
-async function verifyCommitTrailer(commit, config, emailOpts) {
+function verifyCommitTrailer(commit, config) {
     // list all 'Signed-off-by' trailers matching the author or committer
     let trailerMatches = []
     // skip commits for bots and ignored
     if(shouldSkipCommit(commit, config)){
-        return;
+        return true;
     }
     // iterate over all lines in the commit message
     commit.message.split(EOL).forEach(line => {
@@ -146,16 +146,8 @@ async function verifyCommitTrailer(commit, config, emailOpts) {
     });
     // reject if no 'Signed-off-by' trailer signed by author or commiter found
     if (trailerMatches.length === 0) {
-        return Promise.reject();
+        return false;
     }
     // verify all 'Signed-off-by' trailers are legit emails
-    return Promise.all(trailerMatches.map(async tm => {
-        try {
-            let v = await validate({...emailOpts, email: tm.email, sender: tm.email})
-            if (v.valid) {
-                return Promise.resolve()
-            }
-        } catch (e) {} // eslint-disable-line no-unused-vars, no-empty
-        return Promise.reject()
-    }))
+    return trailerMatches.every(tm => validator.isEmail(tm.email))
 }

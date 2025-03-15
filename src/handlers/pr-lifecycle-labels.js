@@ -50,7 +50,7 @@ function match(context) {
 
 // handler for labeling pull requests based on lifecycle
 async function run(context, config, startedAt) {
-    context.log.info({running_handler, event_id: context.event.id, status: "started"});
+    context.log.info(`${running_handler} started`)
 
     // create the initial check run and mark it as in_progress
     let checkRun = await context.octokit.checks.create(context.repo({
@@ -82,7 +82,7 @@ async function run(context, config, startedAt) {
         await workThemLabels(context, config, report);
     }
 
-    context.log.debug({running_handler, event_id: context.event.id, status: "finalizing"});
+    context.log.debug(`${running_handler} finalizing`);
 
     //  update check run and mark it as completed
     await context.octokit.checks.update(context.repo({
@@ -95,7 +95,7 @@ async function run(context, config, startedAt) {
         ...report
     }));
 
-    context.log.info({running_handler, event_id: context.event.id, status: "completed", conclusion: report.conclusion});
+    context.log.info(`${running_handler} completed with conclusion ${report.conclusion}`)
 }
 
 
@@ -126,10 +126,10 @@ async function getLifecycleLabel(context) {
                 reviews = response.data;
             } else {
                 let {status, message} = response;
-                context.log.error({running_handler, event_id: context.event.id, status,  message});
+                context.log.error(`${running_handler} got status ${status} with message ${message}`);
             }
         })
-        .catch(error => context.log.error({running_handler, event_id: context.event.id, status: 'error', error}));
+        .catch(error => context.log.error(`${running_handler} got error ${error}`));
 
     if (reviews.length === 0) {
         return LABEL_KEYS.REVIEW_REQUIRED;
@@ -174,10 +174,10 @@ async function getLifecycleLabel(context) {
                 baseProtections = response.data;
             } else {
                 let {status, message} = response;
-                context.log.error({running_handler, event_id: context.event.id, status,  message});
+                context.log.error(`${running_handler} got status ${status} with message ${message}`);
             }
         })
-        .catch(error => context.log.error({running_handler, event_id: context.event.id, status: 'error', error}));
+        .catch(error => context.log.error(`${running_handler} got error ${error}`));
 
     let requiredApprovals = baseProtections?.required_pull_request_reviews?.required_approving_review_count || 0;
     if (approvals < requiredApprovals) {
@@ -209,16 +209,16 @@ async function workThemLabels(context, config, report) {
             .then(response => {
                 if (response.status !== 200) {
                     let {status, message} = response;
-                    context.log.error({running_handler, event_id: context.event.id, status,  message});
+                    context.log.error(`${running_handler} got status ${status} with message ${message}`);
                 }
             })
-            .catch(error => context.log.error({running_handler, event_id: context.event.id, status: 'error', error})));
+            .catch(error => context.log.error(`${running_handler} got error ${error}`)));
 
     if (!prLabels.includes(addLabel)) {
         let labelExist = false;
         await context.octokit.issues.getLabel(context.repo({name: addLabel}))
             .then(resp => labelExist = resp.status === 200)
-            .catch(error => context.log.error({running_handler, event_id: context.event.id, status: 'error', error}));
+            .catch(error => context.log.error(`${running_handler} got error ${error}`));
         if (!labelExist) {
             report.conclusion = 'failure';
             report.output.title = `Label for '${lifecycleLabel}' not found`;
@@ -234,7 +234,7 @@ async function workThemLabels(context, config, report) {
                 }
             })
             .catch(error => {
-                context.log.error({running_handler, event_id: context.event.id, status: 'error', error});
+                context.log.error(`${running_handler} got error ${error}`);
                 report.conclusion = 'failure';
                 report.output.title = 'Failed to add the label';
                 report.output.summary = 'This might be a permissions issue';

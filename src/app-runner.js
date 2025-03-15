@@ -8,7 +8,7 @@ export async function handler (event) {
         appId: process.env.APP_ID,
         privateKey: Buffer.from(process.env.PRIVATE_KEY, 'base64').toString('utf-8'),
         secret: process.env.WEBHOOK_SECRET,
-        logLevel: process.env.PROBOT_LOG_LEVEL || 'info'
+        logLevel: process.env.LOG_LEVEL || 'info',
     });
 
     await probot.load(autoMeBot);
