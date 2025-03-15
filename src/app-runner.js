@@ -11,7 +11,9 @@ export async function handler (event) {
         logLevel: process.env.LOG_LEVEL || 'info',
     });
 
+    probot.log.debug('loading app');
     await probot.load(autoMeBot);
+    probot.log.debug('app loaded, starting webhook');
 
     return probot.webhooks.verifyAndReceive({
         id: event.headers['x-github-delivery'],
