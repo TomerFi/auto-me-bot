@@ -15,12 +15,12 @@ export default [
         },
         rules: {
             ...js.configs.recommended.rules,
-            ...mocha.configs.flat.recommended.rules,
+            ...mocha.configs.recommended.rules,
             "mocha/no-mocha-arrows": ["off"],
             "mocha/no-setup-in-describe": ["off"]
         },
         plugins: {
-            ...mocha.configs.flat.recommended.plugins
+            ...mocha.configs.recommended.plugins
         }
     },
 ]
