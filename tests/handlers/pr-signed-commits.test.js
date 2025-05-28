@@ -206,6 +206,7 @@ suite('Testing the pr-signed-commits handler', () => {
                 stubCommitsList: {status: 200, data: [commitSignedByAuthor, commitSignedByAuthor]},
             },
         ].forEach(testCase => {
+
             test(`${testCase.testTitle}, expect a successful check run`, async () => {
                 // given the list commits service will resolve to the stubbed response
                 listCommitsStub.resolves(testCase.stubCommitsList);
@@ -227,6 +228,7 @@ suite('Testing the pr-signed-commits handler', () => {
                 stubCommitsList: {status: 200, data: [commitUnsigned]},
             }
         ].forEach(testCase => {
+
             test(`${testCase.testTitle}, expect a failed check run`, async () => {
                 // given the list commits service will resolve to the stubbed response
                 listCommitsStub.resolves(testCase.stubCommitsList);
@@ -278,6 +280,7 @@ suite('Testing the pr-signed-commits handler', () => {
                 conf: {ignore: {users: [fakeAuthorName]}}
             }
         ].forEach(testCase => {
+
             test(`Test ignored ${testCase.name} is ignored, expect a successful check run`, async () => {
                 // given the list commits service will resolve to one commit signed by an unknown user
                 listCommitsStub.resolves({status: 200, data: [commitSignedByAuthor]});

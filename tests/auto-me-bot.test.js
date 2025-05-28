@@ -207,6 +207,7 @@ suite('Testing the auto-me-bot export', () => {
         });
 
         [ { pr: {}}, {}, null, { pr: { unknownHandler: {}}}].forEach(config => {
+
             test(`When no operations are checked and config is ${JSON.stringify(config)}, do not execute any handlers`, async () => {
                 // given the current pr configuration
                 configFuncStub.withArgs('auto-me-bot.yml').resolves(config);

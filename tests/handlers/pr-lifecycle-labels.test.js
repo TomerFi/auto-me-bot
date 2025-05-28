@@ -21,6 +21,7 @@ suite('Testing the pr-lifecycle-labels', () => {
         });
 
         ['submitted', 'edited', 'dismissed'].forEach(action => {
+
             test(`Test pull_request_review event type with ${action} action type, expect a match` , () => {
                 expect(sut.match({ payload: { review: {}, pull_request: {}, action: action } })).to.be.true;
             });
@@ -167,6 +168,7 @@ suite('Testing the pr-lifecycle-labels', () => {
 
 
         [{}, {ignoreDrafts: false}, {labels: {}}, {labels: {unknownLabel: 'noKnownLabels'}}].forEach(invalidConfig => {
+
             test(`Test invalid config, ${JSON.stringify(invalidConfig)}, expect the check to be neutral`, async () => {
                 // expected check update request parts
                 let expectedUpdateCheck = { ...baseExpectedUpdateCheck, ...{
