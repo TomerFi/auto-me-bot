@@ -34,7 +34,7 @@
     "@commitlint/lint": "^19.6.0",
     "@commitlint/load": "^19.6.1",
     "lodash-es": "^4.17.21",
-    "marked": "^15.0.4",
+    "marked": "^16.0.0",
     "probot": "^13.4.1",
     "validator": "^13.12.0"
   },
