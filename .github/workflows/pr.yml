@@ -12,7 +12,7 @@ jobs:
     name: Lint and test project
     steps:
       - name: Checkout sources
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Install node 20
         uses: actions/setup-node@v4
