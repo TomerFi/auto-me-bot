@@ -30,7 +30,8 @@
     "tests:rep": "mocha --check-leaks --fail-zero --ui tdd --recursive --reporter json ./tests/ > unit-tests-result.json"
   },
   "dependencies": {
-    "@commitlint/config-conventional": "^19.6.0",
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
     "@commitlint/lint": "^19.6.0",
     "@commitlint/load": "^19.6.1",
     "lodash-es": "^4.17.21",
@@ -50,7 +51,7 @@
     "sinon-chai": "^4.0.0"
   },
   "engines": {
-    "node": ">= 20.0.0",
+    "node": ">= 22.0.0",
     "npm": ">= 10.0.0"
   },
   "c8": {
