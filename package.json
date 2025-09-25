@@ -33,7 +33,7 @@
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^20.0.0",
     "@commitlint/lint": "^19.6.0",
-    "@commitlint/load": "^19.6.1",
+    "@commitlint/load": "^20.0.0",
     "lodash-es": "^4.17.21",
     "marked": "^16.0.0",
     "probot": "^14.0.1",
