@@ -11,7 +11,7 @@ labels:
     merged: "status: merged"
 */
 
-const BOT_CHECK_URL = 'https://auto-me-bot.tomfi.info';
+const BOT_CHECK_URL = 'https://auto-me-bot.figenblat.com';
 const CHECK_NAME = 'Auto-Me-Bot Lifecycle Labels';
 
 const running_handler = 'pr-lifecycle-labels'

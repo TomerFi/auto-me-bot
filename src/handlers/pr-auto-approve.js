@@ -3,7 +3,7 @@ allBots: true
 users: ['myUserName']
 */
 
-const BOT_CHECK_URL = 'https://auto-me-bot.tomfi.info'
+const BOT_CHECK_URL = 'https://auto-me-bot.figenblat.com'
 const CHECK_NAME = 'Auto-Me-Bot PR Automatic Approval'
 
 const running_handler = 'pr-auto-approve'

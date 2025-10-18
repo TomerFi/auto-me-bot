@@ -7,7 +7,7 @@ rules:
     'body-max-line-length': [2, 'always', 150]
 */
 
-const BOT_CHECK_URL = 'https://auto-me-bot.tomfi.info';
+const BOT_CHECK_URL = 'https://auto-me-bot.figenblat.com';
 const CHECK_NAME = 'Auto-Me-Bot Conventional Commits';
 const DEFAULT_CONFIG = {extends: ['@commitlint/config-conventional']};
 
