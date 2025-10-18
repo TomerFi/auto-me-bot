@@ -3,7 +3,7 @@
 🚧 Managing a repository can be cumbersome and tiresome.<br/>
 🤖 [auto-me-bot][app] is here to take some of the load off your shoulders!
 
-📖 Check the docs: [https://auto-me-bot.tomfi.info][docs]<br/>
+📖 Check the docs: [https://auto-me-bot.figenblat.com][docs]<br/>
 🖱️ Install the app: [https://github.com/apps/auto-me-bot][app]
 
 > [!Tip]
@@ -25,6 +25,6 @@ pr:
 ![success]
 
 [app]: https://github.com/apps/auto-me-bot
-[docs]: https://auto-me-bot.tomfi.info
+[docs]: https://auto-me-bot.figenblat.com
 [vba]: https://github.com/TomerFi/version-bumper-action
 [success]: https://raw.githubusercontent.com/TomerFi/auto-me-bot/main/docs/img/all-handlers-success.png

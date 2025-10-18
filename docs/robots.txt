@@ -2,4 +2,4 @@ User-Agent: *
 Allow: /
 Disallow: img/
 
-Sitemap: https://auto-me-bot.tomfi.info/sitemap.xml
+Sitemap: https://auto-me-bot.figenblat.com/sitemap.xml
