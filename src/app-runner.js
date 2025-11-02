@@ -11,7 +11,7 @@ export async function handler (event) {
         logLevel: process.env.LOG_LEVEL || 'info',
     });
 
-    probot.log.debug('loading app');
+    // probot.log.debug('loading app');
     await probot.load(autoMeBot);
     probot.log.debug('app loaded, starting webhook');
 
