@@ -1,17 +1,43 @@
 # yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
 ---
 reviews:
+  commit_status: true
+  tone_instructions: |
+    Be concise and direct. Focus on:
+    - Bugs and correctness issues
+    - Probot API usage patterns
+    - Handler contract violations
+    - Test coverage gaps
+    Avoid commenting on:
+    - Formatting (handled by linters)
+    - Subjective style preferences
   path_instructions:
-    - path: src/**/*.js
+    - path: src/handlers/**/*.js
       instructions: |
-        Review JavaScript code for:
-        - Proper async/await and Promise handling
-        - Error handling and graceful failures
-        - GitHub API usage patterns
-        - Probot framework best practices
+        Review Probot handler implementation:
+        - Verify match() function returns boolean based on event/action
+        - Ensure run() creates check-run with 'in_progress' status
+        - Confirm run() updates check-run with 'completed' status and proper conclusion
+        - Check error handling for GitHub API failures
+        - Validate config parameter usage (handler receives only its own config)
+        - Ensure proper context.octokit usage patterns
+    - path: src/auto-me-bot.js
+      instructions: |
+        Review main bot orchestration:
+        - Verify CONFIG_SPEC registration matches handler exports
+        - Check ON_EVENTS includes all required GitHub webhook events
+        - Ensure proper handler matching and invocation logic
     - path: tests/**/*.js
       instructions: |
-        Review test code for:
-        - Comprehensive mocking of GitHub API
-        - Edge case coverage
-        - Clear test descriptions
+        Review test quality:
+        - Verify both match() and run() functions are tested
+        - Check comprehensive mocking of GitHub API (context.octokit)
+        - Ensure edge cases are covered (missing config, API failures)
+        - Validate test descriptions are clear and specific
+        - Confirm full code coverage for critical paths
+    - path: "**/*.{yml,yaml}"
+      instructions: |
+        Review workflow and config files:
+        - Verify GitHub Actions use pinned versions
+        - Check proper secret handling
+        - Validate MkDocs configuration structure

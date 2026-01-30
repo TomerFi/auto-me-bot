@@ -1,0 +1,7 @@
+---
+description: Run unit tests with coverage verification
+globs:
+  - "tests/**/*.test.js"
+  - "src/**/*.js"
+---
+npm test
