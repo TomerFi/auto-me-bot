@@ -203,16 +203,19 @@ const ON_EVENTS = Object.freeze([
 This project includes Cursor-specific helpers:
 
 ### Commands
+
 - **run-tests-with-coverage** - Run tests with coverage verification
 - **run-tests-quick** - Quick test run without coverage
 - **lint-fix** - Lint and auto-fix issues
 - **serve-docs** - Serve documentation locally
 
 ### Agents
+
 - **code-reviewer** - Pre-commit code review checklist
 - **docs-writer** - Keep documentation in sync
 
 ### Skills
+
 - **add-handler** - Step-by-step guide for creating new handlers
 
 Access these via Cursor's command palette or @-mention agents in chat.
