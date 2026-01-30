@@ -198,6 +198,38 @@ const ON_EVENTS = Object.freeze([
 
 > Note that adding events also requires updating the running application settings and requesting existing users approval, please contact the maintainers if this is required.
 
+## Using Cursor IDE
+
+This project includes Cursor-specific helpers:
+
+### Commands
+- **run-tests-with-coverage** - Run tests with coverage verification
+- **run-tests-quick** - Quick test run without coverage
+- **lint-fix** - Lint and auto-fix issues
+- **serve-docs** - Serve documentation locally
+
+### Agents
+- **code-reviewer** - Pre-commit code review checklist
+- **docs-writer** - Keep documentation in sync
+
+### Skills
+- **add-handler** - Step-by-step guide for creating new handlers
+
+Access these via Cursor's command palette or @-mention agents in chat.
+
+## Third-Party Tools
+
+This project uses several automated tools:
+
+- **auto-me-bot** - Automates PR checks (dogfooding!)
+- **CodeRabbit** - AI code reviews
+- **Codecov** - Test coverage reporting
+- **Dependabot** - Dependency updates
+- **Snyk** - Security vulnerability scanning
+- **GitGuardian** - Secret detection
+
+Most run automatically on PRs. Check their respective dashboards for detailed reports.
+
 ## Contributing Documentation
 
 The documentation is built with [Python](https://www.python.org/)'s [MkDocs](https://www.mkdocs.org/).

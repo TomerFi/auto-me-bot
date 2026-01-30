@@ -1,0 +1,13 @@
+---
+description: Serve documentation locally with auto-reload
+globs:
+  - "docs/**/*.md"
+  - "mkdocs.yml"
+---
+# Ensure venv is set up
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+
+# Serve docs
+mkdocs serve

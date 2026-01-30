@@ -1,0 +1,6 @@
+---
+description: Run tests without coverage check (faster iteration)
+globs:
+  - "tests/**/*.test.js"
+---
+npm run tests
