@@ -1,5 +1,5 @@
 import { marked } from 'marked'
-import { EOL } from 'node:os'
+const EOL = '\n'
 
 const BOT_CHECK_URL = 'https://auto-me-bot.figenblat.com';
 const CHECK_NAME = 'Auto-Me-Bot Tasks List';
