@@ -2,7 +2,7 @@ import { expect, use as chaiUse  } from 'chai'
 import sinonChai from 'sinon-chai'
 import sinon from 'sinon'
 import { beforeEach } from 'mocha'
-import { EOL } from 'node:os'
+const EOL = '\n'
 
 chaiUse(sinonChai)
 

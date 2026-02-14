@@ -8,8 +8,11 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
-    name: Lint and test project
+    runs-on: ${{ matrix.os }}
+    name: Lint and test project (${{ matrix.os }})
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
     steps:
       - name: Checkout sources
         uses: actions/checkout@v6
@@ -30,6 +33,7 @@ jobs:
         run: npm test
 
       - name: Upload coverage to Codecov
+        if: matrix.os == 'ubuntu-latest'
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}

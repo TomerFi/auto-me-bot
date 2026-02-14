@@ -1,6 +1,6 @@
 import lint from '@commitlint/lint'
 import load from '@commitlint/load'
-import { EOL } from 'node:os'
+const EOL = '\n'
 
 /* example configuration (for reference):
 rules:

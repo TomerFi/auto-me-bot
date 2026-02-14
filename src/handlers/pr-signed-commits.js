@@ -1,4 +1,4 @@
-import { EOL } from 'node:os'
+const EOL = '\n'
 import validator from 'validator';
 
 /* example configuration (for reference):
