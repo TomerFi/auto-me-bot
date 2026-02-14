@@ -32,14 +32,10 @@ async function run(context, _config, startedAt) {
         started_at: startedAt,
         status: 'in_progress'
     }));
-    // get all the task list token and split them into checked and unchecked
+    // get all the task list tokens (including nested) and split them into checked and unchecked
     let checkedTasks = [];
     let uncheckedTasks = [];
-    new marked.Lexer({gfm: true})
-        .blockTokens(context.payload.pull_request.body)
-        .filter(token => token.type === 'list')
-        .flatMap(list => list.items)
-        .filter(item => item.task)
+    extractTaskItems(new marked.Lexer({gfm: true}).blockTokens(context.payload.pull_request.body))
         .forEach(item => item.checked ? checkedTasks.push(item) : uncheckedTasks.push(item));
 
     let numChecked = checkedTasks.length;
@@ -83,10 +79,37 @@ async function run(context, _config, startedAt) {
     context.log.info(`${running_handler} completed with conclusion ${report.conclusion}`);
 }
 
+// recursively extract task items from tokens, including nested lists
+function extractTaskItems(tokens) {
+    let tasks = [];
+    for (let token of tokens) {
+        if (token.type === 'list') {
+            for (let item of token.items) {
+                if (item.task) {
+                    tasks.push(item);
+                }
+                if (item.tokens && item.tokens.length) {
+                    tasks.push(...extractTaskItems(item.tokens));
+                }
+            }
+        }
+    }
+    return tasks;
+}
+
+// get the direct text of a task item, excluding nested list content
+function getTaskText(item) {
+    if (item.tokens && item.tokens.length) {
+        let textToken = item.tokens.find(t => t.type === 'text');
+        if (textToken) return textToken.text;
+    }
+    return item.text;
+}
+
 // create markdown list of tasks
 function parseTasks(tasks, header) {
     let tasksLines = [`### ${header}`];
-    tasks.map(task => task.text).forEach(text => tasksLines.push(`- ${text}`));
+    tasks.map(task => getTaskText(task)).forEach(text => tasksLines.push(`- ${text}`));
     // return tasks as string
     return tasksLines.join(EOL);
 }
