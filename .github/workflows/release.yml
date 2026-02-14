@@ -148,3 +148,8 @@ jobs:
           git add mkdocs.yml
           git commit -m "docs: updated docs with ${{ steps.bumper.outputs.next }} [skip ci]"
           git push
+
+  smoke-test:
+    needs: release
+    uses: ./.github/workflows/smoke-test.yml
+    secrets: inherit

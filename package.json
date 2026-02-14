@@ -62,9 +62,7 @@
     "include": [
       "src/**/*.js"
     ],
-    "exclude": [
-      "src/app-runner.js"
-    ],
+    "exclude": [],
     "reporter": [
       "html",
       "lcov",
