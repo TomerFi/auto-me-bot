@@ -1,0 +1,7 @@
+---
+description: Run smoke tests against the live Lambda function (requires FUNCTION_URL and WEBHOOK_SECRET in .env)
+globs:
+  - "scripts/smoke-test.js"
+  - "tests/fixtures/**/*.json"
+---
+node scripts/smoke-test.js all
