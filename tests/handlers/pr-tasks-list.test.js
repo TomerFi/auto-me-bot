@@ -80,10 +80,12 @@ suite('Testing the pr-tasks-list handler', () => {
                     }
                 },
                 octokit: {
-                    checks: {
-                        create: createCheckStub,
-                        update: updateCheckStub
-                    },
+                    rest: {
+                        checks: {
+                            create: createCheckStub,
+                            update: updateCheckStub
+                        },
+                    }
                 },
                 repo: repoFuncStub,
                 log: {

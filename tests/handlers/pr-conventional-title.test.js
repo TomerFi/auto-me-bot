@@ -74,9 +74,11 @@ suite('Testing the pr-conventional-title handler', () => {
             // create a fake context for invoking the application with)
             fakeContext = Object.freeze({
                 octokit: {
-                    checks: {
-                        create: createCheckStub,
-                        update: updateCheckStub
+                    rest: {
+                        checks: {
+                            create: createCheckStub,
+                            update: updateCheckStub
+                        }
                     }
                 },
                 repo: repoFuncStub,

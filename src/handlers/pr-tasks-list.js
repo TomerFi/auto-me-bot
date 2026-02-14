@@ -25,7 +25,7 @@ async function run(context, _config, startedAt) {
     context.log.info(`${running_handler} started`)
 
     // create the initial check run and mark it as in_progress
-    let checkRun = await context.octokit.checks.create(context.repo({
+    let checkRun = await context.octokit.rest.checks.create(context.repo({
         head_sha: context.payload.pull_request.head.sha,
         name: CHECK_NAME,
         details_url: BOT_CHECK_URL,
@@ -66,7 +66,7 @@ async function run(context, _config, startedAt) {
     context.log.debug(`${running_handler} finalizing`);
 
     // update check run and mark it as completed
-    await context.octokit.checks.update(context.repo({
+    await context.octokit.rest.checks.update(context.repo({
         check_run_id: checkRun.data.id,
         name: CHECK_NAME,
         details_url: BOT_CHECK_URL,

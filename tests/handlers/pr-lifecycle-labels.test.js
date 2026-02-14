@@ -114,20 +114,22 @@ suite('Testing the pr-lifecycle-labels', () => {
                     }
                 },
                 octokit: {
-                    checks: {
-                        create: createCheckStub,
-                        update: updateCheckStub
-                    },
-                    issues: {
-                        getLabel: getLabelStub,
-                        addLabels: addLabelsStub,
-                        removeLabel: removeLabelStub
-                    },
-                    pulls: {
-                        listReviews: listReviewStub
-                    },
-                    repos: {
-                        getBranchProtection: branchProtectFuncStub
+                    rest: {
+                        checks: {
+                            create: createCheckStub,
+                            update: updateCheckStub
+                        },
+                        issues: {
+                            getLabel: getLabelStub,
+                            addLabels: addLabelsStub,
+                            removeLabel: removeLabelStub
+                        },
+                        pulls: {
+                            listReviews: listReviewStub
+                        },
+                        repos: {
+                            getBranchProtection: branchProtectFuncStub
+                        }
                     }
                 },
                 repo: repoFuncStub,
