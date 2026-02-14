@@ -53,7 +53,7 @@ async function run(context, config, startedAt) {
     context.log.info(`${running_handler} started`)
 
     // create the initial check run and mark it as in_progress
-    let checkRun = await context.octokit.checks.create(context.repo({
+    let checkRun = await context.octokit.rest.checks.create(context.repo({
         head_sha: context.payload.pull_request.head.sha,
         name: CHECK_NAME,
         details_url: BOT_CHECK_URL,
@@ -85,7 +85,7 @@ async function run(context, config, startedAt) {
     context.log.debug(`${running_handler} finalizing`);
 
     //  update check run and mark it as completed
-    await context.octokit.checks.update(context.repo({
+    await context.octokit.rest.checks.update(context.repo({
         check_run_id: checkRun.data.id,
         name: CHECK_NAME,
         details_url: BOT_CHECK_URL,
@@ -120,7 +120,7 @@ async function getLifecycleLabel(context) {
     }
 
     let reviews = [];
-    await context.octokit.pulls.listReviews(context.pullRequest())
+    await context.octokit.rest.pulls.listReviews(context.pullRequest())
         .then(response => {
             if (response.status === 200) {
                 reviews = response.data;
@@ -168,7 +168,7 @@ async function getLifecycleLabel(context) {
     }
 
     let baseProtections;
-    await context.octokit.repos.getBranchProtection(context.repo({branch: context.payload.pull_request.base.ref}))
+    await context.octokit.rest.repos.getBranchProtection(context.repo({branch: context.payload.pull_request.base.ref}))
         .then(response => {
             if (response.status === 200){
                 baseProtections = response.data;
@@ -205,7 +205,7 @@ async function workThemLabels(context, config, report) {
         .filter(l => prLabels.includes(l));
 
     removeLabels.forEach(removeLabel =>
-        context.octokit.issues.removeLabel(context.repo({issue_number: context.payload.pull_request.number, name: removeLabel}))
+        context.octokit.rest.issues.removeLabel(context.repo({issue_number: context.payload.pull_request.number, name: removeLabel}))
             .then(response => {
                 if (response.status !== 200) {
                     let {status, message} = response;
@@ -216,7 +216,7 @@ async function workThemLabels(context, config, report) {
 
     if (!prLabels.includes(addLabel)) {
         let labelExist = false;
-        await context.octokit.issues.getLabel(context.repo({name: addLabel}))
+        await context.octokit.rest.issues.getLabel(context.repo({name: addLabel}))
             .then(resp => labelExist = resp.status === 200)
             .catch(error => context.log.error(`${running_handler} got error ${error}`));
         if (!labelExist) {
@@ -225,7 +225,7 @@ async function workThemLabels(context, config, report) {
             report.output.summary = `Are you sure the '${addLabel}' label exists?`;
             return;
         }
-        await context.octokit.issues.addLabels(context.repo({issue_number: context.payload.pull_request.number, labels: [addLabel]}))
+        await context.octokit.rest.issues.addLabels(context.repo({issue_number: context.payload.pull_request.number, labels: [addLabel]}))
             .then(resp => {
                 if (resp.status !== 200) {
                     report.conclusion = 'failure';

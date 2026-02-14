@@ -89,11 +89,11 @@ suite('Testing the pr-conventional-commits handler', () => {
                     }
                 },
                 octokit: {
-                    checks: {
-                        create: createCheckStub,
-                        update: updateCheckStub
-                    },
                     rest: {
+                        checks: {
+                            create: createCheckStub,
+                            update: updateCheckStub
+                        },
                         pulls: {
                             listCommits: listCommitsStub
                         }

@@ -79,12 +79,14 @@ suite('Testing the pr-auto-approve handler', () => {
             // create a fake context for invoking the application with)
             fakeContext = Object.freeze({
                 octokit: {
-                    checks: {
-                        create: createCheckStub,
-                        update: updateCheckStub
-                    },
-                    pulls: {
-                        createReview: createReviewStub
+                    rest: {
+                        checks: {
+                            create: createCheckStub,
+                            update: updateCheckStub
+                        },
+                        pulls: {
+                            createReview: createReviewStub
+                        }
                     }
                 },
                 repo: repoFuncStub,
