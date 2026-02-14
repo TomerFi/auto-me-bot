@@ -153,6 +153,69 @@ suite('Testing the pr-tasks-list handler', () => {
             expect(updateCheckStub).to.have.been.calledOnceWith(expectedUpdateCheck);
         });
 
+        test('Test with unchecked nested tasks, expect the check to fail with a report of the unchecked tasks', async () => {
+            // expected check update request parts
+            let expectedUpdateCheck = { ...baseExpectedUpdateCheck, ...{
+                conclusion: 'failure',
+                output: {
+                    title: 'Found 2 unchecked tasks',
+                    summary: 'I\'m sure you know what do with these',
+                    text: [
+                        '### The following tasks needs to be completed',
+                        '- subtask 2a',
+                        '- subtask 2b'
+                    ].join(EOL)
+                }
+            }};
+            // given the context will be stubbed with the sut pr body containing nested tasks
+            let fakeContext = { ...baseFakeContext }
+            fakeContext.payload.pull_request.body = [
+                '- [x] task 1',
+                '- [x] task 2',
+                '  - [ ] subtask 2a',
+                '  - [ ] subtask 2b',
+                '- [x] task 3'
+            ].join(EOL);
+            // when invoking the handler with the fake context, no config, and a iso timestamp
+            await sut.run(fakeContext, undefined, new Date().toISOString());
+            // then verify a check run to be created and updated as expected
+            expect(createCheckStub).to.have.been.calledOnceWith(expectedCreateCheckRunInfo);
+            expect(updateCheckStub).to.have.been.calledOnceWith(expectedUpdateCheck);
+        });
+
+        test('Test with all nested tasks checked, expect the check to pass with a summary of all completed tasks', async () => {
+            // expected check update request parts
+            let expectedUpdateCheck = { ...baseExpectedUpdateCheck, ...{
+                conclusion: 'success',
+                output: {
+                    title: 'All Done!',
+                    summary: 'You made it through',
+                    text: [
+                        '### Here\'s a list of your accomplishments',
+                        '- task 1',
+                        '- task 2',
+                        '- subtask 2a',
+                        '- subtask 2b',
+                        '- task 3'
+                    ].join(EOL)
+                }
+            }};
+            // given the context will be stubbed with the sut pr body containing nested tasks
+            let fakeContext = { ...baseFakeContext }
+            fakeContext.payload.pull_request.body = [
+                '- [x] task 1',
+                '- [x] task 2',
+                '  - [x] subtask 2a',
+                '  - [x] subtask 2b',
+                '- [x] task 3'
+            ].join(EOL);
+            // when invoking the handler with the fake context, no config, and a iso timestamp
+            await sut.run(fakeContext, undefined, new Date().toISOString());
+            // then verify a check run to be created and updated as expected
+            expect(createCheckStub).to.have.been.calledOnceWith(expectedCreateCheckRunInfo);
+            expect(updateCheckStub).to.have.been.calledOnceWith(expectedUpdateCheck);
+        });
+
         test('Test with not tasks, expect the check to fail providing notification indicating no tasks found', async () => {
             // expected check update request parts
             let expectedUpdateCheck = { ...baseExpectedUpdateCheck, ...{
