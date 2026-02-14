@@ -169,11 +169,11 @@ suite('Testing the pr-signed-commits handler', () => {
                     }
                 },
                 octokit: {
-                    checks: {
-                        create: createCheckStub,
-                        update: updateCheckStub
-                    },
                     rest: {
+                        checks: {
+                            create: createCheckStub,
+                            update: updateCheckStub
+                        },
                         pulls: {
                             listCommits: listCommitsStub
                         }
