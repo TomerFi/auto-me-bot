@@ -34,16 +34,21 @@ pr:
 
 ### Smoke testing
 
-The smoke test script sends signed webhook events to the live Lambda function and verifies HTTP responses. It requires `FUNCTION_URL` and `WEBHOOK_SECRET` in your `.env` file.
+The smoke test script sends signed webhook events to the live Lambda function and verifies HTTP responses.
+It requires `FUNCTION_URL` and `WEBHOOK_SECRET` in your `.env` file.
 
 - `node scripts/smoke-test.js ping` send a ping event
-- `node scripts/smoke-test.js all` send all event types (ping, pull_request.opened, pull_request.closed, pull_request_review.submitted)
+- `node scripts/smoke-test.js all` send all event types (ping, pull_request.opened, pull_request.closed,
+  pull_request_review.submitted)
 
-Individual event types can also be run by name (e.g. `node scripts/smoke-test.js pull_request.opened`). The script includes retry logic to handle cold starts and propagation delays.
+Individual event types can also be run by name (e.g. `node scripts/smoke-test.js pull_request.opened`).
+The script includes retry logic to handle cold starts and propagation delays.
 
-The smoke test also runs automatically after each release via the [smoke-test workflow](.github/workflows/smoke-test.yml), which can be triggered manually from the GitHub Actions UI.
+The smoke test also runs automatically after each release via the
+[smoke-test workflow](.github/workflows/smoke-test.yml), which can be triggered manually from the GitHub Actions UI.
 
-Test payloads are stored as JSON files in [tests/fixtures/](tests/fixtures/) and are shared with the integration tests.
+Test payloads are stored as JSON files in [tests/fixtures/](tests/fixtures/) and are shared with the
+integration tests.
 
 ### Developing Handlers
 
@@ -125,7 +130,10 @@ Take note of [pr-conventional-title test cases](https://github.com/TomerFi/auto-
 
 ### Integration Tests
 
-The Lambda handler entrypoint is tested in [tests/app-runner.test.js](tests/app-runner.test.js). These tests instantiate a real Probot instance with a generated RSA key, sign webhook payloads with HMAC-SHA256, and verify the handler processes events without crashing. Payloads are loaded from [tests/fixtures/](tests/fixtures/).
+The Lambda handler entrypoint is tested in [tests/app-runner.test.js](tests/app-runner.test.js).
+These tests instantiate a real Probot instance with a generated RSA key, sign webhook payloads with HMAC-SHA256,
+and verify the handler processes events without crashing.
+Payloads are loaded from [tests/fixtures/](tests/fixtures/).
 
 ### Registering Handlers
 
