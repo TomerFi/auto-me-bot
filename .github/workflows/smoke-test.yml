@@ -1,0 +1,30 @@
+---
+name: Smoke Test
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  smoke-test:
+    runs-on: ubuntu-latest
+    environment: smoke-test
+    name: Smoke test deployed function
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v6
+
+      - name: Install node 22
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+
+      - name: Wait for propagation
+        if: github.event_name != 'workflow_dispatch'
+        run: sleep 10
+
+      - name: Run smoke tests
+        env:
+          FUNCTION_URL: ${{ secrets.FUNCTION_URL }}
+          WEBHOOK_SECRET: ${{ secrets.WEBHOOK_SECRET }}
+        run: node scripts/smoke-test.js all

@@ -1,0 +1,37 @@
+{
+    "action": "closed",
+    "number": 1,
+    "pull_request": {
+        "number": 1,
+        "title": "smoke test PR",
+        "body": "- [x] smoke test task",
+        "state": "closed",
+        "draft": false,
+        "merged": true,
+        "head": {
+            "sha": "0000000000000000000000000000000000000000",
+            "ref": "smoke-test"
+        },
+        "base": {
+            "ref": "main"
+        },
+        "user": {
+            "login": "smoke-test",
+            "type": "User"
+        }
+    },
+    "repository": {
+        "name": "auto-me-bot",
+        "full_name": "TomerFi/auto-me-bot",
+        "owner": {
+            "login": "TomerFi"
+        }
+    },
+    "sender": {
+        "login": "smoke-test",
+        "type": "User"
+    },
+    "installation": {
+        "id": 1
+    }
+}
