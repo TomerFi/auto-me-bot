@@ -152,3 +152,4 @@ jobs:
   smoke-test:
     needs: release
     uses: ./.github/workflows/smoke-test.yml
+    secrets: inherit
