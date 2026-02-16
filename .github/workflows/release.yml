@@ -53,7 +53,7 @@ jobs:
 
       - name: Determine next SemVer
         id: bumper
-        uses: tomerfi/version-bumper-action@2.0.5
+        uses: tomerfi/version-bumper-action@2.0.6
         with:
           bump: '${{ github.event.inputs.bump }}'
 
