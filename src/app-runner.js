@@ -5,6 +5,15 @@ import autoMeBot from './auto-me-bot.js'
 // handler function for gcp cloud functions (2nd gen)
 export async function handler (req, res) {
     try {
+        if (!req.rawBody) {
+            res.status(400).send('missing body');
+            return;
+        }
+        if (!req.headers['x-github-event']) {
+            res.status(400).send('missing x-github-event header');
+            return;
+        }
+
         const probot = new Probot({
             appId: process.env.APP_ID,
             privateKey: Buffer.from(process.env.PRIVATE_KEY, 'base64').toString('utf-8'),
@@ -16,11 +25,6 @@ export async function handler (req, res) {
         probot.log.debug('loading app');
         await probot.load(autoMeBot);
         probot.log.debug('app loaded, starting webhook');
-
-        if (!req.rawBody) {
-            res.status(400).send('missing body');
-            return;
-        }
 
         await probot.webhooks.verifyAndReceive({
             id: req.headers['x-github-delivery'],
