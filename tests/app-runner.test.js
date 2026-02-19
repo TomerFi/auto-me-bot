@@ -18,11 +18,10 @@ const TEST_APP_ID = '12345';
 const TEST_WEBHOOK_SECRET = 'test-webhook-secret';
 const TEST_PRIVATE_KEY_B64 = Buffer.from(testPrivateKey).toString('base64');
 
-// build a lambda event object from a fixture file
-function buildEvent(fixtureFile, eventName) {
+// build a mock Express-like request object from a fixture file
+function buildReq(fixtureFile, eventName) {
     const payload = readFileSync(resolve(fixturesDir, fixtureFile), 'utf-8');
     const parsed = JSON.parse(payload);
-    // derive event name from filename if not provided
     if (!eventName) {
         const base = fixtureFile.replace('.json', '');
         eventName = parsed.action ? base.slice(0, base.lastIndexOf('.')) : base;
@@ -37,8 +36,16 @@ function buildEvent(fixtureFile, eventName) {
             'x-github-event': eventName,
             'x-hub-signature-256': signature,
         },
-        body,
+        rawBody: Buffer.from(body),
     };
+}
+
+// build a mock Express-like response object that captures status and body
+function buildRes() {
+    const res = { statusCode: null, body: null };
+    res.status = (code) => { res.statusCode = code; return res; };
+    res.send = (msg) => { res.body = msg; return res; };
+    return res;
 }
 
 suite('Testing the app-runner handler', () => {
@@ -58,39 +65,48 @@ suite('Testing the app-runner handler', () => {
         process.env = originalEnv;
     });
 
-    test('Handler initializes probot and processes a ping event without throwing', async () => {
+    test('Handler initializes probot and processes a ping event', async () => {
         const { handler } = await import('../src/app-runner.js');
-        const event = buildEvent('ping.json', 'ping');
-        // ping events have no matching handler, so this should resolve cleanly
-        await handler(event);
+        const req = buildReq('ping.json', 'ping');
+        const res = buildRes();
+        await handler(req, res);
+        expect(res.statusCode).to.equal(200);
     });
 
     test('Handler initializes probot and accepts a pull_request event', async () => {
         const { handler } = await import('../src/app-runner.js');
-        const event = buildEvent('pull_request.opened.json');
+        const req = buildReq('pull_request.opened.json');
+        const res = buildRes();
         // handlers will attempt GitHub API calls which will fail, but
         // verifyAndReceive should not reject -- errors are handled by onError
-        try {
-            await handler(event);
-        } catch (error) {
-            // even if handlers fail on API calls, the function should not crash
-            // on initialization -- that's the critical path we're testing
-            expect(error.message).to.not.match(/cannot read properties of null/i,
-                'Probot initialization failed -- probot.log or probot.webhooks is null');
-        }
+        await handler(req, res);
+        expect(res.statusCode).to.equal(200);
     });
 
-    test('Handler rejects with an invalid webhook signature', async () => {
+    test('Handler returns 500 with an invalid webhook signature', async () => {
         const { handler } = await import('../src/app-runner.js');
-        const event = buildEvent('ping.json', 'ping');
-        // tamper with the signature
-        event.headers['x-hub-signature-256'] = 'sha256=invalid';
-        try {
-            await handler(event);
-            expect.fail('Expected handler to reject with invalid signature');
-        } catch (error) {
-            // signature verification should fail
-            expect(error).to.exist;
-        }
+        const req = buildReq('ping.json', 'ping');
+        const res = buildRes();
+        req.headers['x-hub-signature-256'] = 'sha256=invalid';
+        await handler(req, res);
+        expect(res.statusCode).to.equal(500);
+    });
+
+    test('Handler returns 400 with a missing event header', async () => {
+        const { handler } = await import('../src/app-runner.js');
+        const req = buildReq('ping.json', 'ping');
+        const res = buildRes();
+        delete req.headers['x-github-event'];
+        await handler(req, res);
+        expect(res.statusCode).to.equal(400);
+    });
+
+    test('Handler returns 400 with a missing body', async () => {
+        const { handler } = await import('../src/app-runner.js');
+        const req = buildReq('ping.json', 'ping');
+        const res = buildRes();
+        delete req.rawBody;
+        await handler(req, res);
+        expect(res.statusCode).to.equal(400);
     });
 });

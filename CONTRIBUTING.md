@@ -34,7 +34,7 @@ pr:
 
 ### Smoke testing
 
-The smoke test script sends signed webhook events to the live Lambda function and verifies HTTP responses.
+The smoke test script sends signed webhook events to the deployed Cloud Function and verifies HTTP responses.
 It requires `FUNCTION_URL` and `WEBHOOK_SECRET` in your `.env` file.
 
 - `node scripts/smoke-test.js ping` send a ping event
@@ -130,7 +130,7 @@ Take note of [pr-conventional-title test cases](https://github.com/TomerFi/auto-
 
 ### Integration Tests
 
-The Lambda handler entrypoint is tested in [tests/app-runner.test.js](tests/app-runner.test.js).
+The Cloud Function handler entrypoint is tested in [tests/app-runner.test.js](tests/app-runner.test.js).
 These tests instantiate a real Probot instance with a generated RSA key, sign webhook payloads with HMAC-SHA256,
 and verify the handler processes events without crashing.
 Payloads are loaded from [tests/fixtures/](tests/fixtures/).
@@ -233,7 +233,7 @@ This project includes Cursor-specific helpers:
 - **run-tests-quick** - Quick test run without coverage
 - **lint-fix** - Lint and auto-fix issues
 - **serve-docs** - Serve documentation locally
-- **smoke-test** - Run smoke tests against the live Lambda function
+- **smoke-test** - Run smoke tests against the deployed Cloud Function
 
 ### Agents
 
