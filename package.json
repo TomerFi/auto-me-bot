@@ -3,6 +3,7 @@
   "version": "3.0.14",
   "private": true,
   "type": "module",
+  "main": "src/app-runner.js",
   "description": "A Probot app that takes care of your GitHub repos for you",
   "author": {
     "name": "Tomer Figenblat",

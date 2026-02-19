@@ -12,6 +12,10 @@ on:
         default: "auto"
         required: true
 
+permissions:
+  contents: write
+  id-token: write
+
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -44,12 +48,11 @@ jobs:
           git config user.signingkey ~/.ssh/signing_key
           git config commit.gpgsign true
 
-      - name: Configure aws
-        uses: aws-actions/configure-aws-credentials@v6
+      - name: Authenticate to GCP
+        uses: google-github-actions/auth@v2
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
+          workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
+          service_account: ${{ secrets.WIF_SERVICE_ACCOUNT }}
 
       - name: Determine next SemVer
         id: bumper
@@ -64,43 +67,18 @@ jobs:
       - name: Install project modules
         run: npm ci --production
 
-      - name: Create lambda archive
-        run: zip -r auto-me-bot.zip src/ node_modules/ package.json package-lock.json
-
-      - name: Get function state
-        id: function_state
-        run: |
-          state=$(aws lambda get-function --function-name ${{ secrets.LAMBDA_FUNCTION }} --query 'Configuration.State' --output text)
-          echo "state=$state" >> $GITHUB_OUTPUT
-
-      - name: Verify function is in active state
-        if: steps.function_state.outputs.state != 'Active'
-        uses: actions/github-script@v8
-        with:
-          script: core.setFailed('the function is being updated, please try again later')
-
-      - name: Deploy archive to lambda
+      - name: Deploy to Cloud Functions
         run: >
-          aws lambda update-function-code
-          --function-name ${{ secrets.LAMBDA_FUNCTION }}
-          --zip-file fileb://./auto-me-bot.zip
-
-      - name: Wait for function to be updated
-        run: aws lambda wait function-updated --function-name ${{ secrets.LAMBDA_FUNCTION }}
-
-      - name: Publish lambda function
-        id: publish_lambda
-        run: |
-          set -o pipefail
-          function_version=$( aws lambda publish-version --function-name ${{ secrets.LAMBDA_FUNCTION }} | jq -r ".Version" )
-          echo "function_version=$function_version" >> $GITHUB_OUTPUT
-
-      - name: Update alias Live with new function version
-        run: >
-          aws lambda update-alias
-          --function-name ${{ secrets.LAMBDA_FUNCTION }}
-          --name Live
-          --function-version ${{ steps.publish_lambda.outputs.function_version }}
+          gcloud functions deploy ${{ secrets.GCP_FUNCTION_NAME }}
+          --gen2
+          --runtime nodejs22
+          --region ${{ secrets.GCP_REGION }}
+          --source .
+          --entry-point handler
+          --trigger-http
+          --allow-unauthenticated
+          --set-secrets 'APP_ID=APP_ID:latest,PRIVATE_KEY=PRIVATE_KEY:latest,WEBHOOK_SECRET=WEBHOOK_SECRET:latest'
+          --set-env-vars 'LOG_LEVEL=info'
 
       - name: Commit and push package modifications
         run: |
@@ -111,7 +89,7 @@ jobs:
 
       - name: Create and push new tag
         run: |
-          git tag ${{ steps.bumper.outputs.next }} -m "Function v${{ steps.publish_lambda.outputs.function_version }}"
+          git tag ${{ steps.bumper.outputs.next }} -m "${{ steps.bumper.outputs.next }}"
           git push origin ${{ steps.bumper.outputs.next }}
 
       - name: Create a release name
