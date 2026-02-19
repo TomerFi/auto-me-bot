@@ -17,6 +17,11 @@ export async function handler (req, res) {
         await probot.load(autoMeBot);
         probot.log.debug('app loaded, starting webhook');
 
+        if (!req.rawBody) {
+            res.status(400).send('missing body');
+            return;
+        }
+
         await probot.webhooks.verifyAndReceive({
             id: req.headers['x-github-delivery'],
             name: req.headers['x-github-event'],
