@@ -76,7 +76,6 @@ jobs:
           --source .
           --entry-point handler
           --trigger-http
-          --allow-unauthenticated
           --set-secrets 'APP_ID=APP_ID:latest,PRIVATE_KEY=PRIVATE_KEY:latest,WEBHOOK_SECRET=WEBHOOK_SECRET:latest'
           --set-env-vars 'LOG_LEVEL=info'
 
