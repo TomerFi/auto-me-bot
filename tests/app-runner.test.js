@@ -91,4 +91,13 @@ suite('Testing the app-runner handler', () => {
         await handler(req, res);
         expect(res.statusCode).to.equal(500);
     });
+
+    test('Handler returns 500 with a missing event header', async () => {
+        const { handler } = await import('../src/app-runner.js');
+        const req = buildReq('ping.json', 'ping');
+        const res = buildRes();
+        delete req.headers['x-github-event'];
+        await handler(req, res);
+        expect(res.statusCode).to.equal(500);
+    });
 });

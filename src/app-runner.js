@@ -5,7 +5,7 @@ import autoMeBot from './auto-me-bot.js'
 // handler function for gcp cloud functions (2nd gen)
 export async function handler (req, res) {
     try {
-        let probot = new Probot({
+        const probot = new Probot({
             appId: process.env.APP_ID,
             privateKey: Buffer.from(process.env.PRIVATE_KEY, 'base64').toString('utf-8'),
             secret: process.env.WEBHOOK_SECRET,
