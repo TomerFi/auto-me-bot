@@ -43,7 +43,7 @@ markdown_extensions:
       permalink: ⚓︎
 
 extra:
-  version: "3.0.14"
+  version: "3.1.0"
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/TomerFi
