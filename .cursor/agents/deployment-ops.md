@@ -28,23 +28,28 @@ Use the GCP MCP tool (`run_gcloud_command`) for all operations. Refer to the `gc
 ## Troubleshooting Playbook
 
 ### Service not ready
+
 - Check revision conditions for error messages
 - Common: secret access denied (Secret Manager IAM), container health check failures
 
 ### HTTP 500s
+
 - Check stderr for stack traces
 - Common: GitHub App token issues (expired, revoked, repo access blocked)
 
 ### High latency
+
 - Cold starts: ~400-500ms (expected for scale-from-zero)
 - Warm requests: ~5ms
 - If consistently high: check if `startup-cpu-boost` annotation is enabled
 
 ### "no config found" in logs
+
 - Normal behavior: the webhook came from a repo without `.github/auto-me-bot.yml`
 - Returns HTTP 200, not an error
 
 ## Deployment Verification
+
 After a release deploy (`release.yml`):
 1. Run post-deploy health check above
 2. Compare revision name to the previous one to confirm the new revision is active
