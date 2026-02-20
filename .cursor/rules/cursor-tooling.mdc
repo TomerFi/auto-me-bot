@@ -8,6 +8,7 @@ alwaysApply: true
 ## Agents (.cursor/agents/)
 - **code-reviewer** - Reviews code changes against handler contract, testing, and general quality checklists
 - **docs-writer** - Keeps MkDocs documentation in sync with code changes
+- **deployment-ops** - Checks GCP service health, analyzes logs, and troubleshoots post-deploy issues
 
 ## Commands (.cursor/commands/)
 - **run-tests-with-coverage** - `npm test` (c8 + mocha)
@@ -18,8 +19,5 @@ alwaysApply: true
 
 ## Skills (.cursor/skills/)
 - **add-handler** - Step-by-step guide for creating a new PR handler (file, tests, registration, docs)
-
-## Agent (.cursor/agents/)
-- **deployment-ops** - Checks GCP service health, analyzes logs, and troubleshoots post-deploy issues
 
 Suggest relevant commands/agents/skills when they match the user's task.
