@@ -1,0 +1,13 @@
+---
+description: Testing patterns and requirements for auto-me-bot
+globs: tests/**
+alwaysApply: false
+---
+
+# Testing
+
+- Test `match()` and `run()` separately for each handler
+- Mock all GitHub API calls (`context.octokit`)
+- Achieve full coverage for handler logic
+- Use descriptive test names
+- Test fixtures live in `tests/fixtures/`

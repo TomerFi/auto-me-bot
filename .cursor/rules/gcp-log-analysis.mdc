@@ -1,0 +1,62 @@
+---
+description: GCP log analysis patterns for the auto-me-bot Cloud Function on Cloud Run
+alwaysApply: false
+---
+
+# GCP Log Analysis
+
+## Project Context
+- GCP project: `auto-me-bot`
+- Service: Cloud Function `auto-me-bot` running on Cloud Run in `us-central1`
+- Runtime: Node.js 22
+- Secrets: APP_ID, PRIVATE_KEY, WEBHOOK_SECRET (via Secret Manager)
+- Deployer SA: `deployer@auto-me-bot.iam.gserviceaccount.com` (GitHub Actions WIF)
+- `allUsers` invoker access on the Cloud Run service is set manually, not via CI. The `--allow-unauthenticated` flag was removed from the deploy command. If `setIamPolicy` errors appear in audit logs, investigate whether the flag was re-added or if `gcloud functions deploy` is inferring it from existing function metadata.
+
+## GCP MCP Tool Limitations
+The `run_gcloud_command` MCP tool splits array args on spaces. Compound filters using `AND` in `gcloud logging read` will break because the positional filter arg gets tokenized.
+
+**Workarounds:**
+- Use single-condition filters as the positional arg: `severity=ERROR`, `httpRequest.status>=400`
+- Use `--freshness` to control time range instead of timestamp filters
+- Run multiple focused queries rather than one complex query
+- Use `--format=json(field1,field2)` projections to reduce output size
+
+## Useful Log Queries
+
+### Errors only (last 2 days)
+```
+args: ["logging", "read", "severity=ERROR", "--freshness=2d", "--format=json(timestamp,textPayload,protoPayload.status.message,httpRequest.status)", "--limit=20"]
+```
+
+### HTTP errors (4xx/5xx)
+```
+args: ["logging", "read", "httpRequest.status>=400", "--freshness=2d", "--format=json(timestamp,httpRequest.status,httpRequest.latency,httpRequest.remoteIp)"]
+```
+
+### App stderr (runtime errors)
+```
+args: ["logging", "read", "logName=projects/auto-me-bot/logs/run.googleapis.com%2Fstderr", "--freshness=2d", "--format=json(timestamp,textPayload,severity)", "--limit=20"]
+```
+
+### Recent requests with latency
+```
+args: ["logging", "read", "--freshness=1h", "--limit=30", "--format=json(timestamp,httpRequest.status,httpRequest.latency,textPayload,severity)"]
+```
+
+### Service status
+```
+args: ["run", "services", "describe", "auto-me-bot", "--region=us-central1", "--format=json(status,spec.template.metadata.annotations)"]
+```
+
+### Revision history
+```
+args: ["run", "revisions", "list", "--service=auto-me-bot", "--region=us-central1", "--limit=5", "--format=json(metadata.name,status.conditions,metadata.creationTimestamp)"]
+```
+
+## Analysis Checklist
+1. Check service status and current revision health
+2. Query severity>=WARNING for errors/warnings
+3. Query httpRequest.status>=400 for HTTP errors
+4. Check stderr for application-level errors
+5. Review recent request latencies for cold-start patterns (~400-500ms cold vs ~5ms warm)

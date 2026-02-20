@@ -1,0 +1,12 @@
+---
+description: JavaScript coding standards for auto-me-bot
+globs: "**/*.js"
+alwaysApply: false
+---
+
+# Coding Standards
+
+- Indentation: 4 spaces
+- Line length: 100 chars (JS), 120 chars (Markdown)
+- Async patterns: `async/await` (no raw Promises)
+- Error handling: Always catch and report API errors

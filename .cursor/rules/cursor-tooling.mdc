@@ -1,0 +1,25 @@
+---
+description: Available Cursor agents, commands, and skills for auto-me-bot
+alwaysApply: true
+---
+
+# Cursor Tooling
+
+## Agents (.cursor/agents/)
+- **code-reviewer** - Reviews code changes against handler contract, testing, and general quality checklists
+- **docs-writer** - Keeps MkDocs documentation in sync with code changes
+
+## Commands (.cursor/commands/)
+- **run-tests-with-coverage** - `npm test` (c8 + mocha)
+- **run-tests-quick** - `npm run tests` (mocha only, faster iteration)
+- **lint-fix** - `npm run lint -- --fix`
+- **serve-docs** - Sets up venv and runs `mkdocs serve`
+- **smoke-test** - Runs `scripts/smoke-test.js` against deployed Cloud Function (needs FUNCTION_URL and WEBHOOK_SECRET in .env)
+
+## Skills (.cursor/skills/)
+- **add-handler** - Step-by-step guide for creating a new PR handler (file, tests, registration, docs)
+
+## Agent (.cursor/agents/)
+- **deployment-ops** - Checks GCP service health, analyzes logs, and troubleshoots post-deploy issues
+
+Suggest relevant commands/agents/skills when they match the user's task.
