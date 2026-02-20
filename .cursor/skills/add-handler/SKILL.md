@@ -15,7 +15,7 @@ This skill guides you through creating a new handler for auto-me-bot.
 
 ### 2. Implement match() Function
 ```javascript
-module.exports.match = function(context) {
+function match(context) {
     let event = 'pull_request';
     let actions = ['opened', 'edited']; // Adjust based on handler needs
     return event in context.payload ? actions.includes(context.payload.action) : false;
@@ -27,8 +27,7 @@ module.exports.match = function(context) {
 const CHECK_NAME = 'Handler Name';
 const BOT_CHECK_URL = 'https://auto-me-bot.figenblat.com/handlers/handler-name';
 
-module.exports.run = async function(context, config, startedAt) {
-    // Create check-run
+async function run(context, config, startedAt) {
     let checkRun = await context.octokit.checks.create(context.repo({
         head_sha: context.payload.pull_request.head.sha,
         name: CHECK_NAME,
@@ -38,10 +37,8 @@ module.exports.run = async function(context, config, startedAt) {
     }));
 
     try {
-        // Handler logic here
         let success = true; // Replace with actual logic
 
-        // Update check-run with result
         await context.octokit.checks.update(context.repo({
             check_run_id: checkRun.data.id,
             name: CHECK_NAME,
@@ -56,7 +53,6 @@ module.exports.run = async function(context, config, startedAt) {
             }
         }));
     } catch (error) {
-        // Handle errors gracefully
         await context.octokit.checks.update(context.repo({
             check_run_id: checkRun.data.id,
             status: 'completed',
@@ -68,6 +64,8 @@ module.exports.run = async function(context, config, startedAt) {
         }));
     }
 }
+
+export default {match, run}
 ```
 
 ### 4. Create Test File
@@ -79,10 +77,8 @@ module.exports.run = async function(context, config, startedAt) {
 ### 5. Register Handler
 Edit `src/auto-me-bot.js`:
 ```javascript
-// Import handler
 import handlerName from './handlers/pr-handler-name.js'
 
-// Add to CONFIG_SPEC
 const CONFIG_SPEC = Object.freeze({
     pr: {
         // ... existing handlers
@@ -90,7 +86,6 @@ const CONFIG_SPEC = Object.freeze({
     }
 });
 
-// Add required events to ON_EVENTS if needed
 const ON_EVENTS = Object.freeze([
     // ... existing events
     'pull_request.opened', // Example

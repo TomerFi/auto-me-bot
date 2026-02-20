@@ -1,0 +1,24 @@
+---
+description: Auto-me-bot project overview, architecture, and tech stack
+alwaysApply: true
+---
+
+# Auto-Me-Bot
+
+Probot GitHub App that automates repository management through configurable handlers.
+
+## Architecture
+- **Config Types**: Event types (currently only 'pr')
+- **Handlers**: Operations for config types (located in src/handlers/)
+- **Handler Contract**: Each handler exports `match()` and `run()` functions
+- User config: `.github/auto-me-bot.yml`
+- Handler registration: `src/auto-me-bot.js` CONFIG_SPEC
+- Event registration: `src/auto-me-bot.js` ON_EVENTS
+
+## Tech Stack
+- Runtime: Node.js 22+
+- Framework: Probot 14+
+- Testing: Mocha + Chai + Sinon
+- Coverage: c8
+- Linting: ESLint 9+
+- Docs: MkDocs (Python)

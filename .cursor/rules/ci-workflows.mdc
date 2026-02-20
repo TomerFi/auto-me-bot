@@ -1,0 +1,13 @@
+---
+description: CI/CD workflow conventions for auto-me-bot GitHub Actions
+globs: .github/workflows/**
+alwaysApply: false
+---
+
+# CI/CD Workflows
+
+- Use `npm ci` for CI/CD installs (not `npm install`)
+- Pin action versions (e.g., `actions/checkout@v6`)
+- Keep Probot and commitlint updated
+- Deployment uses GCP Cloud Functions Gen2 via `gcloud functions deploy`
+- The `--allow-unauthenticated` flag is NOT used; `allUsers` invoker access is set manually
