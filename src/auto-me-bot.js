@@ -56,10 +56,10 @@ export default function (probot) {
         const evt = err.event;
         const repo = evt?.payload?.repository?.full_name;
         const action = evt ? `${evt.name}.${evt.payload?.action}` : 'unknown';
-        const num = evt?.payload?.number;
+        const num = evt?.payload?.number ?? evt?.payload?.pull_request?.number;
         probot.log.error(
-            `[repo=${repo}, event=${action}, #${num}] ${err.message}`,
-            ...(err.errors ?? []).map(e => `${e.status} ${e.message}`)
+            { errors: (err.errors ?? []).map(e => `${e.status} ${e.message}`) },
+            `[repo=${repo}, event=${action}, #${num}] ${err.message}`
         );
     })
 };

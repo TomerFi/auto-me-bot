@@ -38,7 +38,7 @@ export async function handler (req, res) {
         const evt = error.event;
         const repo = evt?.payload?.repository?.full_name;
         const action = evt ? `${evt.name}.${evt.payload?.action}` : 'unknown';
-        const num = evt?.payload?.number;
+        const num = evt?.payload?.number ?? evt?.payload?.pull_request?.number;
 
         console.error(
             `Handler error: [repo=${repo}, event=${action}, #${num}]`,
