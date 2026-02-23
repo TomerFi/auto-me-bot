@@ -22,7 +22,8 @@ function match(context) {
 
 // handler for verifying PR tasks' list is completed
 async function run(context, _config, startedAt) {
-    context.log.info(`${running_handler} started`)
+    const tag = `${running_handler} [${context.payload.repository.full_name}#${context.payload.pull_request.number}]`;
+    context.log.info(`${tag} started`)
 
     // create the initial check run and mark it as in_progress
     let checkRun = await context.octokit.rest.checks.create(context.repo({
@@ -63,7 +64,7 @@ async function run(context, _config, startedAt) {
         report.output.text = parseTasks(checkedTasks, 'Here\'s a list of your accomplishments');
     }
 
-    context.log.debug(`${running_handler} finalizing`);
+    context.log.debug(`${tag} finalizing`);
 
     // update check run and mark it as completed
     await context.octokit.rest.checks.update(context.repo({
@@ -76,7 +77,7 @@ async function run(context, _config, startedAt) {
         ...report
     }));
 
-    context.log.info(`${running_handler} completed with conclusion ${report.conclusion}`);
+    context.log.info(`${tag} completed with conclusion ${report.conclusion}`);
 }
 
 // recursively extract task items from tokens, including nested lists

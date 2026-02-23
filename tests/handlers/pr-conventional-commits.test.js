@@ -86,7 +86,8 @@ suite('Testing the pr-conventional-commits handler', () => {
                             sha: fakeSha
                         },
                         number: fakePRNumber
-                    }
+                    },
+                    repository: { full_name: `${fakeOwner}/${fakeRepository}` }
                 },
                 octokit: {
                     rest: {

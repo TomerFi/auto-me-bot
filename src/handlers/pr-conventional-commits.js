@@ -24,7 +24,8 @@ function match(context) {
 
 // handler for verifying commit messages as conventional
 async function run(context, config, startedAt) {
-    context.log.info(`${running_handler} started`)
+    const tag = `${running_handler} [${context.payload.repository.full_name}#${context.payload.pull_request.number}]`;
+    context.log.info(`${tag} started`)
 
     // create the initial check run and mark it as in_progress
     let checkRun = await context.octokit.rest.checks.create(context.repo({
@@ -49,11 +50,10 @@ async function run(context, config, startedAt) {
             if (response.status === 200) {
                 commitObjs = response.data;
             } else {
-                let {status, message} = response;
-                context.log.error(`${running_handler} got status ${status} with message ${message}`);
+                context.log.error(`${tag} got unexpected status ${response.status}`);
             }
         })
-        .catch(error => context.log.error(`${running_handler} got error ${error}`));
+        .catch(error => context.log.error(`${tag} got error ${error.message}`));
     if (commitObjs.length === 0) {
         report.conclusion = 'failure'
         report.output.title = 'No commits found'
@@ -101,7 +101,7 @@ async function run(context, config, startedAt) {
         }
     }
 
-    context.log.debug(`${running_handler} finalizing`);
+    context.log.debug(`${tag} finalizing`);
 
     // update check run and mark it as completed
     await context.octokit.rest.checks.update(context.repo({
@@ -114,7 +114,7 @@ async function run(context, config, startedAt) {
         ...report
     }));
 
-    context.log.info(`${running_handler} completed with conclusion ${report.conclusion}`)
+    context.log.info(`${tag} completed with conclusion ${report.conclusion}`)
 }
 
 // create markdown segments for aggregating the lint status report

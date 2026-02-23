@@ -35,7 +35,16 @@ export async function handler (req, res) {
 
         res.status(200).send('ok');
     } catch (error) {
-        console.error('Handler error:', error);
+        const evt = error.event;
+        const repo = evt?.payload?.repository?.full_name;
+        const action = evt ? `${evt.name}.${evt.payload?.action}` : 'unknown';
+        const num = evt?.payload?.number;
+
+        console.error(
+            `Handler error: [repo=${repo}, event=${action}, #${num}]`,
+            error.message,
+            ...(error.errors ?? []).map(e => `${e.status} ${e.message}`)
+        );
         res.status(500).send('error');
     }
 }

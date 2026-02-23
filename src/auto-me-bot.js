@@ -53,7 +53,14 @@ const CONFIG_SPEC = Object.freeze({
 export default function (probot) {
     probot.on(ON_EVENTS, handlersController(CONFIG_SPEC));
     probot.onError(async err => {
-        probot.log.error(err)
+        const evt = err.event;
+        const repo = evt?.payload?.repository?.full_name;
+        const action = evt ? `${evt.name}.${evt.payload?.action}` : 'unknown';
+        const num = evt?.payload?.number;
+        probot.log.error(
+            `[repo=${repo}, event=${action}, #${num}] ${err.message}`,
+            ...(err.errors ?? []).map(e => `${e.status} ${e.message}`)
+        );
     })
 };
 
@@ -64,7 +71,7 @@ export function handlersController(configSpec) {
         context.log.debug(`Payload: ${JSON.stringify(context.payload)}`)
         let config = await context.config('auto-me-bot.yml');
         if (config == null) {
-            context.log.info("no config found")
+            context.log.debug(`no config found for ${context.payload.repository.full_name}`)
             return
         }
         context.log.debug(`Config: ${JSON.stringify(config)}`)

@@ -166,7 +166,8 @@ suite('Testing the pr-signed-commits handler', () => {
                     },
                     sender: {
                         type: 'User'
-                    }
+                    },
+                    repository: { full_name: `${fakeOwner}/${fakeRepository}` }
                 },
                 octokit: {
                     rest: {

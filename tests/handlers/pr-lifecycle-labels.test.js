@@ -111,7 +111,8 @@ suite('Testing the pr-lifecycle-labels', () => {
                         },
                         labels: [],
                         number: fakePRNumber
-                    }
+                    },
+                    repository: { full_name: `${fakeOwner}/${fakeRepository}` }
                 },
                 octokit: {
                     rest: {

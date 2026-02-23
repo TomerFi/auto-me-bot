@@ -50,7 +50,8 @@ function match(context) {
 
 // handler for labeling pull requests based on lifecycle
 async function run(context, config, startedAt) {
-    context.log.info(`${running_handler} started`)
+    const tag = `${running_handler} [${context.payload.repository.full_name}#${context.payload.pull_request.number}]`;
+    context.log.info(`${tag} started`)
 
     // create the initial check run and mark it as in_progress
     let checkRun = await context.octokit.rest.checks.create(context.repo({
@@ -79,10 +80,10 @@ async function run(context, config, startedAt) {
         report.output.title = 'Nothing for me to do';
         report.output.summary = 'Are you sure your configuration is valid?';
     } else {
-        await workThemLabels(context, config, report);
+        await workThemLabels(context, config, report, tag);
     }
 
-    context.log.debug(`${running_handler} finalizing`);
+    context.log.debug(`${tag} finalizing`);
 
     //  update check run and mark it as completed
     await context.octokit.rest.checks.update(context.repo({
@@ -95,7 +96,7 @@ async function run(context, config, startedAt) {
         ...report
     }));
 
-    context.log.info(`${running_handler} completed with conclusion ${report.conclusion}`)
+    context.log.info(`${tag} completed with conclusion ${report.conclusion}`)
 }
 
 
@@ -111,7 +112,7 @@ function getConfiguredLabels(labels) {
     return Object.fromEntries(Object.entries(labels).filter(kv => KNOWN_LABELS.includes(kv[0])));
 }
 
-async function getLifecycleLabel(context) {
+async function getLifecycleLabel(context, tag) {
     let action = context.payload.action;
     let isMerged = context.payload.pull_request.merged;
 
@@ -125,11 +126,10 @@ async function getLifecycleLabel(context) {
             if (response.status === 200) {
                 reviews = response.data;
             } else {
-                let {status, message} = response;
-                context.log.error(`${running_handler} got status ${status} with message ${message}`);
+                context.log.error(`${tag} got unexpected status ${response.status}`);
             }
         })
-        .catch(error => context.log.error(`${running_handler} got error ${error}`));
+        .catch(error => context.log.error(`${tag} got error ${error.message}`));
 
     if (reviews.length === 0) {
         return LABEL_KEYS.REVIEW_REQUIRED;
@@ -173,11 +173,10 @@ async function getLifecycleLabel(context) {
             if (response.status === 200){
                 baseProtections = response.data;
             } else {
-                let {status, message} = response;
-                context.log.error(`${running_handler} got status ${status} with message ${message}`);
+                context.log.error(`${tag} got unexpected status ${response.status}`);
             }
         })
-        .catch(error => context.log.error(`${running_handler} got error ${error}`));
+        .catch(error => context.log.error(`${tag} got error ${error.message}`));
 
     let requiredApprovals = baseProtections?.required_pull_request_reviews?.required_approving_review_count || 0;
     if (approvals < requiredApprovals) {
@@ -186,9 +185,9 @@ async function getLifecycleLabel(context) {
     return LABEL_KEYS.APPROVED;
 }
 
-async function workThemLabels(context, config, report) {
+async function workThemLabels(context, config, report, tag) {
     let configuredLabels = getConfiguredLabels(config.labels);
-    let lifecycleLabel = await getLifecycleLabel(context);
+    let lifecycleLabel = await getLifecycleLabel(context, tag);
 
     if (!(lifecycleLabel in configuredLabels)) {
         report.output.title = 'Label not configured'
@@ -208,17 +207,16 @@ async function workThemLabels(context, config, report) {
         context.octokit.rest.issues.removeLabel(context.repo({issue_number: context.payload.pull_request.number, name: removeLabel}))
             .then(response => {
                 if (response.status !== 200) {
-                    let {status, message} = response;
-                    context.log.error(`${running_handler} got status ${status} with message ${message}`);
+                    context.log.error(`${tag} got unexpected status ${response.status}`);
                 }
             })
-            .catch(error => context.log.error(`${running_handler} got error ${error}`)));
+            .catch(error => context.log.error(`${tag} got error ${error.message}`)));
 
     if (!prLabels.includes(addLabel)) {
         let labelExist = false;
         await context.octokit.rest.issues.getLabel(context.repo({name: addLabel}))
             .then(resp => labelExist = resp.status === 200)
-            .catch(error => context.log.error(`${running_handler} got error ${error}`));
+            .catch(error => context.log.error(`${tag} got error ${error.message}`));
         if (!labelExist) {
             report.conclusion = 'failure';
             report.output.title = `Label for '${lifecycleLabel}' not found`;
@@ -234,7 +232,7 @@ async function workThemLabels(context, config, report) {
                 }
             })
             .catch(error => {
-                context.log.error(`${running_handler} got error ${error}`);
+                context.log.error(`${tag} got error ${error.message}`);
                 report.conclusion = 'failure';
                 report.output.title = 'Failed to add the label';
                 report.output.summary = 'This might be a permissions issue';

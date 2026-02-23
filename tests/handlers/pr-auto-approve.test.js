@@ -108,11 +108,13 @@ suite('Testing the pr-auto-approve handler', () => {
                         head: {
                             sha: fakeSha
                         },
+                        number: fakePRNumber
                     },
                     sender: {
                         login,
                         type
-                    }
+                    },
+                    repository: { full_name: `${fakeOwner}/${fakeRepository}` }
                 },
                 isBot: () => isBot
             }

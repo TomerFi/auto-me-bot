@@ -76,8 +76,10 @@ suite('Testing the pr-tasks-list handler', () => {
                     pull_request: {
                         head: {
                             sha: fakeSha
-                        }
-                    }
+                        },
+                        number: 1
+                    },
+                    repository: { full_name: `${fakeOwner}/${fakeRepository}` }
                 },
                 octokit: {
                     rest: {

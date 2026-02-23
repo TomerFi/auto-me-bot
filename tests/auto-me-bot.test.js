@@ -97,7 +97,8 @@ suite('Testing the auto-me-bot export', () => {
             fakeContext = {
                 payload: {
                     pull_request: {},
-                    action: 'opened'
+                    action: 'opened',
+                    repository: { full_name: 'testOwner/testRepo' }
                 },
                 config: configFuncStub,
                 log: {

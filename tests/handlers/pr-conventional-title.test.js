@@ -99,8 +99,10 @@ suite('Testing the pr-conventional-title handler', () => {
                         head: {
                             sha: fakeSha
                         },
-                        title: prTitle
-                    }
+                        title: prTitle,
+                        number: 1
+                    },
+                    repository: { full_name: `${fakeOwner}/${fakeRepository}` }
                 }
             }
             // when invoking the handler with the given context, the custom configuration object, and an iso timestamp
