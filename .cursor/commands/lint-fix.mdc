@@ -1,8 +1,0 @@
----
-description: Lint source files with auto-fix
-globs:
-  - "src/**/*.js"
-  - "tests/**/*.js"
-  - "eslint.config.mjs"
----
-npm run lint -- --fix

@@ -1,6 +1,22 @@
-# Skill: Add New Handler to Auto-Me-Bot
+---
+name: add-handler
+description: Step-by-step guide for creating a new PR handler for auto-me-bot GitHub App, including handler file, tests, CONFIG_SPEC registration, and documentation
+---
 
-This skill guides you through creating a new handler for auto-me-bot.
+## What I do
+
+- Create handler files at `src/handlers/pr-<name>.js` with match() and run() functions
+- Implement match() to return boolean based on payload event and actions
+- Implement run() with check-run lifecycle: in_progress → operations → completed
+- Generate test files at `tests/handlers/pr-<name>.test.js` with Sinon stubs and full coverage
+- Add handler to CONFIG_SPEC and events to ON_EVENTS in `src/auto-me-bot.js`
+- Update test registration in `tests/auto-me-bot.test.js` (stubs, allHandlers, patchedConfigSpec)
+- Create handler docs, update mkdocs.yml navigation, config.md, and examples.md
+- Verify: handler file, tests, registration, documentation, tests pass, lint passes
+
+## When to use me
+
+Use when you want to add a new handler to auto-me-bot. Ask clarifying questions if the handler's purpose, config type, or target webhook events are not specified.
 
 ## Prerequisites
 - Understand the handler contract (match + run functions)

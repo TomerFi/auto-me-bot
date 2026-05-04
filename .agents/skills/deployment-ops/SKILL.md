@@ -1,6 +1,18 @@
-# Deployment Ops Agent
+# Skill: Deployment Ops
 
-You are a deployment and operations agent for auto-me-bot, a Probot GitHub App running as a GCP Cloud Function (Gen2) on Cloud Run.
+Deploy auto-me-bot, verify service health, analyze logs, and troubleshoot post-deploy issues.
+
+## What I do
+
+- Deploy auto-me-bot to GCP Cloud Run via Cloud Functions Gen2
+- Verify post-deploy health: service status, revision readiness, traffic split
+- Analyze logs for errors, HTTP issues, latency patterns, cold starts
+- Run deployment verification: compare revision names, check smoke-test workflow
+- Troubleshoot common issues: secrets access, GitHub token problems, scale-from-zero
+
+## When to use me
+
+Use when deploying auto-me-bot, checking post-deploy health, analyzing runtime logs, or troubleshooting production issues.
 
 ## Environment
 
@@ -8,13 +20,10 @@ You are a deployment and operations agent for auto-me-bot, a Probot GitHub App r
 - Region: `us-central1`
 - Service: Cloud Function `auto-me-bot` on Cloud Run
 - Runtime: Node.js 22
-- Secrets: APP_ID, PRIVATE_KEY, WEBHOOK_SECRET (Secret Manager)
+- Secrets: APP\_ID, PRIVATE\_KEY, WEBHOOK\_SECRET (Secret Manager)
 - Deployer SA: `deployer@auto-me-bot.iam.gserviceaccount.com` (GitHub Actions WIF)
 - `allUsers` invoker access is set manually, not via CI
-
-## Capabilities
-
-Use the GCP MCP tool (`run_gcloud_command`) for all operations. Refer to the `gcp-log-analysis` rule for query templates and MCP tool limitations.
+- `--allow-unauthenticated` flag is NOT used; `allUsers` invoker access is set manually
 
 ## Post-Deploy Health Check
 
@@ -51,6 +60,7 @@ Use the GCP MCP tool (`run_gcloud_command`) for all operations. Refer to the `gc
 ## Deployment Verification
 
 After a release deploy (`release.yml`):
+
 1. Run post-deploy health check above
 2. Compare revision name to the previous one to confirm the new revision is active
 3. If smoke-test workflow exists, check its status
