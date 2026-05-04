@@ -1,7 +1,0 @@
----
-description: Run smoke tests against the deployed Cloud Function (requires FUNCTION_URL and WEBHOOK_SECRET in .env)
-globs:
-  - "scripts/smoke-test.js"
-  - "tests/fixtures/**/*.json"
----
-node scripts/smoke-test.js all
