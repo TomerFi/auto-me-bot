@@ -1,6 +1,8 @@
 ---
 name: add-handler
-description: Step-by-step guide for creating a new PR handler for auto-me-bot GitHub App, including handler file, tests, CONFIG_SPEC registration, and documentation
+description: >-
+  Step-by-step guide for creating a new PR handler for auto-me-bot GitHub App,
+  including handler file, tests, CONFIG_SPEC registration, and documentation
 ---
 
 ## What I do
@@ -16,7 +18,9 @@ description: Step-by-step guide for creating a new PR handler for auto-me-bot Gi
 
 ## When to use me
 
-Use when you want to add a new handler to auto-me-bot. Ask clarifying questions if the handler's purpose, config type, or target webhook events are not specified.
+Use when you want to add a new handler to auto-me-bot. Ask clarifying questions
+if the handler's purpose, config type, or target webhook events are not
+specified.
 
 ## Prerequisites
 - Understand the handler contract (match + run functions)
