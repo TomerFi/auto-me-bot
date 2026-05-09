@@ -129,4 +129,6 @@ jobs:
   smoke-test:
     needs: release
     uses: ./.github/workflows/smoke-test.yml
-    secrets: inherit
+    secrets:
+      FUNCTION_URL: ${{ secrets.FUNCTION_URL }}
+      WEBHOOK_SECRET: ${{ secrets.WEBHOOK_SECRET }}
