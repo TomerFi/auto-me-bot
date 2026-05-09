@@ -5,6 +5,9 @@ on:
   release:
     types: [published]
 
+permissions:
+  contents: write # checkout, deploy
+
 jobs:
   deploy-pages:
     runs-on: ubuntu-latest

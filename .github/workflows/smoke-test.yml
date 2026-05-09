@@ -5,6 +5,9 @@ on:
   workflow_dispatch:
   workflow_call:
 
+permissions:
+  contents: read # smoke test
+
 jobs:
   smoke-test:
     runs-on: ubuntu-latest

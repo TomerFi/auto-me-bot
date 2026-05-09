@@ -11,6 +11,9 @@ concurrency:
   group: stage-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read # checkout, build
+
 jobs:
   stage:
     runs-on: ubuntu-latest
