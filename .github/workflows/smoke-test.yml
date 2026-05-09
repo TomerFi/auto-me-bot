@@ -4,6 +4,11 @@ name: Smoke Test
 on:
   workflow_dispatch:
   workflow_call:
+    secrets:
+      FUNCTION_URL:
+        required: true
+      WEBHOOK_SECRET:
+        required: true
 
 permissions:
   contents: read # smoke test
