@@ -7,6 +7,10 @@ on:
     branches:
       - main
 
+concurrency:
+  group: stage-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   stage:
     runs-on: ubuntu-latest
