@@ -27,13 +27,13 @@ jobs:
     name: Build, publish, release, and announce
     steps:
       - name: Checkout sources
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 0
           ssh-key: ${{ secrets.DEPLOY_KEY }}
 
       - name: Install node 22
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
           node-version: '22'
           cache: npm
@@ -53,14 +53,14 @@ jobs:
           git config commit.gpgsign true
 
       - name: Authenticate to GCP
-        uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
+        uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3.0.0
         with:
           workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
           service_account: ${{ secrets.WIF_SERVICE_ACCOUNT }}
 
       - name: Determine next SemVer
         id: bumper
-        uses: tomerfi/version-bumper-action@6892021917fa099d2986fcbf3acc584659af193a # 2.0.7
+        uses: tomerfi/version-bumper-action@16cb52d294eba8bd3e8757a2569ff6fafd94f52c # 2.0.8
         with:
           bump: '${{ github.event.inputs.bump }}'
 
@@ -97,7 +97,7 @@ jobs:
 
       - name: Create a release name
         id: release_name
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         with:
           script: |
             var retval = '${{ steps.bumper.outputs.next }}'
@@ -108,7 +108,7 @@ jobs:
 
       - name: Create a release
         id: gh_release
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         with:
           github-token: ${{ secrets.RELEASE_PAT }}
           script: |
