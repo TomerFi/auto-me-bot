@@ -11,6 +11,12 @@ on:
         description: "Bump type (major/minor/patch/auto)"
         default: "auto"
         required: true
+        type: choice
+        options:
+          - major
+          - minor
+          - patch
+          - auto
 
 concurrency:
   group: release-${{ github.ref }}
