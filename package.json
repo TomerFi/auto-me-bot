@@ -31,7 +31,7 @@
     "tests:rep": "mocha --check-leaks --fail-zero --ui tdd --recursive --reporter json ./tests/ > unit-tests-result.json",
     "eslint": "eslint src tests",
     "eslint:fix": "eslint --fix src tests",
-    "prettier": "echp \"prettier --check \"**/*.js\"\"",
+    "prettier": "echo \"prettier --check \"**/*.js\"\"",
     "prettier:fix": "echo \"prettier --write \"**/*.js\"\"",
     "ec": "ec",
     "actionlint": "actionlint",
