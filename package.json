@@ -31,8 +31,8 @@
     "tests:rep": "mocha --check-leaks --fail-zero --ui tdd --recursive --reporter json ./tests/ > unit-tests-result.json",
     "eslint": "eslint src tests",
     "eslint:fix": "eslint --fix src tests",
-    "prettier": "prettier",
-    "prettier:fix": "prettier --write",
+    "prettier": "echp \"prettier --check \"**/*.js\"\"",
+    "prettier:fix": "echo \"prettier --write \"**/*.js\"\"",
     "ec": "ec",
     "actionlint": "actionlint",
     "link-ai-files": "aicfg link agents --to claude-code",
@@ -95,5 +95,9 @@
       "lcov",
       "text"
     ]
+  },
+  "prettier": {
+    "singleQuote": true,
+    "tabWidth": 4
   }
 }
