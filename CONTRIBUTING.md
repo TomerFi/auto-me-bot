@@ -1,17 +1,65 @@
-# Contributing to <em>auto-me-bot</em>
+# Contributing to *auto-me-bot*
 
-:clap: First off, thank you for taking the time to contribute. :clap:
+Thank you for contributing. This guide covers the essentials.
 
-- Fork the repository
-- Create a new branch
-- Commit your changes
-- Create a pull request against the `main` branch
+## AI Policy
 
-## Project walkthrough
+This project has a clear AI policy — read [AI_POLICY.md](AI_POLICY.md) and follow it. You're responsible for everything you submit.
 
-*auto-me-bot* was created around the concept of *handlers* and *config types*.<br/>
-A *config type* is the type of *GitHub* event, i.e. *pr*, a *handler* represents an operation supported for a *config type*.<br/>
-At the time of writing this, we have handlers only for the *pr* config type, exemplified best in the configuration YAML:
+## Setup
+
+```bash
+git clone <repo-url>
+cd auto-me-bot
+npm install
+```
+
+See [AGENTS.md](AGENTS.md) for linting and testing commands.
+
+## Local Checks
+
+This project uses [husky][husky] with [lint-staged][lint-staged]. The pre-commit hook enforces:
+
+- **Branch protection** — blocks commits directly to `main`
+- **Lock file consistency** — verifies `package-lock.json` matches `package.json`
+- **Assistant files** — uses [aicfg](https://github.com/TomerFi/aicfg) to sync project instructions (`.agents`, `AGENTS.md`) across editors; run `npm run link-ai-files` to link for Claude Code
+- **File-specific checks** — eslint, prettier, editorconfig-checker, and actionlint run only on changed files via [lint-staged][lint-staged]
+
+```bash
+# Auto-installed by `npm install`
+# Runs automatically on every commit (unless on main, which is blocked)
+```
+
+To run checks manually against all files:
+
+```bash
+npm run eslint
+npm run prettier
+npm run ec
+```
+
+To run lint-staged manually:
+
+```bash
+npx lint-staged
+```
+
+## Commit Style
+
+- Conventional commits: `feat:`, `fix:`, `docs:`, `chore:`, `refactor:`, `test:`
+- One logical change per commit
+
+## PR Process
+
+1. Branch from `main` with a conventional name: `feat/add-handler`, `fix/handler-bug`
+2. Commit with a descriptive message
+3. Run all checks before submitting: `npm run eslint:fix && npm run prettier:fix && npm run ec`
+4. Open PR with a clear description of what changed and why
+5. Address feedback
+
+## Project Walkthrough
+
+*auto-me-bot* was created around the concept of *handlers* and *config types*. A *config type* is the type of *GitHub* event, i.e. *pull_request*. A *handler* represents an operation supported for a *config type*.
 
 ```yaml
 pr:
@@ -22,40 +70,11 @@ pr:
   tasksList:
 ```
 
-## Contributing Code
-
-### Build commands
-
-- `npm install` install all dependencies
-- `npm test` run the unit tests and verify code coverage
-- `npm run tests` run the tests with no code coverage verification
-- `npm run tests:rep` run the tests with no code coverage verification and create *unit-tests-result.json*
-- `npm run lint` lint the project
-
-### Smoke testing
-
-The smoke test script sends signed webhook events to the deployed Cloud Function and verifies HTTP responses.
-It requires `FUNCTION_URL` and `WEBHOOK_SECRET` in your `.env` file.
-
-- `node scripts/smoke-test.js ping` send a ping event
-- `node scripts/smoke-test.js all` send all event types (ping, pull_request.opened, pull_request.closed,
-  pull_request_review.submitted)
-
-Individual event types can also be run by name (e.g. `node scripts/smoke-test.js pull_request.opened`).
-The script includes retry logic to handle cold starts and propagation delays.
-
-The smoke test also runs automatically after each release via the
-[smoke-test workflow](.github/workflows/smoke-test.yml), which can be triggered manually from the GitHub Actions UI.
-
-Test payloads are stored as JSON files in [tests/fixtures/](tests/fixtures/) and are shared with the
-integration tests.
-
 ### Developing Handlers
 
-All handlers are located in [src/handlers/](https://github.com/TomerFi/auto-me-bot/tree/main/src/handlers).<br/>
-Handlers **MUST** export 2 functions (snippets source is the [pr-conventional-title handler](https://github.com/TomerFi/auto-me-bot/blob/main/src/handlers/pr-conventional-title.js)):
+All handlers are located in [src/handlers/](src/handlers/). Handlers **MUST** export 2 functions:
 
-A *match* function that will be used for matching incoming events, it takes [probot's context](https://probot.github.io/api/latest/classes/context.Context.html) and expected to return a boolean indicating whether or not the handler can handle the current request, typically based on the event type and supported actions:
+A *match* function that will be used for matching incoming events, it takes [Probot's context][context] and is expected to return a boolean indicating whether or not the handler can handle the current request:
 
 ```javascript
 module.exports.match = function(context) {
@@ -65,9 +84,9 @@ module.exports.match = function(context) {
 }
 ```
 
-A *run* function that will be used for handling a request, it will be invoked only if the aforementioned *match* function returns *true*, it takes [probot's context](https://probot.github.io/api/latest/classes/context.Context.html), the configuration for handler, and an *ISO8601 timestamp* marking the start timestamp of the handler run:
+A *run* function that will be used for handling a request, it will be invoked only if the *match* function returns *true*. It takes [Probot's context][context], the configuration for the handler, and an *ISO8601 timestamp* marking the start of the handler run:
 
-> Note that *config* contains the running handler configuration **only** and nothing above it, so other handlers configuration will not available.
+> Note that *config* contains the running handler configuration **only** and nothing above it, so other handlers configuration will not be available.
 
 ```javascript
 module.exports.run =  async function(context, config, startedAt) {
@@ -75,7 +94,7 @@ module.exports.run =  async function(context, config, startedAt) {
 }
 ```
 
-For pull requests, the run function is expected to [create a check-run](https://docs.github.com/en/rest/checks/runs#create-a-check-run) right off its invocation, and mark its *status* as *in_progress*:
+For pull requests, the run function is expected to [create a check-run][checks-create] right off its invocation, and mark its *status* as *in_progress*:
 
 ```javascript
 module.exports.run =  async function(context, config, startedAt) {
@@ -92,7 +111,7 @@ module.exports.run =  async function(context, config, startedAt) {
 }
 ```
 
-The *run* function, is also expected, as a final stage, to [update the previously created check-run](https://docs.github.com/en/rest/checks/runs#update-a-check-run), and mark its *status* as *completed*, use the *conclusion* and *output* keys to relay the check-run result:
+The *run* function is also expected, as a final stage, to [update the previously created check-run][checks-update], and mark its *status* as *completed*. Use the *conclusion* and *output* keys to relay the check-run result:
 
 ```javascript
 module.exports.run =  async function(context, config, startedAt) {
@@ -102,74 +121,17 @@ module.exports.run =  async function(context, config, startedAt) {
         name: CHECK_NAME,
         details_url: BOT_CHECK_URL,
         started_at: startedAt,
-        status: 'in_progress'
-    }));
-
-    // HANDLER OPERATIONS GOES HERE
-
-    await context.octokit.checks.update(context.repo({
-        check_run_id: checkRun.data.id,
-        name: CHECK_NAME,
-        details_url: BOT_CHECK_URL,
-        started_at: startedAt,
         status: 'completed',
-        completed_at: new Date().toISOString(),
         conclusion: 'success',
         output: {
-            title: 'Nice!',
-            summary: 'Good job, the PR title is conventional'
+            title: 'Check passed',
+            summary: 'All good!'
         }
     }));
 }
 ```
 
-### Testing Handlers
-
-All handler unit tests are located in [tests/handlers/](https://github.com/TomerFi/auto-me-bot/tree/main/tests/handlers), test the *match* and *run* functions individually, you can inject fakes and stubs into these and verify their behavior.<br/>
-Take note of [pr-conventional-title test cases](https://github.com/TomerFi/auto-me-bot/blob/main/tests/handlers/pr-conventional-title.test.js) which can be used as a template for future test cases as it's quite short, simple, and has full coverage.
-
-### Integration Tests
-
-The Cloud Function handler entrypoint is tested in [tests/app-runner.test.js](tests/app-runner.test.js).
-These tests instantiate a real Probot instance with a generated RSA key, sign webhook payloads with HMAC-SHA256,
-and verify the handler processes events without crashing.
-Payloads are loaded from [tests/fixtures/](tests/fixtures/).
-
-### Registering Handlers
-
-> NOTE: registering handlers requires modifying existing code, the snippets in this section are meant to help you get around the code, and to be used as boiler-plate code.
-
-Registration of new handler is done in [src/auto-me-bot.js](https://github.com/TomerFi/auto-me-bot/blob/main/src/auto-me-bot.js).<br/>
-Add an import for the new handler, look for the *CONFIG_SPEC* constant, add your configuration key, and point it the imported handler:
-
-```javascript
-const CONFIG_SPEC = Object.freeze({
-    pr: {
-        conventionalCommits: prConventionalCommitsHandler,
-        conventionalTitle: prConventionalTitleHandler,
-        lifecycleLabels: prLifecycleLabelsHandler,
-        signedCommits: prSignedCommitsHandler,
-        tasksList: prTasksListHandler,
-    }
-});
-```
-
-### Testing Handlers Registration
-
-Handlers registration is already tested, you only need to instruct it to also include the new handler when doing invocation testing in 3 simple steps, all done in [tests/auto-me-bot.test.js](https://github.com/TomerFi/auto-me-bot/blob/main/tests/auto-me-bot.test.js).
-
-#### Create the patch
-
-Look for the `beforeEach` function, instantiate your stub and create the patch, i.e.:
-
-```javascript
-// patch the conventionalTitle handler's run function to a stub
-conventionalTitleHandlerStub = sinon.stub();
-let conventionalTitleHandlerPatch = {
-    match: require('../src/handlers/pr-conventional-title').match,
-    run: conventionalTitleHandlerStub
-};
-```
+### Adding Handlers to Tests
 
 #### Include the handler
 
@@ -205,7 +167,7 @@ patchedConfigSpec = {
 
 ### Adding Listening Events
 
-If you need to add extra events/actions for triggering your handler, this is done with *ON_EVENTS* constant in [src/auto-me-bot.js](https://github.com/TomerFi/auto-me-bot/blob/main/src/auto-me-bot.js):
+If you need to add extra events/actions for triggering your handler, this is done with *ON_EVENTS* constant in [src/auto-me-bot.js](src/auto-me-bot.js):
 
 ```javascript
 const ON_EVENTS = Object.freeze([
@@ -221,30 +183,7 @@ const ON_EVENTS = Object.freeze([
 ]);
 ```
 
-> Note that adding events also requires updating the running application settings and requesting existing users approval, please contact the maintainers if this is required.
-
-## Using Cursor IDE
-
-This project includes Cursor-specific helpers:
-
-### Commands
-
-- **run-tests-with-coverage** - Run tests with coverage verification
-- **run-tests-quick** - Quick test run without coverage
-- **lint-fix** - Lint and auto-fix issues
-- **serve-docs** - Serve documentation locally
-- **smoke-test** - Run smoke tests against the deployed Cloud Function
-
-### Agents
-
-- **code-reviewer** - Pre-commit code review checklist
-- **docs-writer** - Keep documentation in sync
-
-### Skills
-
-- **add-handler** - Step-by-step guide for creating new handlers
-
-Access these via Cursor's command palette or @-mention agents in chat.
+> Note that adding events also requires updating the GitHub App's subscribed events on [github.com/settings/apps](https://github.com/settings/apps) and re-requesting approval from existing users. Contact the maintainers if this is required.
 
 ## Third-Party Tools
 
@@ -261,13 +200,18 @@ Most run automatically on PRs. Check their respective dashboards for detailed re
 
 ## Contributing Documentation
 
-The documentation is built with [Python](https://www.python.org/)'s [MkDocs](https://www.mkdocs.org/).
-The sources are in [docs/](https://github.com/TomerFi/auto-me-bot/tree/main/docs), and the configuration file is [mkdocs.yml](https://github.com/TomerFi/auto-me-bot/blob/main/mkdocs.yml).
+The documentation is built with [Python](https://www.python.org/)'s [MkDocs](https://www.mkdocs.org/). The sources are in [docs/](docs/), and the configuration file is [mkdocs.yml](mkdocs.yml).
 
 Useful commands:
 
-- `pip install -r requirements.txt` install dependencies required for building/serving the documentation site
-- `mkdocs build` build the documentation site in a folder named *site* (gitignored)
-- `mkdocs serve` serve the documentation site locally while watching the sources and auto loading for modifications
+- `pip install -r requirements.txt` — install dependencies required for building/serving the documentation site
+- `mkdocs build` — build the documentation site in a folder named *site* (gitignored)
+- `mkdocs serve` — serve the documentation site locally while watching the sources and auto-loading for modifications
 
 > Using [venv](https://docs.python.org/3/tutorial/venv.html) is highly recommended.
+
+[husky]: https://typicode.github.io/husky/
+[lint-staged]: https://github.com/okonet/lint-staged
+[context]: https://probot.github.io/api/latest/classes/context.Context.html
+[checks-create]: https://docs.github.com/en/rest/checks/runs#create-a-check-run
+[checks-update]: https://docs.github.com/en/rest/checks/runs#update-a-check-run

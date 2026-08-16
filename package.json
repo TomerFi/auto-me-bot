@@ -25,10 +25,30 @@
   ],
   "scripts": {
     "start": "probot run ./src/auto-me-bot.js",
-    "lint": "eslint src tests",
+    "lint": "npm run eslint && npm run prettier && npm run ec && npm run actionlint",
     "test": "c8 npm run tests",
     "tests": "mocha --check-leaks --fail-zero --color --ui tdd --recursive ./tests/",
-    "tests:rep": "mocha --check-leaks --fail-zero --ui tdd --recursive --reporter json ./tests/ > unit-tests-result.json"
+    "tests:rep": "mocha --check-leaks --fail-zero --ui tdd --recursive --reporter json ./tests/ > unit-tests-result.json",
+    "eslint": "eslint src tests",
+    "eslint:fix": "eslint --fix src tests",
+    "prettier": "prettier",
+    "prettier:fix": "prettier --write",
+    "ec": "ec",
+    "actionlint": "actionlint",
+    "link-ai-files": "aicfg link agents --to claude-code",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.js": [
+      "npm run eslint:fix",
+      "npm run prettier:fix"
+    ],
+    "*": [
+      "npm run ec"
+    ],
+    ".github/workflows/*": [
+      "npm run actionlint"
+    ]
   },
   "dependencies": {
     "@commitlint/cli": "^21.0.0",
@@ -42,12 +62,18 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "actionlint": "^2.0.6",
+    "aicfg": "^0.1.0",
     "c8": "^12.0.0",
     "chai": "^6.0.0",
+    "editorconfig-checker": "^6.1.1",
     "eslint": "^10.0.0",
     "eslint-plugin-mocha": "^12.0.0",
     "globals": "^17.0.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.3.0",
     "mocha": "^11.0.1",
+    "prettier": "^3.9.6",
     "sinon": "^22.0.0",
     "sinon-chai": "^4.0.0"
   },

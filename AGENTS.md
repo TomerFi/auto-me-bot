@@ -1,68 +1,68 @@
-# Auto-Me-Bot
+# Auto-Me-Bot AGENTS.md
 
-Probot GitHub App that automates repository management through configurable handlers.
+## AI Policy
 
-## Architecture
+This project has an [AI policy](AI_POLICY.md). Always read it and ensure all suggestions, code, and contributions comply. If any behavior seems to conflict with the policy, warn the user and ask for guidance.
 
-- **Config Types**: Event types (currently only 'pr')
-- **User config**: `.github/auto-me-bot.yml`
+## Project Overview
 
-## Coding Standards
+Auto-Me-Bot is a [Probot][probot] GitHub App that automates repository management through configurable handlers. It processes GitHub webhook events (currently only `pull_request`) and performs checks and actions based on configuration in `.github/auto-me-bot.yml`.
 
-- Line length: 100 chars (JS), 120 chars (Markdown)
-- Async patterns: `async/await` (no raw Promises)
-- Error handling: Always catch and report API errors
+### Architecture
+
+#### Handler Pattern
+
+All handlers follow this structure:
+
+1. `match(context)` — Returns boolean, determines if handler should run
+2. `run(context, config, startedAt)` — Async function that executes handler logic
+3. Creates a check-run with status `in_progress`
+4. Performs handler operations
+5. Updates check-run with status `completed` and appropriate conclusion
+
+#### Constraints
+
+- Every handler in `src/handlers/` MUST export `match` and `run`
+- Register handlers in `CONFIG_SPEC` in `src/auto-me-bot.js`
+- Register events in `ON_EVENTS` in `src/auto-me-bot.js`
+
+## Working Environment
+
+- Use **`package.json`** for all dependencies and scripts
+- This project uses [**husky**][husky] for Git hooks with [**lint-staged**][lint-staged] for file-specific checks
+- The pre-commit hook blocks commits to `main`, verifies lock file consistency, checks assistant files are in sync, and runs lint-staged on staged files
+
+## Linting
+
+```bash
+npm run lint                              # lint (read-only, includes eslint, prettier, ec, actionlint)
+npm run eslint                            # eslint src tests
+npm run eslint:fix                        # eslint --fix src tests
+npm run prettier                          # prettier --write
+npm run prettier:fix                      # prettier --write (alias)
+npm run ec                                # editorconfig-checker
+npm run actionlint                        # github actions linter
+```
 
 ## Testing
 
-- Test `match()` and `run()` separately for each handler
-- Mock all GitHub API calls (`context.octokit`)
-- Achieve full coverage for handler logic
-- Use descriptive test names
-- Test fixtures live in `tests/fixtures/`
+```bash
+npm run tests                             # run tests
+npm test                                  # run tests with coverage verification
+npm run tests:rep                         # run tests and output JSON report
+```
 
-Run `npm test` for tests with coverage verification
-Run `npm run tests` for faster iteration without coverage
+## Developer Workflow
 
-## Handler Development
+- Branch from `main` with a conventional name: `feat/add-handler`, `fix/handler-bug`
+- Conventional commits: `feat:`, `fix:`, `docs:`, `chore:`, `refactor:`, `test:`
+- One logical change per commit
+- Open PR with a clear description of what changed and why
 
-Every handler in `src/handlers/` MUST export:
-1. `match(context)` - Returns boolean, determines if handler should run
-2. `run(context, config, startedAt)` - Async function that executes handler logic
+## Additional Documentation
 
-### Handler Lifecycle (PR handlers)
+For contributing guidelines, IDE configuration, and handler development details, see [CONTRIBUTING.md](CONTRIBUTING.md).
 
-1. Create check-run with status `in_progress`
-2. Perform handler operations
-3. Update check-run with status `completed` and appropriate conclusion
-
-### Registration
-
-- Add handler to `CONFIG_SPEC` in `src/auto-me-bot.js`
-- Events are registered in `ON_EVENTS` in `src/auto-me-bot.js`
-
-## Documentation
-
-- `docs/index.md` — Overview
-- `docs/install.md` — Installation
-- `docs/config.md` — Config reference
-- `docs/examples.md` — Examples
-- `docs/handlers/*.md` — Individual handlers
-
-### When to Update
-
-- **New handler:** create `docs/handlers/handler-name.md`
-  - update `mkdocs.yml` navigation
-  - add config options to `docs/config.md`
-  - add example to `docs/examples.md`
-- **Modified handler:** update corresponding handler doc
-  - update config examples
-  - update screenshots if behavior changed
-- **API changes:** update config and examples docs
-
-Test with `mkdocs serve` before committing.
-
-## CI/CD
-
-- Deployment uses GCP Cloud Functions Gen2 via `gcloud functions deploy`
-
+[probot]: https://probot.github.io
+[husky]: https://typicode.github.io/husky/
+[lint-staged]: https://github.com/okonet/lint-staged

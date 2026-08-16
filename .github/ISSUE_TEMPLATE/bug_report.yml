@@ -1,7 +1,7 @@
 ---
 name: Bug Report
 description: File a bug report
-labels: ["type: bug"]
+labels: ["bug"]
 
 body:
   - type: markdown
@@ -19,8 +19,8 @@ body:
   - type: textarea
     id: runtime-information
     attributes:
-      label: Please provide runtime information.
-      description: Runtime information, e.g. artifact version and other environment relevant information.
+      label: Runtime information
+      description: Please provide: browser, OS, account/org/repo affected, and any other relevant environment details.
     validations:
       required: true
 
@@ -28,11 +28,15 @@ body:
     id: log-output
     attributes:
       label: Relevant log output
-      description: Please provide any relevant log output. Check for private info before submitting.
+      description: Please provide any relevant log output. Remember to redact sensitive information.
       render: shell
+    validations:
+      required: true
 
   - type: textarea
     id: how-to-reproduce
     attributes:
-      label: How can this issue be reproduced?
-      description: Instructions on how this issue can be reproduced.
+      label: Steps to reproduce
+      description: What steps should a maintainer take to reproduce the issue? Be as specific as possible.
+    validations:
+      required: true
