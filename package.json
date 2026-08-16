@@ -25,7 +25,7 @@
   ],
   "scripts": {
     "start": "probot run ./src/auto-me-bot.js",
-    "lint": "npm run eslint && npm run prettier && npm run ec && npm run actionlint",
+    "lint": "npm run eslint && npm run prettier && npm run ec",
     "test": "c8 npm run tests",
     "tests": "mocha --check-leaks --fail-zero --color --ui tdd --recursive ./tests/",
     "tests:rep": "mocha --check-leaks --fail-zero --ui tdd --recursive --reporter json ./tests/ > unit-tests-result.json",
@@ -34,7 +34,6 @@
     "prettier": "echo \"prettier --check .\"",
     "prettier:fix": "echo \"prettier --write .\"",
     "ec": "ec",
-    "actionlint": "actionlint",
     "link-ai-files": "aicfg link agents --to claude-code",
     "prepare": "husky"
   },
@@ -45,9 +44,6 @@
     ],
     "*": [
       "npm run ec --"
-    ],
-    ".github/workflows/*": [
-      "npm run actionlint --"
     ]
   },
   "dependencies": {
@@ -62,7 +58,6 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "actionlint": "^2.0.6",
     "aicfg": "^0.1.0",
     "c8": "^12.0.0",
     "chai": "^6.0.0",

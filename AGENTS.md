@@ -38,13 +38,12 @@ All handlers follow this structure:
 ## Linting
 
 ```bash
-npm run lint                              # lint (read-only, includes eslint, prettier, ec, actionlint)
+npm run lint                              # lint (read-only, includes eslint, prettier, ec)
 npm run eslint                            # eslint src tests
 npm run eslint:fix                        # eslint --fix src tests
 npm run prettier                          # prettier --write
 npm run prettier:fix                      # prettier --write (alias)
 npm run ec                                # editorconfig-checker
-npm run actionlint                        # github actions linter
 ```
 
 ## Testing
