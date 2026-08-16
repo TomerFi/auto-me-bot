@@ -20,7 +20,7 @@ body:
     id: runtime-information
     attributes:
       label: Runtime information
-      description: Please provide: browser, OS, account/org/repo affected, and any other relevant environment details.
+      description: "Please provide: browser, OS, account/org/repo affected, and any other relevant environment details."
     validations:
       required: true
 

@@ -6,7 +6,7 @@ This project has an [AI policy](AI_POLICY.md). Always read it and ensure all sug
 
 ## Project Overview
 
-Auto-Me-Bot is a [Probot][probot] GitHub App that automates repository management through configurable handlers. It processes GitHub webhook events (currently only `pull_request`) and performs checks and actions based on configuration in `.github/auto-me-bot.yml`.
+Auto-Me-Bot is a [Probot][probot] GitHub App that automates repository management through configurable handlers. It processes GitHub webhook events (currently `pull_request` and `pull_request_review`) and performs checks and actions based on configuration in `.github/auto-me-bot.yml`.
 
 ### Architecture
 
@@ -25,6 +25,9 @@ All handlers follow this structure:
 - Every handler in `src/handlers/` MUST export `match` and `run`
 - Register handlers in `CONFIG_SPEC` in `src/auto-me-bot.js`
 - Register events in `ON_EVENTS` in `src/auto-me-bot.js`
+- Add handler tests and register them in the test suite
+- Add handler documentation and update the MkDocs navigation and examples
+- Verify handler tests and lint before submitting
 
 ## Working Environment
 

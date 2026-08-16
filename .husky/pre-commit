@@ -12,7 +12,7 @@ npm ci --dry-run
 
 echo "Checking assistant files..."
 if ! npm run link-ai-files -- --ci; then
-  echo "Error: Assistant were linked, please stage the changes."
+  echo "Error: Assistant files were linked. Please stage the changes."
   exit 1
 fi
 

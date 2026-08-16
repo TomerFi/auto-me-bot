@@ -23,7 +23,7 @@ This project uses [husky][husky] with [lint-staged][lint-staged]. The pre-commit
 - **Branch protection** — blocks commits directly to `main`
 - **Lock file consistency** — verifies `package-lock.json` matches `package.json`
 - **Assistant files** — uses [aicfg](https://github.com/TomerFi/aicfg) to sync project instructions (`.agents`, `AGENTS.md`) across editors; run `npm run link-ai-files` to link for Claude Code
-- **File-specific checks** — eslint, prettier, editorconfig-checker, and actionlint run only on changed files via [lint-staged][lint-staged]
+- **File-specific checks** — eslint, editorconfig-checker, and actionlint run only on changed files via [lint-staged][lint-staged]; prettier is pending codebase formatting
 
 ```bash
 # Auto-installed by `npm install`
@@ -53,7 +53,7 @@ npx lint-staged
 
 1. Branch from `main` with a conventional name: `feat/add-handler`, `fix/handler-bug`
 2. Commit with a descriptive message
-3. Run all checks before submitting: `npm run eslint:fix && npm run prettier:fix && npm run ec`
+3. Run all checks before submitting: `npm run lint && npm run actionlint && npm run link-ai-files -- --ci && npm test`
 4. Open PR with a clear description of what changed and why
 5. Address feedback
 
@@ -116,12 +116,13 @@ The *run* function is also expected, as a final stage, to [update the previously
 ```javascript
 module.exports.run =  async function(context, config, startedAt) {
 
-    let checkRun = await context.octokit.checks.create(context.repo({
-        head_sha: context.payload.pull_request.head.sha,
+    await context.octokit.checks.update(context.repo({
+        check_run_id: checkRun.data.id,
         name: CHECK_NAME,
         details_url: BOT_CHECK_URL,
         started_at: startedAt,
         status: 'completed',
+        completed_at: new Date().toISOString(),
         conclusion: 'success',
         output: {
             title: 'Check passed',
