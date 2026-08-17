@@ -9,11 +9,11 @@ updates:
       prefix: "build"
       include: "scope"
     groups:
-      dev-deps:
-        dependency-type: "development"
       commitlint:
         patterns:
           - "*commitlint*"
+      dev-deps:
+        dependency-type: "development"
 
   - package-ecosystem: "github-actions"
     directory: "/"
