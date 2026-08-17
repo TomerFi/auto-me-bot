@@ -1,17 +1,18 @@
 ---
 name: Feature request
 description: Suggest an idea for this project
-labels: ["type: enhancement"]
+labels: ["enhancement"]
 
 body:
   - type: markdown
     attributes:
-      value: Thanks for taking the suggest an idea!
+      value: Thanks for taking the time to suggest an idea!
 
   - type: textarea
     id: feature-idea
     attributes:
       label: What did you have in mind?
+      description: Describe the feature in a few sentences.
     validations:
       required: true
 
@@ -24,4 +25,5 @@ body:
   - type: textarea
     id: implementation-idea
     attributes:
-      label: Any lead on how this feature can be implemented?
+      label: Any implementation thoughts?
+      description: Optional — any ideas on how this could be approached.

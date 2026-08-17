@@ -1,0 +1,19 @@
+#!/usr/bin/env sh
+
+echo "Checking branch..."
+current_branch=$(git rev-parse --abbrev-ref HEAD)
+if [ "$current_branch" = "main" ]; then
+  echo "Error: Cannot commit directly to main branch. Create a feature branch and push a PR."
+  exit 1
+fi
+
+echo "Checking lock file..."
+npm ci --dry-run
+
+echo "Checking assistant files..."
+if ! npm run link-ai-files -- --ci; then
+  echo "Error: Assistant files were linked. Please stage the changes."
+  exit 1
+fi
+
+npx lint-staged

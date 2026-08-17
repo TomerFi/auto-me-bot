@@ -1,26 +1,26 @@
 # https://github.com/apps/auto-me-bot
 ---
 pr:
-  lifecycleLabels:
-    ignoreDrafts: true
-    labels:
-      reviewRequired: "status: needs review"
-      changesRequested: "status: changes requested"
-      moreReviewsRequired: "status: needs more reviews"
-      reviewStarted: "status: review started"
-      approved: "status: approved"
-      merged: "status: merged"
+  # lifecycleLabels:
+  #   ignoreDrafts: true
+  #   labels:
+  #     reviewRequired: "status: needs review"
+  #     changesRequested: "status: changes requested"
+  #     moreReviewsRequired: "status: needs more reviews"
+  #     reviewStarted: "status: review started"
+  #     approved: "status: approved"
+  #     merged: "status: merged"
   # conventionalCommits:
   #   rules:
   #     'body-max-line-length': [2, 'always', 150]
   conventionalTitle:
     rules:
-      'header-max-length': [2, 'always', 80]
+      'header-max-length': [2, 'always', 100]
   # signedCommits:
   #   ignore:
   #     users: ['allcontributors[bot]', 'dependabot[bot]']
   #     emails: ['not.real@email.address']
   tasksList:
-  autoApprove:
-    allBots: false
-    users: ['dependabot']
+  # autoApprove:
+  #   allBots: false
+  #   users: ['dependabot']

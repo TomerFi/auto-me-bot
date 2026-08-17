@@ -4,39 +4,35 @@ updates:
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
-      interval: "daily"
-    labels:
-      - "type: dependencies"
+      interval: "weekly"
     commit-message:
       prefix: "build"
       include: "scope"
-    rebase-strategy: disabled
     versioning-strategy: increase-if-necessary
-    assignees:
-      - "TomerFi"
+    groups:
+      dev-deps:
+        dependency-type: "development"
 
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "daily"
-    labels:
-      - "type: dependencies"
+      interval: "weekly"
     commit-message:
       prefix: "ci"
-    rebase-strategy: disabled
-    assignees:
-      - "TomerFi"
+    groups:
+      gh-actions:
+        patterns:
+          - "*"
 
   - package-ecosystem: "pip"
     directory: "/"
     schedule:
-      interval: "daily"
-    labels:
-      - "type: dependencies"
+      interval: "weekly"
     commit-message:
       prefix: "docs"
       include: "scope"
     rebase-strategy: disabled
     versioning-strategy: increase-if-necessary
-    assignees:
-      - "TomerFi"
+    groups:
+      dev-deps:
+        dependency-type: "development"

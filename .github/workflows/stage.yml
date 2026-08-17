@@ -52,6 +52,9 @@ jobs:
       - name: Lint source files
         run: npm run lint
 
+      - name: Ensure assistant files are synced
+        run: npm run link-ai-files -- --ci
+
       - name: Run unit tests and verify code coverage
         run: npm test
 

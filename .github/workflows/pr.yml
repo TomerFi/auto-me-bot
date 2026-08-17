@@ -36,6 +36,12 @@ jobs:
       - name: Lint source files
         run: npm run lint
 
+      - name: Ensure assistant files are linked
+        uses: tomerfi/aicfg/link@7a71c5c7e0d8d9ebdd4a2e9212c9bb04a49c687f # 0.2.0
+        with:
+          source: agents
+          target: claude-code
+
       - name: Run unit tests
         run: npm test
 
