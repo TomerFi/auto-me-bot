@@ -37,7 +37,7 @@ jobs:
         run: npm run lint
 
       - name: Ensure assistant files are synced
-        run: npm run link-ai-files -- --ci
+        run: npm run link-ai-files -- --verbose
 
       - name: Run unit tests
         run: npm test
