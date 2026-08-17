@@ -33,4 +33,3 @@ updates:
       mkdocs:
         patterns:
           - "mkdocs*"
-
