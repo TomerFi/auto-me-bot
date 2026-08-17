@@ -8,10 +8,12 @@ updates:
     commit-message:
       prefix: "build"
       include: "scope"
-    versioning-strategy: increase-if-necessary
     groups:
       dev-deps:
         dependency-type: "development"
+      commitlint:
+        patterns:
+          - "*commitlint*"
 
   - package-ecosystem: "github-actions"
     directory: "/"
@@ -19,10 +21,6 @@ updates:
       interval: "weekly"
     commit-message:
       prefix: "ci"
-    groups:
-      gh-actions:
-        patterns:
-          - "*"
 
   - package-ecosystem: "pip"
     directory: "/"
@@ -31,8 +29,8 @@ updates:
     commit-message:
       prefix: "docs"
       include: "scope"
-    rebase-strategy: disabled
-    versioning-strategy: increase-if-necessary
     groups:
-      dev-deps:
-        dependency-type: "development"
+      mkdocs:
+        patterns:
+          - "mkdocs*"
+
