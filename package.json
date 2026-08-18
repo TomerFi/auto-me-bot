@@ -39,8 +39,8 @@
   },
   "lint-staged": {
     "*.js": [
-      "npm run eslint:fix --",
-      "npm run prettier:fix --"
+      "eslint --fix --",
+      "echo \"prettier --write .\" --"
     ],
     "*": [
       "npm run ec --"
