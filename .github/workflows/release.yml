@@ -30,7 +30,7 @@ jobs:
   release:
     runs-on: ubuntu-latest
     environment: deployment
-    name: Build, publish, release, and announce
+    name: Build, publish, and release
     steps:
       - name: Checkout sources
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -75,7 +75,7 @@ jobs:
           npm version ${{ steps.bumper.outputs.next }} --no-git-tag-version
 
       - name: Install project modules
-        run: npm ci --production
+        run: npm ci --omit=dev --ignore-scripts
 
       - name: Deploy to Cloud Functions
         run: >
