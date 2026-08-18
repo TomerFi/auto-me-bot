@@ -78,6 +78,8 @@ jobs:
         run: npm ci --omit=dev --ignore-scripts
 
       - name: Deploy to Cloud Functions
+        env:
+          HUSKY: 0
         run: >
           gcloud functions deploy ${{ secrets.GCP_FUNCTION_NAME }}
           --gen2
