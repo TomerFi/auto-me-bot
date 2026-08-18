@@ -35,7 +35,7 @@
     "prettier:fix": "echo \"prettier --write .\"",
     "ec": "ec",
     "link-ai-files": "aicfg link agents --to claude-code",
-    "prepare": "husky"
+    "prepare": "husky || true"
   },
   "lint-staged": {
     "*.js": [
