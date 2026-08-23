@@ -21,6 +21,10 @@ updates:
       interval: "weekly"
     commit-message:
       prefix: "ci"
+    groups:
+      gh-actions:
+        patterns:
+          - "*"
 
   - package-ecosystem: "pip"
     directory: "/"
