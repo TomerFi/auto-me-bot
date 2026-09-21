@@ -68,8 +68,8 @@
     "globals": "17.12.0",
     "husky": "9.1.7",
     "lint-staged": "17.5.1",
-    "mocha": "12.0.0",
-    "prettier": "3.9.6",
+    "mocha": "12.0.2",
+    "prettier": "3.9.8",
     "sinon": "22.1.0",
     "sinon-chai": "4.0.1"
   },
