@@ -48,10 +48,10 @@
     ]
   },
   "dependencies": {
-    "@commitlint/cli": "21.2.3",
-    "@commitlint/config-conventional": "21.2.3",
-    "@commitlint/lint": "21.2.3",
-    "@commitlint/load": "21.2.3",
+    "@commitlint/cli": "21.2.4",
+    "@commitlint/config-conventional": "21.2.4",
+    "@commitlint/lint": "21.2.4",
+    "@commitlint/load": "21.2.4",
     "lodash-es": "4.18.1",
     "marked": "18.1.1",
     "probot": "14.3.2",
