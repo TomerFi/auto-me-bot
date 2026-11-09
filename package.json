@@ -54,7 +54,7 @@
     "@commitlint/load": "21.2.4",
     "lodash-es": "4.18.1",
     "marked": "18.1.2",
-    "probot": "14.3.3",
+    "probot": "14.3.7",
     "validator": "13.15.35"
   },
   "devDependencies": {
