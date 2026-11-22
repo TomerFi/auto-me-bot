@@ -201,13 +201,13 @@ Most run automatically on PRs. Check their respective dashboards for detailed re
 
 ## Contributing Documentation
 
-The documentation is built with [Python](https://www.python.org/)'s [MkDocs](https://www.mkdocs.org/). The sources are in [docs/](docs/), and the configuration file is [mkdocs.yml](mkdocs.yml).
+The documentation is built with [Python](https://www.python.org/)'s [Zensical](https://zensical.org/). The sources are in [docs/](docs/), and the configuration file is [zensical.toml](zensical.toml).
 
 Useful commands:
 
 - `pip install -r requirements.txt` — install dependencies required for building/serving the documentation site
-- `mkdocs build` — build the documentation site in a folder named *site* (gitignored)
-- `mkdocs serve` — serve the documentation site locally while watching the sources and auto-loading for modifications
+- `zensical build --strict` — build the documentation site in a folder named *site* (gitignored)
+- `zensical serve` — serve the documentation site locally while watching the sources and auto-loading for modifications
 
 > Using [venv](https://docs.python.org/3/tutorial/venv.html) is highly recommended.
 

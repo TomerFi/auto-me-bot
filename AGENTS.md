@@ -26,7 +26,7 @@ All handlers follow this structure:
 - Register handlers in `CONFIG_SPEC` in `src/auto-me-bot.js`
 - Register events in `ON_EVENTS` in `src/auto-me-bot.js`
 - Add handler tests and register them in the test suite
-- Add handler documentation and update the MkDocs navigation and examples
+- Add handler documentation and update the Zensical navigation and examples
 - Verify handler tests and lint before submitting
 
 ## Working Environment

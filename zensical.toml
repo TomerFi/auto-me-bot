@@ -1,0 +1,104 @@
+site_name = "Auto-Me-Bot"
+site_url = "https://auto-me-bot.figenblat.com"
+site_author = "Tomer Figenblat"
+site_description = "GitHub bot that takes care of your repos for you."
+
+repo_name = "TomerFi/auto-me-bot"
+repo_url = "https://github.com/TomerFi/auto-me-bot"
+edit_uri = ""
+
+nav = [
+  { Home = "index.md" },
+  { Install = "install.md" },
+  { Config = "config.md" },
+  { Examples = "examples.md" },
+]
+
+markdown_extensions = [
+  "admonition",
+  "attr_list",
+  "def_list",
+  "md_in_html",
+  "pymdownx.betterem",
+  "pymdownx.blocks.caption",
+  "pymdownx.caret",
+  "pymdownx.critic",
+  "pymdownx.details",
+  "pymdownx.mark",
+  { "pymdownx.emoji" = { emoji_index = "zensical.extensions.emoji.twemoji", emoji_generator = "zensical.extensions.emoji.to_svg" } },
+  "pymdownx.highlight",
+  "pymdownx.inlinehilite",
+  "pymdownx.magiclink",
+  "pymdownx.smartsymbols",
+  { "pymdownx.snippets" = { base_path = [ "docs" ] } },
+  "pymdownx.superfences",
+  { "pymdownx.tabbed" = { alternate_style = true } },
+  "tables",
+  { toc = { permalink = "⚓︎" } },
+]
+
+[extra.analytics]
+provider = "google"
+property = "G-PC4VP771PV"
+
+[[plugins]]
+[plugins.llmstxt]
+full_output = "llms-full.txt"
+markdown_description = "The complete documentation is also available as a single file: [llms-full.txt](https://auto-me-bot.figenblat.com/llms-full.txt)."
+
+[plugins.llmstxt.sections]
+"Getting started" = [
+  { "install.md" = "GitHub App creation and installation steps" },
+]
+"Configuration" = [
+  { "config.md" = "Full configuration reference with every option" },
+]
+"Examples" = [
+  { "examples.md" = "Ready-made configuration examples for all handlers" },
+]
+
+[theme]
+name = "material"
+logo = "img/logo.png"
+favicon = "img/favicon.ico"
+features = [
+  "content.code.annotate",
+  "header.autohide",
+  "navigation.instant",
+  "navigation.instant.progress",
+  "navigation.instant.preview",
+  "navigation.tabs",
+  "navigation.tabs.sticky",
+  "navigation.top",
+  "navigation.tracking",
+  "search.highlight",
+  "toc.integrate",
+  "content.code.copy",
+]
+
+[theme.font]
+code = "Fira Code"
+text = "Open Sans"
+
+[[theme.palette]]
+media = "(prefers-color-scheme)"
+
+[theme.palette.toggle]
+icon = "material/brightness-auto"
+name = "Switch to system preference"
+
+[[theme.palette]]
+media = "(prefers-color-scheme: light)"
+scheme = "default"
+
+[theme.palette.toggle]
+icon = "material/brightness-7"
+name = "Switch to dark mode"
+
+[[theme.palette]]
+media = "(prefers-color-scheme: dark)"
+scheme = "slate"
+
+[theme.palette.toggle]
+icon = "material/brightness-4"
+name = "Switch to light mode"

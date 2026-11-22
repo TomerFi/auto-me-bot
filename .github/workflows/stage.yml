@@ -46,7 +46,7 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Build site
-        run: mkdocs build
+        run: zensical build --strict
 
       - name: Install project modules
         run: npm ci

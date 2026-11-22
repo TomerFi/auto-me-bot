@@ -22,7 +22,7 @@ debug/
 site/
 node_modules/
 eslint.config.mjs
-mkdocs.yml
+zensical.toml
 requirements.txt
 CONTRIBUTING.md
 README.md
