@@ -13,7 +13,7 @@ description: >-
 - Generate test files at `tests/handlers/pr-<name>.test.js` with Sinon stubs and full coverage
 - Add handler to CONFIG_SPEC and events to ON_EVENTS in `src/auto-me-bot.js`
 - Update test registration in `tests/auto-me-bot.test.js` (stubs, allHandlers, patchedConfigSpec)
-- Create handler docs, update mkdocs.yml navigation, config.md, and examples.md
+- Create handler docs, update zensical.toml navigation, config.md, and examples.md
 - Verify: handler file, tests, registration, documentation, tests pass, lint passes
 
 ## When to use me
@@ -120,7 +120,7 @@ Edit `tests/auto-me-bot.test.js`:
 
 ### 7. Create Documentation
 - Create `docs/handlers/handler-name.md`
-- Update `mkdocs.yml` navigation
+- Update `zensical.toml` navigation
 - Update `docs/config.md`
 - Add example to `docs/examples.md`
 
@@ -128,7 +128,7 @@ Edit `tests/auto-me-bot.test.js`:
 ```bash
 npm run lint
 npm test
-mkdocs serve
+zensical serve
 ```
 
 ## Verification

@@ -117,16 +117,6 @@ jobs:
             })
             core.setOutput('html_url', response.data.html_url)
 
-      - name: Update documentation with new version
-        run: |
-          sed -i 's/  version: .*/  version: "${{ steps.bumper.outputs.next }}"/g' mkdocs.yml
-
-      - name: Commit and push docs modifications
-        run: |
-          git add mkdocs.yml
-          git commit -m "docs: updated docs with ${{ steps.bumper.outputs.next }} [skip ci]"
-          git push
-
   smoke-test:
     needs: release
     uses: ./.github/workflows/smoke-test.yml
