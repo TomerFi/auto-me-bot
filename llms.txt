@@ -1,0 +1,17 @@
+# Auto-Me-Bot
+
+> GitHub bot that takes care of your repos for you.
+
+The complete documentation is also available as a single file: [llms-full.txt](https://auto-me-bot.figenblat.com/llms-full.txt).
+
+## Getting started
+
+- [Install](<https://auto-me-bot.figenblat.com/install/index.md>): GitHub App creation and installation steps
+
+## Configuration
+
+- [Config](<https://auto-me-bot.figenblat.com/config/index.md>): Full configuration reference with every option
+
+## Examples
+
+- [Examples](<https://auto-me-bot.figenblat.com/examples/index.md>): Ready-made configuration examples for all handlers
